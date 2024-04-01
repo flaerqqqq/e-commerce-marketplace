@@ -1,4 +1,4 @@
-package com.example.ecommercemarketplace.repositories.impls;
+package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.exceptions.UserAlreadyExistsException;
