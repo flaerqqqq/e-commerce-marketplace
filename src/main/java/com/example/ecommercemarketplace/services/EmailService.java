@@ -1,8 +1,10 @@
 package com.example.ecommercemarketplace.services;
 
+import jakarta.mail.MessagingException;
+
 public interface EmailService {
 
-    void sendMessageWithVerificationCode(String toEmail, String code);
+    void sendMessageWithVerificationCode(String toEmail, String code) throws MessagingException;
 
-    void sendMail(String to, String subject, String body);
+    void sendMail(String to, String subject, String body) throws MessagingException;
 }

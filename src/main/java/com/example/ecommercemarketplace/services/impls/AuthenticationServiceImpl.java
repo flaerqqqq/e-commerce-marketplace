@@ -7,6 +7,7 @@ import com.example.ecommercemarketplace.security.JwtService;
 import com.example.ecommercemarketplace.services.AuthenticationService;
 import com.example.ecommercemarketplace.services.EmailService;
 import com.example.ecommercemarketplace.services.UserService;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserRegistrationResponse register(UserRegistrationRequest registrationRequest) {
+    public UserRegistrationResponse register(UserRegistrationRequest registrationRequest){
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(registrationRequest,userDto);
 
@@ -66,7 +67,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserRegistrationResponse response = new UserRegistrationResponse();
         BeanUtils.copyProperties(savedUser,response);
 
-        emailService.sendMessageWithVerificationCode(userDto.getEmail(), tokenValue);
+        try {
+            emailService.sendMessageWithVerificationCode(userDto.getEmail(), tokenValue);
+        } catch (MessagingException e){
+            throw new RuntimeException(e);
+        }
 
         return response;
     }
