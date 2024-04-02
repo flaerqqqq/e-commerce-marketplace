@@ -42,7 +42,7 @@ public class JwtService {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 
@@ -55,7 +55,7 @@ public class JwtService {
             Claims claims = Jwts.parserBuilder()
                                 .setSigningKey(key)
                                 .build()
-                                .parseClaimsJwt(token)
+                                .parseClaimsJws(token)
                                 .getBody();
 
             return !claims.getExpiration().before(new Date());

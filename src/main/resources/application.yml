@@ -12,6 +12,6 @@ spring:
 
 jwt:
   token:
-    secret: :LKJOSDI987sd98g7fdgjkh45lkj243hlk34h25gk234h5guj234hdsuigyf87dsgysfdghkljfd8gs59dgxcv6bxcv6by78xyiolzu7
+    secret: sl8d45b4o2h35g243ilk7fdsgsfdljkhgfldkgh94837wyhglkfdjshgsd98f7og643gldujfhlafsdkhf43q287r3t26kdgzjfds
     expiration:
       time: 3600000

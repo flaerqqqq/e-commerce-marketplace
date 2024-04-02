@@ -42,7 +42,7 @@ public class UserEntity {
     @Column(name = "is_enabled", nullable = false)
     private boolean isEnabled;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
