@@ -5,6 +5,18 @@ spring:
     password: 452389
     driver-class-name: org.postgresql.Driver
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vitaloverzyn34@gmail.com
+    password: buau shfj xpqm xdii
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,3 +27,4 @@ jwt:
     secret: sl8d45b4o2h35g243ilk7fdsgsfdljkhgfldkgh94837wyhglkfdjshgsd98f7og643gldujfhlafsdkhf43q287r3t26kdgzjfds
     expiration:
       time: 3600000
+

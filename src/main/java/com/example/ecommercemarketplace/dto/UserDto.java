@@ -1,6 +1,7 @@
 package com.example.ecommercemarketplace.dto;
 
 
+import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,8 @@ public class UserDto {
     private String phoneNumber;
 
     private boolean isEnabled;
+
+    private EmailConfirmationToken emailConfirmationToken;
 
     private List<Role> roles;
 

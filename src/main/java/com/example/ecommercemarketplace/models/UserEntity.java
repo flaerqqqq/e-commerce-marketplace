@@ -42,7 +42,11 @@ public class UserEntity {
     @Column(name = "is_enabled", nullable = false)
     private boolean isEnabled;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "email_confirmation_token", referencedColumnName = "id")
+    private EmailConfirmationToken emailConfirmationToken;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )

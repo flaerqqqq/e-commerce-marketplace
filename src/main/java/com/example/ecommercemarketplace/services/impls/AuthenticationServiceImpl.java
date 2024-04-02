@@ -1,9 +1,11 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.*;
+import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.security.CustomUserDetailsService;
 import com.example.ecommercemarketplace.security.JwtService;
 import com.example.ecommercemarketplace.services.AuthenticationService;
+import com.example.ecommercemarketplace.services.EmailService;
 import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -22,6 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private AuthenticationManager authenticationManager;
     private JwtService jwtService;
     private CustomUserDetailsService customUserDetailsService;
+    private EmailService emailService;
 
     @Override
     public UserJwtTokenResponse login(UserLoginRequest loginRequest) {
@@ -49,10 +54,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(registrationRequest,userDto);
 
-        UserDto savedUser =userService.createUser(userDto);
+        String tokenValue = UUID.randomUUID().toString();
+        EmailConfirmationToken confirmationToken = EmailConfirmationToken.builder()
+                .token(tokenValue)
+                .build();
+
+        userDto.setEmailConfirmationToken(confirmationToken);
+
+        UserDto savedUser = userService.createUser(userDto);
 
         UserRegistrationResponse response = new UserRegistrationResponse();
         BeanUtils.copyProperties(savedUser,response);
+
+        emailService.sendMessageWithVerificationCode(userDto.getEmail(), tokenValue);
 
         return response;
     }
