@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
                     <body>
                         <p>Hello there!</p>
                         <p>Click the button below to confirm your email address:</p>
-                        <form action="https://localhost:8080/api/confirm" method="GET">
+                        <form action="http://localhost:8080/api/confirm" method="GET">
                             <input type="hidden" name="token" value="%s">
                             <button style="background-color: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer;" type="submit">
                                 Confirm Email

@@ -4,8 +4,10 @@ import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.exceptions.UserAlreadyExistsException;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.UserRepository;
+import com.example.ecommercemarketplace.services.EmailConfirmationTokenService;
 import com.example.ecommercemarketplace.services.UserService;
 import com.example.ecommercemarketplace.utils.PublicIdGenerator;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private Mapper<UserEntity, UserDto> userMapper;
     private PasswordEncoder passwordEncoder;
     private PublicIdGenerator publicIdGenerator;
+    private EmailConfirmationTokenService emailConfirmationTokenService;
 
     @Override
     public UserDto findByEmail(String email) {
@@ -50,4 +53,23 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.mapTo(savedUser);
     }
+
+    @Override
+    public UserDto findByEmailConfirmationToken(String token) {
+
+        EmailConfirmationToken emailConfirmationToken = emailConfirmationTokenService.findByToken(token);
+
+        UserEntity user = userRepository.findByEmailConfirmationToken(emailConfirmationToken).orElseThrow(() -> new UserNotFoundException("User with confirmationToken=" + token + " is not found"));
+
+        return userMapper.mapTo(user);
+    }
+
+    @Override
+    public UserDto updateUser(UserDto userDto) {
+        UserEntity updatedUser = userRepository.save(userMapper.mapFrom(userDto));
+
+        return userMapper.mapTo(updatedUser);
+    }
+
+
 }

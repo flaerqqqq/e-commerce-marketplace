@@ -10,4 +10,7 @@ public interface UserService {
 
     UserDto createUser(UserDto userDto);
 
+    UserDto findByEmailConfirmationToken(String token);
+
+    UserDto updateUser(UserDto userDto);
 }
