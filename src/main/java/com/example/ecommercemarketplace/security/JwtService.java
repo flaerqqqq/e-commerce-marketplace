@@ -61,8 +61,19 @@ public class JwtService {
             return !claims.getExpiration().before(new Date());
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
                  | IllegalArgumentException | SignatureException e) {
-            throw new RuntimeException("Expired or invalid JWT token");
+            throw new RuntimeException(e);
         }
     }
 
+    public String generatePasswordResetToken(String email) {
+        Date issuedAt = new Date();
+        Date expiredAt = new Date(issuedAt.getTime()  + 1800000);
+
+        return Jwts.builder()
+                .setIssuedAt(issuedAt)
+                .setExpiration(expiredAt)
+                .setSubject(email)
+                .signWith(key)
+                .compact();
+    }
 }
