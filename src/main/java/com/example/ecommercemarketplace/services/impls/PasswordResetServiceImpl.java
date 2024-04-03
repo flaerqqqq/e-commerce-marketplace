@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -81,5 +83,18 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         passwordResetTokenRepository.delete(passwordResetToken.get());
 
         return true;
+    }
+
+    @Override
+    public void deleteExpiredTokens() {
+        List<PasswordResetToken> tokens = passwordResetTokenRepository.findAll();
+
+        for (var token : tokens){
+            try {
+                jwtService.isValid(token.getToken());
+            } catch (Exception e){
+                passwordResetTokenRepository.delete(token);
+            }
+        }
     }
 }

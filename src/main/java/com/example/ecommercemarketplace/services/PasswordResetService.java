@@ -8,4 +8,6 @@ public interface PasswordResetService {
     boolean requestPasswordReset(PasswordResetRequest passwordResetRequest);
 
     boolean confirmPasswordReset(PasswordResetConfirmationRequest passwordResetConfirmationRequest);
+
+    void deleteExpiredTokens();
 }
