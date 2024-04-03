@@ -25,7 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @AllArgsConstructor
-@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -53,7 +52,8 @@ public class SecurityConfig {
                         auth
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/confirm").permitAll()
-                                .anyRequest().authenticated()
+                                .requestMatchers("/api/password-reset-request").permitAll()
+                                .anyRequest().permitAll()
 
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

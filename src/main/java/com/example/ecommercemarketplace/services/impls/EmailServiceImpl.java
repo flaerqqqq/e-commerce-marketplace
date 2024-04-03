@@ -18,7 +18,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void sendMessageWithVerificationCode(String to, String code) throws MessagingException {
+    public void sendMessageWithVerificationCode(String toEmail, String code) throws MessagingException {
         String subject = "Email Confirmation!";
         String body = """
                     <!DOCTYPE html>
@@ -35,8 +35,30 @@ public class EmailServiceImpl implements EmailService {
                     </body>
                     </html>
                 """.formatted(code);
-        sendMail(to, subject, body);
+        sendMail(toEmail, subject, body);
     }
+
+    @Override
+    public void sendMessageWithPasswordResetCode(String toEmail, String code) throws MessagingException {
+        String subject = "Password Reset!";
+        String body = """
+                    <!DOCTYPE html>
+                    <html>
+                    <body>
+                        <p>Hello there!</p>
+                        <p>Click the button below to confirm your email address:</p>
+                        <form action="http://localhost:8080/verification/password-reset" method="GET">
+                            <input type="hidden" name="token" value="%s">
+                            <button style="background-color: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer;" type="submit">
+                                Confirm Email
+                            </button>
+                        </form>
+                    </body>
+                    </html>
+                """.formatted(code);
+        sendMail(toEmail, subject, body);
+    }
+
 
     @Override
     public void sendMail(String to, String subject, String body) throws MessagingException {
