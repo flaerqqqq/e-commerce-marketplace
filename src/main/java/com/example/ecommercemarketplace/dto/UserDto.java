@@ -35,5 +35,4 @@ public class UserDto {
     private EmailConfirmationToken emailConfirmationToken;
 
     private List<Role> roles;
-
 }

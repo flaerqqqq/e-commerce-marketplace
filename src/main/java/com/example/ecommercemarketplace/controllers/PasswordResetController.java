@@ -31,8 +31,8 @@ public class PasswordResetController {
     @PostMapping("/confirm-password-reset")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> confirmPasswordReset(@RequestBody PasswordResetConfirmationRequest passwordResetConfirmationRequest){
-
         boolean resetStatus = passwordResetService.confirmPasswordReset(passwordResetConfirmationRequest);
+
         if (resetStatus){
             return new ResponseEntity<>(HttpStatus.OK);
         }
