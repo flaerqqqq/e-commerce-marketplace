@@ -11,8 +11,13 @@ import com.example.ecommercemarketplace.services.EmailConfirmationTokenService;
 import com.example.ecommercemarketplace.services.UserService;
 import com.example.ecommercemarketplace.utils.PublicIdGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -69,6 +74,63 @@ public class UserServiceImpl implements UserService {
         UserEntity updatedUser = userRepository.save(userMapper.mapFrom(userDto));
 
         return userMapper.mapTo(updatedUser);
+    }
+
+    @Override
+    public UserDto findUserByPublicId(String publicId) {
+        UserEntity user = userRepository.findByPublicId(publicId).orElseThrow(() ->
+                new UserNotFoundException("User with publicId=%s is not found".formatted(publicId)));
+
+        return userMapper.mapTo(user);
+    }
+
+    @Override
+    public Page<UserDto> findAllUsers(Pageable pageable) {
+        Page<UserDto> users = userRepository.findAll(pageable).map(userMapper::mapTo);
+
+        return users;
+    }
+
+    @Override
+    public UserDto updateUserFully(String publicId, UserDto userDto) {
+       UserEntity user = userRepository.findByPublicId(publicId).orElseThrow(() ->
+               new UserNotFoundException("User with publicId=%s is not found".formatted(publicId)));
+
+       user.setFirstName(userDto.getFirstName());
+       user.setLastName((userDto.getLastName()));
+       user.setPhoneNumber(userDto.getPhoneNumber());
+
+       UserEntity savedUser = userRepository.save(user);
+
+       return userMapper.mapTo(savedUser);
+
+    }
+
+    @Override
+    public UserDto updateUserPatch(String publicId, UserDto userDto) {
+        if (!userRepository.existsByPublicId(publicId)) {
+            throw new UserNotFoundException("User with publicId=%s is not found".formatted(publicId));
+        }
+
+        UserEntity updatedUser = userRepository.findByPublicId(publicId).map(user -> {
+           Optional.ofNullable(userDto.getFirstName()).ifPresent(user::setFirstName);
+           Optional.ofNullable(userDto.getLastName()).ifPresent(user::setLastName);
+           Optional.ofNullable(userDto.getPhoneNumber()).ifPresent(user::setPhoneNumber);
+           return user;
+        }).get();
+
+        UserEntity savedUser = userRepository.save(updatedUser);
+
+        return userMapper.mapTo(savedUser);
+    }
+
+    @Override
+    public void removeUserByPublicId(String publicId) {
+        if (!userRepository.existsByPublicId(publicId)) {
+            throw new UserNotFoundException("User with publicId=%s is not found".formatted(publicId));
+        }
+
+        userRepository.deleteByPublicId(publicId);
     }
 
 

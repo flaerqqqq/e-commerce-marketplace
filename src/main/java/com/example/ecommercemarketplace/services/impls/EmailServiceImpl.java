@@ -46,11 +46,11 @@ public class EmailServiceImpl implements EmailService {
                     <html>
                     <body>
                         <p>Hello there!</p>
-                        <p>Click the button below to confirm your email address:</p>
+                        <p>Click the button below to reset your password:</p>
                         <form action="http://localhost:8080/verification/password-reset" method="GET">
                             <input type="hidden" name="token" value="%s">
                             <button style="background-color: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer;" type="submit">
-                                Confirm Email
+                                Reset Password
                             </button>
                         </form>
                     </body>

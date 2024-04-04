@@ -1,6 +1,10 @@
 package com.example.ecommercemarketplace.services;
 
 import com.example.ecommercemarketplace.dto.UserDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -13,4 +17,14 @@ public interface UserService {
     UserDto findByEmailConfirmationToken(String token);
 
     UserDto updateUser(UserDto userDto);
+
+    UserDto findUserByPublicId(String publicId);
+
+    Page<UserDto> findAllUsers(Pageable pageable);
+
+    UserDto updateUserFully(String publicId, UserDto userDto);
+
+    UserDto updateUserPatch(String publicId, UserDto userDto);
+
+    void removeUserByPublicId(String publicId);
 }
