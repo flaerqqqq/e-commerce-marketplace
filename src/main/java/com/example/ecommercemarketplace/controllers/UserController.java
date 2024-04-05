@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/{id}")
     public UserResponseDto getUserByUserPublicId(@PathVariable("id") String id){
@@ -35,6 +35,7 @@ public class UserController {
             BeanUtils.copyProperties(userDto, userResponseDto);
             return userResponseDto;
         });
+
         return page;
     }
 

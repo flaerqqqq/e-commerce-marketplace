@@ -7,7 +7,7 @@ import java.util.Random;
 @Component
 public class PublicIdGenerator {
 
-    private String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private final static String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public String generate(){
         return generateString(40);
@@ -17,7 +17,7 @@ public class PublicIdGenerator {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
-            stringBuilder.append(characters.charAt(new Random().nextInt(characters.length())));
+            stringBuilder.append(CHARACTERS.charAt(new Random().nextInt(CHARACTERS.length())));
         }
 
         return stringBuilder.toString();

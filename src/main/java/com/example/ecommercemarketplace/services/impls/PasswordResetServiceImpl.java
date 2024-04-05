@@ -28,12 +28,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-    private UserService userService;
-    private Mapper<UserEntity, UserDto> userMapper;
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-    private EmailService emailService;
-    private JwtService jwtService;
-    private PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final Mapper<UserEntity, UserDto> userMapper;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public boolean requestPasswordReset(PasswordResetRequest passwordResetRequest) {
@@ -51,6 +51,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                 .token(tokenValue)
                 .user(user)
                 .build();
+
         passwordResetTokenRepository.save(passwordResetToken);
 
         try {

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class EmailConfirmationController {
 
-    private EmailConfirmationService emailConfirmationService;
+    private final EmailConfirmationService emailConfirmationService;
 
     @GetMapping
     @PreAuthorize("permitAll()")

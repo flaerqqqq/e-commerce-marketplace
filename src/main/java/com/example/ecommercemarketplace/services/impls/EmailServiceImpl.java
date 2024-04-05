@@ -14,8 +14,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    private JavaMailSender mailSender;
-
+    private final JavaMailSender mailSender;
 
     @Override
     public void sendMessageWithVerificationCode(String toEmail, String code) throws MessagingException {
@@ -59,7 +58,6 @@ public class EmailServiceImpl implements EmailService {
         sendMail(toEmail, subject, body);
     }
 
-
     @Override
     public void sendMail(String to, String subject, String body) throws MessagingException {
         var message = mailSender.createMimeMessage();
@@ -71,6 +69,5 @@ public class EmailServiceImpl implements EmailService {
 
         mailSender.send(message);
     }
-
 
 }

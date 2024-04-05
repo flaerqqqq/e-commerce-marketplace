@@ -11,18 +11,16 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class EmailConfirmationServiceImpl implements EmailConfirmationService {
 
-    private UserService userService;
-    private EmailConfirmationTokenService emailConfirmationTokenService;
+    private final UserService userService;
+    private final EmailConfirmationTokenService emailConfirmationTokenService;
 
     @Override
     public void confirm(String token) {
-
         if (emailConfirmationTokenService.existsByToken(token)){
-
             UserDto user = userService.findByEmailConfirmationToken(token);
+
             user.setEnabled(true);
             userService.updateUser(user);
         }
-
     }
 }

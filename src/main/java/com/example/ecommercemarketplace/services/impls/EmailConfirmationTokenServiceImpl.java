@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class EmailConfirmationTokenServiceImpl implements EmailConfirmationTokenService {
 
-    private EmailConfirmationTokenRepository emailConfirmationTokenRepository;
+    private final EmailConfirmationTokenRepository emailConfirmationTokenRepository;
 
     @Override
     public boolean existsByToken(String token) {

@@ -23,15 +23,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private UserService userService;
-    private AuthenticationManager authenticationManager;
-    private JwtService jwtService;
-    private CustomUserDetailsService customUserDetailsService;
-    private EmailService emailService;
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final EmailService emailService;
 
     @Override
     public UserJwtTokenResponse login(UserLoginRequest loginRequest) {
-
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(), loginRequest.getPassword()
         );
@@ -47,7 +46,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwtToken = jwtService.generateToken(userDetails);
 
         return new UserJwtTokenResponse(userDto.getPublicId(), jwtToken);
-
     }
 
     @Override

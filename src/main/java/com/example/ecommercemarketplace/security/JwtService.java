@@ -19,14 +19,13 @@ public class JwtService {
     @Value("${jwt.token.expiration.time}")
     private long expirationTime;
 
-    private SecretKey key;
+    private final SecretKey key;
 
     public JwtService(@Value("${jwt.token.secret}") String secret) {
         key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(UserDetails userDetails){
-
         Date issuedAt = new Date();
         Date expiredAt = new Date(issuedAt.getTime() + expirationTime);
 

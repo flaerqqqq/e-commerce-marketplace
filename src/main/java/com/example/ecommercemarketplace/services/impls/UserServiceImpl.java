@@ -23,15 +23,16 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private Mapper<UserEntity, UserDto> userMapper;
-    private PasswordEncoder passwordEncoder;
-    private PublicIdGenerator publicIdGenerator;
-    private EmailConfirmationTokenService emailConfirmationTokenService;
+    private final UserRepository userRepository;
+    private final Mapper<UserEntity, UserDto> userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final PublicIdGenerator publicIdGenerator;
+    private final EmailConfirmationTokenService emailConfirmationTokenService;
 
     @Override
     public UserDto findByEmail(String email) {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email=" + email +" is not found"));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User with email=" + email +" is not found"));
 
         return userMapper.mapTo(user);
     }
@@ -43,7 +44,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-
         if (userRepository.existsByEmail(userDto.getEmail())){
             throw new UserAlreadyExistsException("User with email="+userDto.getEmail()+ " already exists");
         }
@@ -61,9 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByEmailConfirmationToken(String token) {
-
         EmailConfirmationToken emailConfirmationToken = emailConfirmationTokenService.findByToken(token);
-
         UserEntity user = userRepository.findByEmailConfirmationToken(emailConfirmationToken).orElseThrow(() -> new UserNotFoundException("User with confirmationToken=" + token + " is not found"));
 
         return userMapper.mapTo(user);
