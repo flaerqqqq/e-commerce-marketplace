@@ -54,11 +54,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         passwordResetTokenRepository.save(passwordResetToken);
 
-        try {
-            emailService.sendMessageWithPasswordResetCode(email, tokenValue);
-        } catch (MessagingException e){
-            throw new RuntimeException(e);
-        }
+        emailService.sendMessageWithPasswordResetCode(email, tokenValue);
 
         return true;
     }

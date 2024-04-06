@@ -1,6 +1,8 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.*;
+import com.example.ecommercemarketplace.events.UserLoginEvent;
+import com.example.ecommercemarketplace.events.UserRegistrationEvent;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.security.CustomUserDetailsService;
 import com.example.ecommercemarketplace.security.JwtService;
@@ -10,6 +12,7 @@ import com.example.ecommercemarketplace.services.UserService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
     private final EmailService emailService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public UserJwtTokenResponse login(UserLoginRequest loginRequest) {
@@ -44,6 +48,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDto userDto = userService.findByEmail(loginRequest.getEmail());
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
         String jwtToken = jwtService.generateToken(userDetails);
+
+        eventPublisher.publishEvent(new UserLoginEvent(this, userDto));
 
         return new UserJwtTokenResponse(userDto.getPublicId(), jwtToken);
     }
@@ -65,11 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserRegistrationResponse response = new UserRegistrationResponse();
         BeanUtils.copyProperties(savedUser,response);
 
-        try {
-            emailService.sendMessageWithVerificationCode(userDto.getEmail(), tokenValue);
-        } catch (MessagingException e){
-            throw new RuntimeException(e);
-        }
+        emailService.sendMessageWithVerificationCode(userDto.getEmail(), tokenValue);
 
         return response;
     }
