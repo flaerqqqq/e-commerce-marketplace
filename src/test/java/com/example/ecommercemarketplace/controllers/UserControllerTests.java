@@ -74,6 +74,7 @@ public class UserControllerTests {
                 .phoneNumber("+123456789")
                 .build();
     }
+
     @Test
     public void UserController_GetUserByUserPublicId_ShouldReturnCorrectUser() throws Exception{
         String publicId = userResponseDto.getPublicId();
