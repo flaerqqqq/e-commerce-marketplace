@@ -4,6 +4,7 @@ package com.example.ecommercemarketplace.controllers;
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.dto.UserRequestDto;
 import com.example.ecommercemarketplace.dto.UserResponseDto;
+import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
 import com.example.ecommercemarketplace.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,6 +75,7 @@ public class UserControllerTests {
                 .phoneNumber("+123456789")
                 .build();
     }
+
     @Test
     public void UserController_GetUserByUserPublicId_ShouldReturnCorrectUser() throws Exception{
         String publicId = userResponseDto.getPublicId();
@@ -90,5 +92,28 @@ public class UserControllerTests {
         UserResponseDto actualResponseDto = objectMapper.readValue(jsonRequest, UserResponseDto.class);
 
         assertThat(userResponseDto).isEqualTo(actualResponseDto);
+    }
+
+    @Test
+    public void UserController_GetUserByUserPublicId_ShouldReturnNotFoundStatus() throws Exception {
+        String publicId = userResponseDto.getPublicId();
+
+        when(userService.findUserByPublicId(anyString())).thenThrow(new UserNotFoundException(publicId));
+
+        mockMvc.perform(get("/api/users/{id}", publicId))
+                .andExpect(status().isNotFound());
+
+        verify(userService).findUserByPublicId(publicId);
+
+    }
+
+    @Test
+    public void UserController_GetAllUsers_ShouldReturnPageOfUsers(){
+
+    }
+
+    @Test
+    public void UserController_UpdateUserFully_ShouldUpdate( ) {
+
     }
 }
