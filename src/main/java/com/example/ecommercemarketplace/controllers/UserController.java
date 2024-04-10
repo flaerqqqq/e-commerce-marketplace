@@ -2,6 +2,8 @@ package com.example.ecommercemarketplace.controllers;
 
 import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.services.UserService;
+import jakarta.validation.Valid;
+import jakarta.validation.executable.ValidateOnExecution;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -41,7 +43,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserUpdateResponse updateUserFully(@RequestBody UserUpdateRequest userUpdateRequest,
+    public UserUpdateResponse updateUserFully(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
                                               @PathVariable("id") String id){
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userUpdateRequest,userDto);
@@ -56,7 +58,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserUpdateResponse updateUserPatch(@RequestBody UserUpdateRequest userUpdateRequest,
+    public UserUpdateResponse updateUserPatch(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
                                               @PathVariable("id") String id){
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userUpdateRequest,userDto);

@@ -14,5 +14,5 @@ public class ErrorObject {
 
     private Integer status;
 
-    private String message;
+    private Object message;
 }
