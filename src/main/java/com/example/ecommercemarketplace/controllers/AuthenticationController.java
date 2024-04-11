@@ -1,14 +1,12 @@
 package com.example.ecommercemarketplace.controllers;
 
 
-import com.example.ecommercemarketplace.dto.UserJwtTokenResponse;
-import com.example.ecommercemarketplace.dto.UserLoginRequest;
-import com.example.ecommercemarketplace.dto.UserRegistrationRequest;
-import com.example.ecommercemarketplace.dto.UserRegistrationResponse;
+import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.services.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,4 +26,11 @@ public class AuthenticationController {
     public UserRegistrationResponse register(@RequestBody @Valid UserRegistrationRequest registrationRequest){
         return authenticationService.register(registrationRequest);
     }
+
+    @PostMapping("/refresh")
+    @PreAuthorize("permitAll()")
+    public UserJwtTokenResponse refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto){
+        return authenticationService.refresh(refreshTokenRequestDto);
+    }
+
 }

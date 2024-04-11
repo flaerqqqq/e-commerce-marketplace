@@ -19,6 +19,12 @@ public class JwtService {
     @Value("${jwt.token.expiration.time}")
     private long expirationTime;
 
+    @Value("${jwt.refresh.token.expiration.time}")
+    private long refreshTokenExpirationTime;
+
+    @Value("${jwt.password.reset.token.expiration.time}")
+    private long passwordResetTokenExpirationTime;
+
     private final SecretKey key;
 
     public JwtService(@Value("${jwt.token.secret}") String secret) {
@@ -29,8 +35,26 @@ public class JwtService {
         Date issuedAt = new Date();
         Date expiredAt = new Date(issuedAt.getTime() + expirationTime);
 
+        return buildToken(userDetails.getUsername(), issuedAt, expiredAt);
+    }
+
+    public String generateRefreshToken(String email){
+        Date issuedAt = new Date();
+        Date expiredAt = new Date(issuedAt.getTime() + refreshTokenExpirationTime);
+
+        return buildToken(email, issuedAt, expiredAt);
+    }
+
+    public String generatePasswordResetToken(String email) {
+        Date issuedAt = new Date();
+        Date expiredAt = new Date(issuedAt.getTime()  + passwordResetTokenExpirationTime);
+
+        return buildToken(email, issuedAt, expiredAt);
+    }
+
+    private String buildToken(String subject, Date issuedAt, Date expiredAt){
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(subject)
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiredAt)
                 .signWith(key)
@@ -64,15 +88,4 @@ public class JwtService {
         }
     }
 
-    public String generatePasswordResetToken(String email) {
-        Date issuedAt = new Date();
-        Date expiredAt = new Date(issuedAt.getTime()  + 1800000);
-
-        return Jwts.builder()
-                .setIssuedAt(issuedAt)
-                .setExpiration(expiredAt)
-                .setSubject(email)
-                .signWith(key)
-                .compact();
-    }
 }
