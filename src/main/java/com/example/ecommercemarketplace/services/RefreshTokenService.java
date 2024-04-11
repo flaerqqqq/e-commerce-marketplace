@@ -19,6 +19,6 @@ public interface RefreshTokenService {
 
     boolean existsByUser(UserDto userDto);
 
-
+    void deleteExpiredTokens();
 
 }

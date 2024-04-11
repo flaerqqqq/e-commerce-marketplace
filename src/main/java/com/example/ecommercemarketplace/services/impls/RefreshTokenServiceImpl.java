@@ -12,6 +12,8 @@ import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
@@ -76,6 +78,19 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public boolean existsByUser(UserDto userDto) {
         return refreshTokenRepository.existsByUser(userMapper.mapFrom(userDto));
+    }
+
+    @Override
+    public void deleteExpiredTokens() {
+        List<RefreshToken> tokens = refreshTokenRepository.findAll();
+
+        for(var token : tokens){
+            try {
+                jwtService.isValid(token.getToken());
+            } catch (Exception e){
+                refreshTokenRepository.removeByToken(token.getToken());
+            }
+        }
     }
 
 }
