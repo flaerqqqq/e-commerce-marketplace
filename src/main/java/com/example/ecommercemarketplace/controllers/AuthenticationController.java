@@ -3,6 +3,7 @@ package com.example.ecommercemarketplace.controllers;
 
 import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.services.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,8 @@ public class AuthenticationController {
 
     @PostMapping("/refresh")
     @PreAuthorize("permitAll()")
-    public UserJwtTokenResponse refreshToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto){
-        return authenticationService.refresh(refreshTokenRequestDto);
+    public UserJwtTokenResponse refreshToken(HttpServletRequest request){
+        return authenticationService.refresh(request);
     }
 
 }

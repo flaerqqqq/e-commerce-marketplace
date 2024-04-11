@@ -1,10 +1,7 @@
 package com.example.ecommercemarketplace.exceptions.handlers;
 
 
-import com.example.ecommercemarketplace.exceptions.EmailConfirmationTokenNotFoundException;
-import com.example.ecommercemarketplace.exceptions.ErrorObject;
-import com.example.ecommercemarketplace.exceptions.UserAlreadyExistsException;
-import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
+import com.example.ecommercemarketplace.exceptions.*;
 import org.modelmapper.spi.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +60,17 @@ public class CustomGlobalExceptionHandler {
                 .message(errors)
                 .build();
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingAuthorizationHeaderException.class)
+    public ResponseEntity<ErrorObject> handleMissingAuthorizationHeaderException(MissingAuthorizationHeaderException exception){
+        ErrorObject errorObject = ErrorObject.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message(exception.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
     }
 }
 

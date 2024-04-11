@@ -3,6 +3,7 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.events.UserLoginEvent;
 import com.example.ecommercemarketplace.events.UserRegistrationEvent;
+import com.example.ecommercemarketplace.exceptions.MissingAuthorizationHeaderException;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenAlreadyExpired;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
@@ -18,6 +19,7 @@ import com.example.ecommercemarketplace.services.EmailService;
 import com.example.ecommercemarketplace.services.RefreshTokenService;
 import com.example.ecommercemarketplace.services.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +47,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RefreshTokenService refreshTokenService;
     private final Mapper<UserEntity, UserDto> userMapper;
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final static String AUTHORIZATION_HEADER = "Authorization";
+    private final static String BEARER_PREFIX = "Bearer ";
 
     @Override
     public UserJwtTokenResponse login(UserLoginRequest loginRequest) {
@@ -95,8 +100,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserJwtTokenResponse refresh(RefreshTokenRequestDto refreshTokenRequestDto) {
-        String requestRefreshToken = refreshTokenRequestDto.getToken();
+    public UserJwtTokenResponse refresh(HttpServletRequest request) {
+        String header = request.getHeader(AUTHORIZATION_HEADER);
+
+        if (header == null || !header.startsWith(BEARER_PREFIX)){
+            throw new MissingAuthorizationHeaderException("Missing authorization header or 'bearer' prefix");
+        }
+
+        String requestRefreshToken = header.substring(7);
 
         if(!refreshTokenService.existsByToken(requestRefreshToken)){
             throw new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(requestRefreshToken));
