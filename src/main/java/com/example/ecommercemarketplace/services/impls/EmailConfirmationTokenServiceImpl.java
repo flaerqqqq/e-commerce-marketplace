@@ -7,6 +7,8 @@ import com.example.ecommercemarketplace.services.EmailConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class EmailConfirmationTokenServiceImpl implements EmailConfirmationTokenService {
@@ -22,5 +24,14 @@ public class EmailConfirmationTokenServiceImpl implements EmailConfirmationToken
     public EmailConfirmationToken findByToken(String token) {
         return emailConfirmationTokenRepository.findByToken(token).orElseThrow(() ->
                 new EmailConfirmationTokenNotFoundException("Token=" + token + " is not found"));
+    }
+
+    @Override
+    public EmailConfirmationToken buildEmailConfirmationToken() {
+        String tokenValue = UUID.randomUUID().toString();
+        return EmailConfirmationToken.builder()
+                .token(tokenValue)
+                .build();
+
     }
 }

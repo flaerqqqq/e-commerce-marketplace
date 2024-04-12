@@ -1,5 +1,6 @@
 package com.example.ecommercemarketplace.services;
 
+import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.UserDto;
 import jakarta.mail.MessagingException;
 
@@ -12,4 +13,6 @@ public interface EmailService {
     void sendMail(String to, String subject, String body);
 
     void sendSuccessfulRegistrationMessage(UserDto userDto);
+
+    void sendSuccessfulMerchantRegistrationMessage(MerchantDto merchantDto);
 }

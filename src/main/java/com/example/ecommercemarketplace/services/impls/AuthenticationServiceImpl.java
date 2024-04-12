@@ -13,10 +13,7 @@ import com.example.ecommercemarketplace.repositories.RefreshTokenRepository;
 import com.example.ecommercemarketplace.security.CustomUserDetails;
 import com.example.ecommercemarketplace.security.CustomUserDetailsService;
 import com.example.ecommercemarketplace.security.JwtService;
-import com.example.ecommercemarketplace.services.AuthenticationService;
-import com.example.ecommercemarketplace.services.EmailService;
-import com.example.ecommercemarketplace.services.RefreshTokenService;
-import com.example.ecommercemarketplace.services.UserService;
+import com.example.ecommercemarketplace.services.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -28,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -40,10 +38,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
     private final EmailService emailService;
+    private final MerchantService merchantService;
     private final ApplicationEventPublisher eventPublisher;
     private final RefreshTokenService refreshTokenService;
     private final Mapper<UserEntity, UserDto> userMapper;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final EmailConfirmationTokenService emailConfirmationTokenService;
 
     private final static String AUTHORIZATION_HEADER = "Authorization";
     private final static String BEARER_PREFIX = "Bearer ";
@@ -59,6 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(token.isAuthenticated()){
             SecurityContextHolder.getContext().setAuthentication(token);
         }
+
         UserDto userDto = userService.findByEmail(loginRequest.getEmail());
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginRequest.getEmail());
@@ -79,11 +79,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(registrationRequest,userDto);
 
-        String tokenValue = UUID.randomUUID().toString();
-        EmailConfirmationToken confirmationToken = EmailConfirmationToken.builder()
-                .token(tokenValue)
-                .build();
-
+        EmailConfirmationToken confirmationToken = emailConfirmationTokenService.buildEmailConfirmationToken();
         userDto.setEmailConfirmationToken(confirmationToken);
 
         UserDto savedUser = userService.createUser(userDto);
@@ -91,7 +87,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserRegistrationResponseDto response = new UserRegistrationResponseDto();
         BeanUtils.copyProperties(savedUser,response);
 
-        emailService.sendMessageWithVerificationCode(userDto.getEmail(), tokenValue);
+        emailService.sendMessageWithVerificationCode(userDto.getEmail(), confirmationToken.getToken());
 
         return response;
     }
@@ -131,5 +127,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .token(jwtToken)
                 .refreshToken(refreshToken.getToken())
                 .build();
+    }
+
+    @Override
+    public MerchantRegistrationResponseDto registerMerchant(MerchantRegistrationRequestDto registrationRequestDto) {
+        MerchantDto merchantDto = new MerchantDto();
+        merchantDto.setRegistrationDate(LocalDateTime.now());
+        BeanUtils.copyProperties(registrationRequestDto, merchantDto);
+
+        EmailConfirmationToken token = emailConfirmationTokenService.buildEmailConfirmationToken();
+        merchantDto.setEmailConfirmationToken(token);
+
+        MerchantDto savedMerchant = merchantService.createMerchant(merchantDto);
+
+        MerchantRegistrationResponseDto response = new MerchantRegistrationResponseDto();
+        BeanUtils.copyProperties(savedMerchant, response);
+
+        emailService.sendMessageWithVerificationCode(merchantDto.getEmail(), token.getToken());
+
+        return response;
     }
 }

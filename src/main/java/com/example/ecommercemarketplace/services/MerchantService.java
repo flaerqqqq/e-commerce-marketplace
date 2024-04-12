@@ -11,6 +11,8 @@ public interface MerchantService {
 
     boolean existsByEmail(String email);
 
+    boolean existsByEmailConfirmationToken(String token);
+
     MerchantDto createMerchant(MerchantDto merchantDto);
 
     MerchantDto findByEmailConfirmationToken(String token);

@@ -1,6 +1,7 @@
 package com.example.ecommercemarketplace.services;
 
 import com.example.ecommercemarketplace.dto.UserDto;
+import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,6 +12,8 @@ public interface UserService {
     UserDto findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    boolean existsByEmailConfirmationToken(String token);
 
     UserDto createUser(UserDto userDto);
 

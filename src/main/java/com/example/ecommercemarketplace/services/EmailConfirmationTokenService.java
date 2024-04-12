@@ -7,4 +7,6 @@ public interface EmailConfirmationTokenService {
     boolean existsByToken(String token);
 
     EmailConfirmationToken findByToken(String token);
+
+    EmailConfirmationToken buildEmailConfirmationToken();
 }

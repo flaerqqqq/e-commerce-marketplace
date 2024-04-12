@@ -10,4 +10,6 @@ public interface AuthenticationService {
     UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest);
 
     UserJwtTokenResponseDto refresh(HttpServletRequest request);
+
+    MerchantRegistrationResponseDto registerMerchant(MerchantRegistrationRequestDto merchantRegistrationRequestDto);
 }

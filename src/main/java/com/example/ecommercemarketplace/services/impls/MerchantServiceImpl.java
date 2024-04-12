@@ -43,6 +43,11 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public boolean existsByEmailConfirmationToken(String token) {
+        return merchantRepository.existsByToken(token);
+    }
+
+    @Override
     public MerchantDto createMerchant(MerchantDto merchantDto) {
         if (merchantRepository.existsByEmail(merchantDto.getEmail())){
             throw new MerchantAlreadyExistsException("Merchant with email="+merchantDto.getEmail()+ " already exists");

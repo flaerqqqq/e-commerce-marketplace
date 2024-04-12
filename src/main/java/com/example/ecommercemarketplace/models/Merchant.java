@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "users")
 public class Merchant extends UserEntity{
@@ -23,6 +22,7 @@ public class Merchant extends UserEntity{
     private String websiteUrl;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
     private MerchantType type;
 
     @Enumerated(EnumType.STRING)
