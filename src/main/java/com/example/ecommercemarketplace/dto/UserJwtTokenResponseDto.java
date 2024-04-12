@@ -2,15 +2,17 @@ package com.example.ecommercemarketplace.dto;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class PasswordResetConfirmationRequest {
+@Builder
+public class UserJwtTokenResponseDto {
+
+    private String publicId;
 
     private String token;
 
-    private String password;
+    private String refreshToken;
 }

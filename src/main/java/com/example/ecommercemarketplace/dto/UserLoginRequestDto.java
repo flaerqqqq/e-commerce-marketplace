@@ -2,16 +2,20 @@ package com.example.ecommercemarketplace.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class PasswordResetRequest {
+@AllArgsConstructor
+@Builder
+public class UserLoginRequestDto {
 
     @NotBlank
     private String email;
+
+    @NotBlank
+    private String password;
 }

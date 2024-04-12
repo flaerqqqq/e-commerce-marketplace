@@ -51,8 +51,8 @@ public class UserControllerTests {
     private String publicId = "publicId";
     private UserResponseDto userResponseDto;
     private UserDto userDto;
-    private UserUpdateRequest userUpdateRequest;
-    private UserUpdateResponse userUpdateResponse;
+    private UserUpdateRequestDto userUpdateRequestDto;
+    private UserUpdateResponseDto userUpdateResponseDto;
 
     @BeforeEach
     public void init(){
@@ -71,12 +71,12 @@ public class UserControllerTests {
                 .phoneNumber("+123456789")
                 .password("1234")
                 .build();
-        userUpdateRequest = UserUpdateRequest.builder()
+        userUpdateRequestDto = UserUpdateRequestDto.builder()
                 .firstName("Nikolay")
                 .lastName("Twink")
                 .phoneNumber("+123456789")
                 .build();
-        userUpdateResponse = UserUpdateResponse.builder()
+        userUpdateResponseDto = UserUpdateResponseDto.builder()
                 .publicId("publicId")
                 .firstName("Nikolay")
                 .lastName("Twink")
@@ -130,14 +130,14 @@ public class UserControllerTests {
 
         MvcResult mvcResult = mockMvc.perform(put("/api/users/{id}", publicId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateRequest))
+                        .content(objectMapper.writeValueAsString(userUpdateRequestDto))
         ).andExpect(status().isOk())
                 .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        UserUpdateResponse userUpdateResponse1 = objectMapper.readValue(jsonResponse, UserUpdateResponse.class);
+        UserUpdateResponseDto userUpdateResponseDto1 = objectMapper.readValue(jsonResponse, UserUpdateResponseDto.class);
 
-        assertThat(userUpdateResponse1).isEqualTo(userUpdateResponse);
+        assertThat(userUpdateResponseDto1).isEqualTo(userUpdateResponseDto);
     }
 
     @Test
@@ -146,13 +146,13 @@ public class UserControllerTests {
 
         mockMvc.perform(put("/api/users/{id}", publicId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userUpdateRequest))
+                .content(objectMapper.writeValueAsString(userUpdateRequestDto))
         ).andExpect(status().isNotFound());
     }
 
     @Test
     public void UserController_UpdateUserFully_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception{
-        UserUpdateRequest invalidUserRequest = new UserUpdateRequest();
+        UserUpdateRequestDto invalidUserRequest = new UserUpdateRequestDto();
 
         mockMvc.perform(put("/api/users/{id}", publicId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -166,14 +166,14 @@ public class UserControllerTests {
 
         MvcResult mvcResult = mockMvc.perform(patch("/api/users/{id}", publicId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateRequest)))
+                        .content(objectMapper.writeValueAsString(userUpdateRequestDto)))
                         .andExpect(status().isOk())
                         .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        UserUpdateResponse userUpdateResponse1 = objectMapper.readValue(jsonResponse, UserUpdateResponse.class);
+        UserUpdateResponseDto userUpdateResponseDto1 = objectMapper.readValue(jsonResponse, UserUpdateResponseDto.class);
 
-        assertThat(userUpdateResponse1).isEqualTo(userUpdateResponse);
+        assertThat(userUpdateResponseDto1).isEqualTo(userUpdateResponseDto);
     }
 
     @Test
@@ -182,13 +182,15 @@ public class UserControllerTests {
 
         mockMvc.perform(patch("/api/users/{id}", publicId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userUpdateRequest))
+                .content(objectMapper.writeValueAsString(userUpdateRequestDto))
         ).andExpect(status().isNotFound());
     }
 
     @Test
     public void UserController_UpdateUserPatch_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception{
-        UserUpdateRequest invalidUserRequest = new UserUpdateRequest();
+        UserPatchUpdateRequestDto invalidUserRequest = UserPatchUpdateRequestDto.builder()
+                        .phoneNumber("+")
+                        .build();
 
         mockMvc.perform(patch("/api/users/{id}", publicId)
                         .contentType(MediaType.APPLICATION_JSON)

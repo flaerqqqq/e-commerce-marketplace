@@ -18,19 +18,19 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public UserJwtTokenResponse login(@RequestBody @Valid UserLoginRequest loginRequest){
+    public UserJwtTokenResponseDto login(@RequestBody @Valid UserLoginRequestDto loginRequest){
         return authenticationService.login(loginRequest);
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserRegistrationResponse register(@RequestBody @Valid UserRegistrationRequest registrationRequest){
+    public UserRegistrationResponseDto register(@RequestBody @Valid UserRegistrationRequestDto registrationRequest){
         return authenticationService.register(registrationRequest);
     }
 
     @PostMapping("/refresh")
     @PreAuthorize("permitAll()")
-    public UserJwtTokenResponse refreshToken(HttpServletRequest request){
+    public UserJwtTokenResponseDto refreshToken(HttpServletRequest request){
         return authenticationService.refresh(request);
     }
 

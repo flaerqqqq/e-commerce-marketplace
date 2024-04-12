@@ -1,8 +1,8 @@
 package com.example.ecommercemarketplace.services.impls;
 
 
-import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequest;
-import com.example.ecommercemarketplace.dto.PasswordResetRequest;
+import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequestDto;
+import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.PasswordResetToken;
@@ -12,17 +12,12 @@ import com.example.ecommercemarketplace.security.JwtService;
 import com.example.ecommercemarketplace.services.EmailService;
 import com.example.ecommercemarketplace.services.PasswordResetService;
 import com.example.ecommercemarketplace.services.UserService;
-import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -36,8 +31,8 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean requestPasswordReset(PasswordResetRequest passwordResetRequest) {
-        String email = passwordResetRequest.getEmail();
+    public boolean requestPasswordReset(PasswordResetRequestDto passwordResetRequestDto) {
+        String email = passwordResetRequestDto.getEmail();
 
         if (!userService.existsByEmail(email)){
             System.out.println("test");
@@ -60,9 +55,9 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     }
 
     @Override
-    public boolean confirmPasswordReset(PasswordResetConfirmationRequest passwordResetConfirmationRequest) {
-        String token = passwordResetConfirmationRequest.getToken();
-        System.out.println(passwordResetConfirmationRequest);
+    public boolean confirmPasswordReset(PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto) {
+        String token = passwordResetConfirmationRequestDto.getToken();
+        System.out.println(passwordResetConfirmationRequestDto);
         if (!jwtService.isValid(token)){
             return false;
         }
@@ -73,7 +68,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             return false;
         }
 
-        String newPassword = passwordEncoder.encode(passwordResetConfirmationRequest.getPassword());
+        String newPassword = passwordEncoder.encode(passwordResetConfirmationRequestDto.getPassword());
         UserEntity user = passwordResetToken.get().getUser();
         user.setPassword(newPassword);
         userService.updateUser(userMapper.mapTo(user));

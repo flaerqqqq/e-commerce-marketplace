@@ -1,14 +1,13 @@
 package com.example.ecommercemarketplace.services;
 
 import com.example.ecommercemarketplace.dto.*;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface AuthenticationService {
 
-    UserJwtTokenResponse login(UserLoginRequest loginRequest);
+    UserJwtTokenResponseDto login(UserLoginRequestDto loginRequest);
 
-    UserRegistrationResponse register(UserRegistrationRequest registrationRequest);
+    UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest);
 
-    UserJwtTokenResponse refresh(HttpServletRequest request);
+    UserJwtTokenResponseDto refresh(HttpServletRequest request);
 }

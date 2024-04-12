@@ -1,8 +1,8 @@
 package com.example.ecommercemarketplace.controllers;
 
 
-import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequest;
-import com.example.ecommercemarketplace.dto.PasswordResetRequest;
+import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequestDto;
+import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
 import com.example.ecommercemarketplace.services.PasswordResetService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class PasswordResetController {
 
     @PostMapping("/password-reset-request")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest passwordResetRequest){
-        boolean sendStatus = passwordResetService.requestPasswordReset(passwordResetRequest);
+    public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequestDto passwordResetRequestDto){
+        boolean sendStatus = passwordResetService.requestPasswordReset(passwordResetRequestDto);
 
         if (sendStatus){
             return new ResponseEntity<>(HttpStatus.OK);
@@ -30,8 +30,8 @@ public class PasswordResetController {
 
     @PostMapping("/confirm-password-reset")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> confirmPasswordReset(@RequestBody PasswordResetConfirmationRequest passwordResetConfirmationRequest){
-        boolean resetStatus = passwordResetService.confirmPasswordReset(passwordResetConfirmationRequest);
+    public ResponseEntity<?> confirmPasswordReset(@RequestBody PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto){
+        boolean resetStatus = passwordResetService.confirmPasswordReset(passwordResetConfirmationRequestDto);
 
         if (resetStatus){
             return new ResponseEntity<>(HttpStatus.OK);

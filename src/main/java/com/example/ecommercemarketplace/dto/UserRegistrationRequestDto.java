@@ -1,7 +1,6 @@
 package com.example.ecommercemarketplace.dto;
 
 
-import jakarta.annotation.sql.DataSourceDefinitions;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserRegistrationRequest {
+public class UserRegistrationRequestDto {
 
     @NotBlank(message = "First name is required")
     private String firstName;

@@ -2,7 +2,6 @@ package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.events.UserLoginEvent;
-import com.example.ecommercemarketplace.events.UserRegistrationEvent;
 import com.example.ecommercemarketplace.exceptions.MissingAuthorizationHeaderException;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenAlreadyExpired;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenNotFoundException;
@@ -18,7 +17,6 @@ import com.example.ecommercemarketplace.services.AuthenticationService;
 import com.example.ecommercemarketplace.services.EmailService;
 import com.example.ecommercemarketplace.services.RefreshTokenService;
 import com.example.ecommercemarketplace.services.UserService;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -28,7 +26,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -52,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final static String BEARER_PREFIX = "Bearer ";
 
     @Override
-    public UserJwtTokenResponse login(UserLoginRequest loginRequest) {
+    public UserJwtTokenResponseDto login(UserLoginRequestDto loginRequest) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(), loginRequest.getPassword()
         );
@@ -70,7 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         eventPublisher.publishEvent(new UserLoginEvent(this, userDto));
 
-        return UserJwtTokenResponse.builder()
+        return UserJwtTokenResponseDto.builder()
                 .publicId(userDto.getPublicId())
                 .token(jwtToken)
                 .refreshToken(refreshToken)
@@ -78,7 +75,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserRegistrationResponse register(UserRegistrationRequest registrationRequest){
+    public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest){
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(registrationRequest,userDto);
 
@@ -91,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         UserDto savedUser = userService.createUser(userDto);
 
-        UserRegistrationResponse response = new UserRegistrationResponse();
+        UserRegistrationResponseDto response = new UserRegistrationResponseDto();
         BeanUtils.copyProperties(savedUser,response);
 
         emailService.sendMessageWithVerificationCode(userDto.getEmail(), tokenValue);
@@ -100,7 +97,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserJwtTokenResponse refresh(HttpServletRequest request) {
+    public UserJwtTokenResponseDto refresh(HttpServletRequest request) {
         String header = request.getHeader(AUTHORIZATION_HEADER);
 
         if (header == null || !header.startsWith(BEARER_PREFIX)){
@@ -129,7 +126,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userEmail);
 
-        return UserJwtTokenResponse.builder()
+        return UserJwtTokenResponseDto.builder()
                 .publicId(user.getPublicId())
                 .token(jwtToken)
                 .refreshToken(refreshToken.getToken())

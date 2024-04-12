@@ -3,7 +3,6 @@ package com.example.ecommercemarketplace.controllers;
 import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.services.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.executable.ValidateOnExecution;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -43,32 +42,32 @@ public class    UserController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserUpdateResponse updateUserFully(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
-                                              @PathVariable("id") String id){
+    public UserUpdateResponseDto updateUserFully(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto,
+                                                 @PathVariable("id") String id){
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userUpdateRequest,userDto);
+        BeanUtils.copyProperties(userUpdateRequestDto,userDto);
 
         UserDto updatedUser = userService.updateUserFully(id, userDto);
 
-        UserUpdateResponse userUpdateResponse = new UserUpdateResponse();
-        BeanUtils.copyProperties(updatedUser, userUpdateResponse);
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        BeanUtils.copyProperties(updatedUser, userUpdateResponseDto);
 
-        return userUpdateResponse;
+        return userUpdateResponseDto;
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserUpdateResponse updateUserPatch(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
-                                              @PathVariable("id") String id){
+    public UserUpdateResponseDto updateUserPatch(@RequestBody @Valid UserPatchUpdateRequestDto userPatchUpdateRequestDto,
+                                                 @PathVariable("id") String id){
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userUpdateRequest,userDto);
+        BeanUtils.copyProperties(userPatchUpdateRequestDto,userDto);
 
         UserDto updatedUser = userService.updateUserPatch(id, userDto);
 
-        UserUpdateResponse userUpdateResponse = new UserUpdateResponse();
-        BeanUtils.copyProperties(updatedUser, userUpdateResponse);
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        BeanUtils.copyProperties(updatedUser, userUpdateResponseDto);
 
-        return userUpdateResponse;
+        return userUpdateResponseDto;
     }
 
     @DeleteMapping("/{id}")
