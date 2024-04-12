@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface MerchantRepository extends JpaRepository<Merchant, Long> {
 
-    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN 'true' ELSE 'false' END FROM Merchant m WHERE m.emailConfirmationToken.token = :token")
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN 'true' ELSE false END FROM Merchant m WHERE m.emailConfirmationToken.token = :token")
     boolean existsByToken(@Param("token") String token);
 
     Optional<Merchant> findByEmail(String email);

@@ -15,6 +15,8 @@ public interface UserService {
 
     boolean existsByEmailConfirmationToken(String token);
 
+    boolean isUserEntity(String email);
+
     UserDto createUser(UserDto userDto);
 
     UserDto findByEmailConfirmationToken(String token);

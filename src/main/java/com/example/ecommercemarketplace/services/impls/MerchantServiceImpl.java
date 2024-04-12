@@ -6,6 +6,7 @@ import com.example.ecommercemarketplace.exceptions.MerchantNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.Merchant;
+import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.models.enums.MerchantStatus;
 import com.example.ecommercemarketplace.repositories.MerchantRepository;
 import com.example.ecommercemarketplace.services.EmailConfirmationTokenService;
@@ -45,6 +46,12 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public boolean existsByEmailConfirmationToken(String token) {
         return merchantRepository.existsByToken(token);
+    }
+
+    @Override
+    public boolean isMerchant(String email) {
+        Optional<UserEntity> merchantOptional = merchantRepository.findByEmail(email).map(merchant -> (UserEntity)merchant);
+        return merchantOptional.isPresent() && merchantOptional.get() instanceof UserEntity;
     }
 
     @Override

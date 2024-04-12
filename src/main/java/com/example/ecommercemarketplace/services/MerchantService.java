@@ -13,6 +13,8 @@ public interface MerchantService {
 
     boolean existsByEmailConfirmationToken(String token);
 
+    boolean isMerchant(String email);
+
     MerchantDto createMerchant(MerchantDto merchantDto);
 
     MerchantDto findByEmailConfirmationToken(String token);

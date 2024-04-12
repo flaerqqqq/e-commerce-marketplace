@@ -1,6 +1,7 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.*;
+import com.example.ecommercemarketplace.events.MerchantLoginEvent;
 import com.example.ecommercemarketplace.events.UserLoginEvent;
 import com.example.ecommercemarketplace.exceptions.MissingAuthorizationHeaderException;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenAlreadyExpired;
@@ -43,6 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RefreshTokenService refreshTokenService;
     private final Mapper<UserEntity, UserDto> userMapper;
     private final EmailConfirmationTokenService emailConfirmationTokenService;
+    private final Mapper<UserDto, MerchantDto> userMerchantMapper;
 
     private final static String AUTHORIZATION_HEADER = "Authorization";
     private final static String BEARER_PREFIX = "Bearer ";
@@ -65,7 +67,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwtToken = jwtService.generateToken(userDetails);
         String refreshToken = refreshTokenService.createRefreshToken(userDto.getEmail()).getToken();
 
-        eventPublisher.publishEvent(new UserLoginEvent(this, userDto));
+        if (merchantService.isMerchant(loginRequest.getEmail())){
+            eventPublisher.publishEvent(new MerchantLoginEvent(this, userMerchantMapper.mapTo(userDto)));
+        } else if (userService.isUserEntity(loginRequest.getEmail())) {
+            eventPublisher.publishEvent(new UserLoginEvent(this, userDto));
+        }
 
         return UserJwtTokenResponseDto.builder()
                 .publicId(userDto.getPublicId())
@@ -147,4 +153,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return response;
     }
+
+
 }

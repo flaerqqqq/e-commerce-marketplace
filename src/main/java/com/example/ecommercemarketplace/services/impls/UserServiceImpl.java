@@ -48,6 +48,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isUserEntity(String email) {
+        Optional<UserEntity> userOptional = userRepository.findByEmail(email);
+        return userOptional.isPresent() && userOptional.get() instanceof UserEntity;
+    }
+
+    @Override
     public UserDto createUser(UserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())){
             throw new UserAlreadyExistsException("User with email="+userDto.getEmail()+ " already exists");

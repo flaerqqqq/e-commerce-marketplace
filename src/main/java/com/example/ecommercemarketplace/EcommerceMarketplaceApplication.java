@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @AllArgsConstructor
-public class EcommerceMarketplaceApplication implements CommandLineRunner {
+public class EcommerceMarketplaceApplication{
 
     private final UserService userService;
 
@@ -17,8 +17,4 @@ public class EcommerceMarketplaceApplication implements CommandLineRunner {
     }
 
 
-    @Override
-    public void run(String... args) throws Exception {
-        System.out.println(userService.findByEmail("vitaloverzyn32@gmail.com"));
-    }
 }
