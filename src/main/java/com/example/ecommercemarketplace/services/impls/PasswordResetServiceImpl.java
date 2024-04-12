@@ -1,15 +1,18 @@
 package com.example.ecommercemarketplace.services.impls;
 
 
+import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequestDto;
 import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.PasswordResetToken;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.PasswordResetTokenRepository;
 import com.example.ecommercemarketplace.security.JwtService;
 import com.example.ecommercemarketplace.services.EmailService;
+import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.PasswordResetService;
 import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
@@ -24,7 +27,9 @@ import java.util.Optional;
 public class PasswordResetServiceImpl implements PasswordResetService {
 
     private final UserService userService;
+    private final MerchantService merchantService;
     private final Mapper<UserEntity, UserDto> userMapper;
+    private final Mapper<Merchant, MerchantDto> merchantMapper;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
     private final JwtService jwtService;
@@ -35,17 +40,22 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         String email = passwordResetRequestDto.getEmail();
 
         if (!userService.existsByEmail(email)){
-            System.out.println("test");
             return false;
         }
 
+        PasswordResetToken passwordResetToken;
         UserEntity user = userMapper.mapFrom(userService.findByEmail(email));
 
         String tokenValue = jwtService.generatePasswordResetToken(email);
-        PasswordResetToken passwordResetToken = PasswordResetToken.builder()
-                .token(tokenValue)
-                .user(user)
-                .build();
+        if (passwordResetTokenRepository.existsByUser(user)){
+            passwordResetToken = passwordResetTokenRepository.findByUser(user).get();
+            passwordResetToken.setToken(tokenValue);
+        } else {
+            passwordResetToken = PasswordResetToken.builder()
+                    .token(tokenValue)
+                    .user(user)
+                    .build();
+        }
 
         passwordResetTokenRepository.save(passwordResetToken);
 
@@ -57,10 +67,11 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Override
     public boolean confirmPasswordReset(PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto) {
         String token = passwordResetConfirmationRequestDto.getToken();
-        System.out.println(passwordResetConfirmationRequestDto);
         if (!jwtService.isValid(token)){
             return false;
         }
+
+        System.out.println(token);
 
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
 
@@ -69,11 +80,17 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         }
 
         String newPassword = passwordEncoder.encode(passwordResetConfirmationRequestDto.getPassword());
-        UserEntity user = passwordResetToken.get().getUser();
+        UserEntity user = (UserEntity)passwordResetToken.get().getUser();
         user.setPassword(newPassword);
-        userService.updateUser(userMapper.mapTo(user));
-        passwordResetTokenRepository.delete(passwordResetToken.get());
 
+        if (user instanceof Merchant){
+            Merchant merchant = (Merchant)user;
+            merchantService.updateMerchant(merchantMapper.mapTo(merchant));
+        } else {
+            userService.updateUser(userMapper.mapTo(user));
+        }
+
+        passwordResetTokenRepository.delete(passwordResetToken.get());
         return true;
     }
 

@@ -3,6 +3,7 @@ package com.example.ecommercemarketplace.repository;
 
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.UserRepository;
+import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,9 @@ public class UserRepositoryTests {
 
     @Autowired
     private UserRepository userRepository;
+
+    @MockBean
+    private UserService userService;
 
     private UserEntity dummyUser1;
     private UserEntity dummyUser2;
