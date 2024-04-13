@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth/merchant")
+@RequestMapping("/api/auth/merchants")
 @AllArgsConstructor
 public class MerchantAuthController {
 

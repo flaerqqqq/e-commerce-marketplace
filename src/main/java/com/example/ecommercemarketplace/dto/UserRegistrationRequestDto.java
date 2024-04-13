@@ -6,11 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class UserRegistrationRequestDto {
 
     @NotBlank(message = "First name is required")
@@ -32,5 +33,4 @@ public class UserRegistrationRequestDto {
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp="^\\+(?:[0-9] ?){6,14}[0-9]$", message="Phone number should be valid")
     private String phoneNumber;
-
 }

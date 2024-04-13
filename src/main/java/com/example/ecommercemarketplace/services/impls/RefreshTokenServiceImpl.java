@@ -18,10 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private Mapper<UserEntity, UserDto> userMapper;
-    private UserService userService;
-    private JwtService jwtService;
-    private RefreshTokenRepository refreshTokenRepository;
+    private final Mapper<UserEntity, UserDto> userMapper;
+    private final UserService userService;
+    private final JwtService jwtService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public RefreshToken createRefreshToken(String email) {

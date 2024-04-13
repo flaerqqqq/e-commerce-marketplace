@@ -22,9 +22,10 @@ public class CustomGlobalExceptionHandler {
     @ExceptionHandler(value = {
             UserNotFoundException.class,
             EmailConfirmationTokenNotFoundException.class,
-            UsernameNotFoundException.class
+            UsernameNotFoundException.class,
+            MerchantNotFoundException.class
     })
-    public ResponseEntity<ErrorObject> handleUserNotFoundException(RuntimeException ex, WebRequest webRequest){
+    public ResponseEntity<ErrorObject> handleEntityNotFoundException(RuntimeException ex, WebRequest webRequest){
         ErrorObject object = ErrorObject.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())

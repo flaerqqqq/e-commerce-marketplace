@@ -1,5 +1,7 @@
 package com.example.ecommercemarketplace.dto;
 
+
+import com.example.ecommercemarketplace.models.enums.MerchantType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,18 +9,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @SuperBuilder
-public class UserRegistrationResponseDto {
+public class MerchantUpdateResponseDto extends UserUpdateResponseDto{
 
-    private String publicId;
+    private MerchantType type;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String email;
-
-    private String phoneNumber;
+    private String websiteUrl;
 }

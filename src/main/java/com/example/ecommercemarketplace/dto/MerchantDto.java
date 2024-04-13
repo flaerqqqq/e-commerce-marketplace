@@ -10,29 +10,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class MerchantDto {
-
-    private Long id;
-
-    private String publicId;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String email;
-
-    private String password;
-
-    private String phoneNumber;
+@SuperBuilder
+public class MerchantDto extends UserDto{
 
     private String websiteUrl;
 
@@ -43,10 +29,4 @@ public class MerchantDto {
     private LocalDateTime registrationDate;
 
     private List<Product> products;
-
-    private boolean isEnabled;
-
-    private EmailConfirmationToken emailConfirmationToken;
-
-    private List<Role> roles;
 }
