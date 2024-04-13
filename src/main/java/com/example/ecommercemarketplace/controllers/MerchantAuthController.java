@@ -2,7 +2,6 @@ package com.example.ecommercemarketplace.controllers;
 
 import com.example.ecommercemarketplace.dto.MerchantRegistrationRequestDto;
 import com.example.ecommercemarketplace.dto.MerchantRegistrationResponseDto;
-
 import com.example.ecommercemarketplace.services.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,7 @@ public class MerchantAuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public MerchantRegistrationResponseDto register(@RequestBody MerchantRegistrationRequestDto registrationRequestDto){
+    public MerchantRegistrationResponseDto register(@RequestBody MerchantRegistrationRequestDto registrationRequestDto) {
         return authenticationService.registerMerchant(registrationRequestDto);
     }
 }

@@ -33,7 +33,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public MerchantDto findByEmail(String email) {
         Merchant merchant = merchantRepository.findByEmail(email).orElseThrow(() ->
-                new MerchantNotFoundException("Merchant with email=" + email +" is not found"));
+                new MerchantNotFoundException("Merchant with email=" + email + " is not found"));
 
         return merchantMapper.mapTo(merchant);
     }
@@ -50,14 +50,14 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public boolean isMerchant(String email) {
-        Optional<UserEntity> merchantOptional = merchantRepository.findByEmail(email).map(merchant -> (UserEntity)merchant);
+        Optional<UserEntity> merchantOptional = merchantRepository.findByEmail(email).map(merchant -> merchant);
         return merchantOptional.isPresent() && merchantOptional.get() instanceof UserEntity;
     }
 
     @Override
     public MerchantDto createMerchant(MerchantDto merchantDto) {
-        if (merchantRepository.existsByEmail(merchantDto.getEmail())){
-            throw new MerchantAlreadyExistsException("Merchant with email="+merchantDto.getEmail()+ " already exists");
+        if (merchantRepository.existsByEmail(merchantDto.getEmail())) {
+            throw new MerchantAlreadyExistsException("Merchant with email=" + merchantDto.getEmail() + " already exists");
         }
 
         String publicId = publicIdGenerator.generate();

@@ -3,9 +3,7 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.services.EmailService;
-import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.InternetAddress;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,7 +17,7 @@ public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
 
     @Override
-    public void sendMessageWithVerificationCode(String toEmail, String code){
+    public void sendMessageWithVerificationCode(String toEmail, String code) {
         String subject = "Email Confirmation!";
         String body = """
                     <!DOCTYPE html>
@@ -61,7 +59,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendMail(String to, String subject, String body){
+    public void sendMail(String to, String subject, String body) {
         var message = mailSender.createMimeMessage();
 
         try {
@@ -72,13 +70,13 @@ public class EmailServiceImpl implements EmailService {
             mimeMessageHelper.setText(body, true);
 
             mailSender.send(message);
-        } catch (MessagingException e){
+        } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void sendSuccessfulRegistrationMessage(UserDto userDto){
+    public void sendSuccessfulRegistrationMessage(UserDto userDto) {
         String subject = "Successful Registration !";
         String body = """
                 <!DOCTYPE html>
@@ -95,7 +93,7 @@ public class EmailServiceImpl implements EmailService {
                                 <table cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%;">
                                     <tr>
                                         <td align="center" bgcolor="#f7f7f7" style="padding: 40px 0;">
-                                            <h1>Welcome,"""  + " " + userDto.getFirstName() + " " + userDto.getLastName() + """
+                                            <h1>Welcome,""" + " " + userDto.getFirstName() + " " + userDto.getLastName() + """
                                         !</h1>
                                         </td>
                                     </tr>
@@ -117,7 +115,7 @@ public class EmailServiceImpl implements EmailService {
                 </html>
                 """;
         String email = userDto.getEmail();
-        sendMail(email,subject,body);
+        sendMail(email, subject, body);
     }
 
     @Override
@@ -138,7 +136,7 @@ public class EmailServiceImpl implements EmailService {
                                 <table cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%;">
                                     <tr>
                                         <td align="center" bgcolor="#f7f7f7" style="padding: 40px 0;">
-                                            <h1>Welcome,"""  + " " + merchantDto.getFirstName() + " " + merchantDto.getLastName() + """
+                                            <h1>Welcome,""" + " " + merchantDto.getFirstName() + " " + merchantDto.getLastName() + """
                                         !</h1>
                                         </td>
                                     </tr>
@@ -160,7 +158,7 @@ public class EmailServiceImpl implements EmailService {
                 </html>
                 """;
         String email = merchantDto.getEmail();
-        sendMail(email,subject,body);
+        sendMail(email, subject, body);
     }
 
 }

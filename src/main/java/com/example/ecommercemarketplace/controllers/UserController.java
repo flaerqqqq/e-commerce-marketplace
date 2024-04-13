@@ -19,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserResponseDto getUserByUserPublicId(@PathVariable("id") String id){
+    public UserResponseDto getUserByUserPublicId(@PathVariable("id") String id) {
         UserDto user = userService.findUserByPublicId(id);
         UserResponseDto userResponseDto = new UserResponseDto();
 
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<UserResponseDto> getAllUsers(Pageable pageable){
+    public Page<UserResponseDto> getAllUsers(Pageable pageable) {
         Page<UserResponseDto> page = userService.findAllUsers(pageable).map(userDto ->
         {
             UserResponseDto userResponseDto = new UserResponseDto();
@@ -43,9 +43,9 @@ public class UserController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserUpdateResponseDto updateUserFully(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto,
-                                                 @PathVariable("id") String id){
+                                                 @PathVariable("id") String id) {
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userUpdateRequestDto,userDto);
+        BeanUtils.copyProperties(userUpdateRequestDto, userDto);
 
         UserDto updatedUser = userService.updateUserFully(id, userDto);
 
@@ -58,9 +58,9 @@ public class UserController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserUpdateResponseDto updateUserPatch(@RequestBody @Valid UserPatchUpdateRequestDto userPatchUpdateRequestDto,
-                                                 @PathVariable("id") String id){
+                                                 @PathVariable("id") String id) {
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userPatchUpdateRequestDto,userDto);
+        BeanUtils.copyProperties(userPatchUpdateRequestDto, userDto);
 
         UserDto updatedUser = userService.updateUserPatch(id, userDto);
 
@@ -72,7 +72,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable("id") String id){
+    public void deleteUser(@PathVariable("id") String id) {
         userService.removeUserByPublicId(id);
     }
 }

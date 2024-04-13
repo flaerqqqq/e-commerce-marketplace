@@ -13,7 +13,7 @@ public class UserRegistrationEvent extends ApplicationEvent {
         super(source);
     }
 
-    public UserRegistrationEvent(Object source, UserDto userDto){
+    public UserRegistrationEvent(Object source, UserDto userDto) {
         super(source);
         this.userDto = userDto;
     }

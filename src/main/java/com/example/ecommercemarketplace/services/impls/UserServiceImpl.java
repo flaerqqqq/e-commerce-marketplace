@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findByEmail(String email) {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email=" + email +" is not found"));
+                new UserNotFoundException("User with email=" + email + " is not found"));
 
         return userMapper.mapTo(user);
     }
@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        if (userRepository.existsByEmail(userDto.getEmail())){
-            throw new UserAlreadyExistsException("User with email="+userDto.getEmail()+ " already exists");
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new UserAlreadyExistsException("User with email=" + userDto.getEmail() + " already exists");
         }
 
         String publicId = publicIdGenerator.generate();
@@ -102,16 +102,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUserFully(String publicId, UserDto userDto) {
-       UserEntity user = userRepository.findByPublicId(publicId).orElseThrow(() ->
-               new UserNotFoundException("User with publicId=%s is not found".formatted(publicId)));
+        UserEntity user = userRepository.findByPublicId(publicId).orElseThrow(() ->
+                new UserNotFoundException("User with publicId=%s is not found".formatted(publicId)));
 
-       user.setFirstName(userDto.getFirstName());
-       user.setLastName((userDto.getLastName()));
-       user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName((userDto.getLastName()));
+        user.setPhoneNumber(userDto.getPhoneNumber());
 
-       UserEntity savedUser = userRepository.save(user);
+        UserEntity savedUser = userRepository.save(user);
 
-       return userMapper.mapTo(savedUser);
+        return userMapper.mapTo(savedUser);
 
     }
 
@@ -122,10 +122,10 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity updatedUser = userRepository.findByPublicId(publicId).map(user -> {
-           Optional.ofNullable(userDto.getFirstName()).ifPresent(user::setFirstName);
-           Optional.ofNullable(userDto.getLastName()).ifPresent(user::setLastName);
-           Optional.ofNullable(userDto.getPhoneNumber()).ifPresent(user::setPhoneNumber);
-           return user;
+            Optional.ofNullable(userDto.getFirstName()).ifPresent(user::setFirstName);
+            Optional.ofNullable(userDto.getLastName()).ifPresent(user::setLastName);
+            Optional.ofNullable(userDto.getPhoneNumber()).ifPresent(user::setPhoneNumber);
+            return user;
         }).get();
 
         UserEntity savedUser = userRepository.save(updatedUser);

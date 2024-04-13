@@ -1,6 +1,5 @@
 package com.example.ecommercemarketplace.tasks;
 
-import com.example.ecommercemarketplace.repositories.PasswordResetTokenRepository;
 import com.example.ecommercemarketplace.services.PasswordResetService;
 import com.example.ecommercemarketplace.services.RefreshTokenService;
 import lombok.AllArgsConstructor;
@@ -15,12 +14,12 @@ public class TokenCleanupTask {
     private RefreshTokenService refreshTokenService;
 
     @Scheduled(fixedRate = 3600000)
-    public void cleanupExpiredPasswordResetTokens(){
+    public void cleanupExpiredPasswordResetTokens() {
         passwordResetService.deleteExpiredTokens();
     }
 
     @Scheduled(fixedRate = 3600000)
-    public void cleanupExpiredRefreshTokens(){
+    public void cleanupExpiredRefreshTokens() {
         refreshTokenService.deleteExpiredTokens();
     }
 

@@ -48,14 +48,14 @@ public class UserControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String publicId = "publicId";
+    private final String publicId = "publicId";
     private UserResponseDto userResponseDto;
     private UserDto userDto;
     private UserUpdateRequestDto userUpdateRequestDto;
     private UserUpdateResponseDto userUpdateResponseDto;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         userResponseDto = UserResponseDto.builder()
                 .publicId("publicId")
                 .firstName("Nikolay")
@@ -85,7 +85,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void UserController_GetUserByUserPublicId_ShouldReturnCorrectUser() throws Exception{
+    public void UserController_GetUserByUserPublicId_ShouldReturnCorrectUser() throws Exception {
         when(userService.findUserByPublicId(anyString())).thenReturn(userDto);
 
         MvcResult mvcResult = mockMvc.perform(get("/api/users/{id}", userDto.getPublicId()))
@@ -131,7 +131,7 @@ public class UserControllerTests {
         MvcResult mvcResult = mockMvc.perform(put("/api/users/{id}", publicId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userUpdateRequestDto))
-        ).andExpect(status().isOk())
+                ).andExpect(status().isOk())
                 .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
@@ -141,7 +141,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void UserController_UpdateUserFully_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception{
+    public void UserController_UpdateUserFully_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception {
         when(userService.updateUserFully(anyString(), any(UserDto.class))).thenThrow(new UserNotFoundException(publicId));
 
         mockMvc.perform(put("/api/users/{id}", publicId)
@@ -151,7 +151,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void UserController_UpdateUserFully_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception{
+    public void UserController_UpdateUserFully_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception {
         UserUpdateRequestDto invalidUserRequest = new UserUpdateRequestDto();
 
         mockMvc.perform(put("/api/users/{id}", publicId)
@@ -161,14 +161,14 @@ public class UserControllerTests {
     }
 
     @Test
-    public void UserController_UpdateUserPatch_ShouldUpdate() throws Exception{
+    public void UserController_UpdateUserPatch_ShouldUpdate() throws Exception {
         when(userService.updateUserPatch(anyString(), any(UserDto.class))).thenReturn(userDto);
 
         MvcResult mvcResult = mockMvc.perform(patch("/api/users/{id}", publicId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userUpdateRequestDto)))
-                        .andExpect(status().isOk())
-                        .andReturn();
+                .andExpect(status().isOk())
+                .andReturn();
 
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         UserUpdateResponseDto userUpdateResponseDto1 = objectMapper.readValue(jsonResponse, UserUpdateResponseDto.class);
@@ -177,7 +177,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void UserController_UpdateUserPatch_ShouldReturnNotFoundStatus_IfUserWithIdNotExist()throws Exception{
+    public void UserController_UpdateUserPatch_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception {
         when(userService.updateUserPatch(anyString(), any(UserDto.class))).thenThrow(new UserNotFoundException(publicId));
 
         mockMvc.perform(patch("/api/users/{id}", publicId)
@@ -187,25 +187,25 @@ public class UserControllerTests {
     }
 
     @Test
-    public void UserController_UpdateUserPatch_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception{
+    public void UserController_UpdateUserPatch_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception {
         UserPatchUpdateRequestDto invalidUserRequest = UserPatchUpdateRequestDto.builder()
-                        .phoneNumber("+")
-                        .build();
+                .phoneNumber("+")
+                .build();
 
         mockMvc.perform(patch("/api/users/{id}", publicId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidUserRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidUserRequest))
         ).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void UserController_DeleteUser_ShouldDeleteUser() throws Exception{
+    public void UserController_DeleteUser_ShouldDeleteUser() throws Exception {
         mockMvc.perform(delete("/api/users/{id}", publicId))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    public void UserController_DeleteUser_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception{
+    public void UserController_DeleteUser_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception {
         doThrow(new UserNotFoundException(publicId)).when(userService).removeUserByPublicId(anyString());
 
         mockMvc.perform(delete("/api/users/{id}", publicId))

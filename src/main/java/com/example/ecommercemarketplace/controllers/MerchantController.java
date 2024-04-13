@@ -19,7 +19,7 @@ public class MerchantController {
     private final MerchantService merchantService;
 
     @GetMapping("/{id}")
-    public MerchantResponseDto getMerchantByMerchantPublicId(@PathVariable("id") String id){
+    public MerchantResponseDto getMerchantByMerchantPublicId(@PathVariable("id") String id) {
         MerchantDto merchant = merchantService.findMerchantByPublicId(id);
         MerchantResponseDto merchantResponseDto = new MerchantResponseDto();
 
@@ -29,7 +29,7 @@ public class MerchantController {
     }
 
     @GetMapping
-    public Page<MerchantResponseDto> getAllMerchants(Pageable pageable){
+    public Page<MerchantResponseDto> getAllMerchants(Pageable pageable) {
         Page<MerchantResponseDto> page = merchantService.findAllMerchants(pageable).map(merchantDto ->
         {
             MerchantResponseDto merchantResponseDto = new MerchantResponseDto();
@@ -43,7 +43,7 @@ public class MerchantController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public MerchantUpdateResponseDto updateMerchantFully(@RequestBody @Valid MerchantUpdateRequestDto merchantUpdateRequestDto,
-                                                 @PathVariable("id") String id){
+                                                         @PathVariable("id") String id) {
         MerchantDto merchantDto = new MerchantDto();
         BeanUtils.copyProperties(merchantUpdateRequestDto, merchantDto);
 
@@ -58,7 +58,7 @@ public class MerchantController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public MerchantUpdateResponseDto updateMerchantPatch(@RequestBody @Valid MerchantPatchUpdateRequestDto merchantPatchUpdateRequestDto,
-                                                 @PathVariable("id") String id){
+                                                         @PathVariable("id") String id) {
         MerchantDto merchantDto = new MerchantDto();
         BeanUtils.copyProperties(merchantPatchUpdateRequestDto, merchantDto);
 
@@ -72,7 +72,7 @@ public class MerchantController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMerchant(@PathVariable("id") String id){
+    public void deleteMerchant(@PathVariable("id") String id) {
         merchantService.removeMerchantByPublicId(id);
     }
 }

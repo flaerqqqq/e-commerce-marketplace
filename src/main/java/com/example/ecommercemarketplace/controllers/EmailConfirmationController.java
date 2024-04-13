@@ -18,7 +18,7 @@ public class EmailConfirmationController {
 
     @GetMapping
     @PreAuthorize("permitAll()")
-    public String confirm(@RequestParam String token){
+    public String confirm(@RequestParam String token) {
         emailConfirmationService.confirm(token);
         return "You can close this !";
     }

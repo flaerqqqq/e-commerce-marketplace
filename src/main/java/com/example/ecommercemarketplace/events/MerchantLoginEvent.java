@@ -13,7 +13,7 @@ public class MerchantLoginEvent extends ApplicationEvent {
         super(source);
     }
 
-    public MerchantLoginEvent(Object source, MerchantDto merchantDto){
+    public MerchantLoginEvent(Object source, MerchantDto merchantDto) {
         super(source);
         this.merchantDto = merchantDto;
     }

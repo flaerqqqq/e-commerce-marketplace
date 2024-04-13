@@ -23,7 +23,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,7 +59,7 @@ public class UserServiceTests {
     private UserDto expected;
 
     @BeforeEach
-    public void prepare(){
+    public void prepare() {
         dummyUser1 = UserEntity.builder()
                 .publicId("somePublicId")
                 .firstName("Vitaliy")
@@ -88,26 +90,26 @@ public class UserServiceTests {
     }
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         dummyUser1 = dummyUser2 = null;
         expected = null;
     }
 
     @Test
-    public void UserService_CreateUser_ShouldReturnSavedUser(){
-       when(userMapper.mapTo(dummyUser1)).thenReturn(expected);
-       when(userMapper.mapFrom(expected)).thenReturn(dummyUser1);
-       when(passwordEncoder.encode(anyString())).thenReturn("password");
-       when(publicIdGenerator.generate()).thenReturn("somePublicId");
-       when(userRepository.save(dummyUser1)).thenReturn(dummyUser1);
+    public void UserService_CreateUser_ShouldReturnSavedUser() {
+        when(userMapper.mapTo(dummyUser1)).thenReturn(expected);
+        when(userMapper.mapFrom(expected)).thenReturn(dummyUser1);
+        when(passwordEncoder.encode(anyString())).thenReturn("password");
+        when(publicIdGenerator.generate()).thenReturn("somePublicId");
+        when(userRepository.save(dummyUser1)).thenReturn(dummyUser1);
 
-       UserDto actual = userService.createUser(expected);
+        UserDto actual = userService.createUser(expected);
 
-       assertThat(expected).isEqualTo(actual);
+        assertThat(expected).isEqualTo(actual);
     }
 
     @Test
-    public void UserService_CreateUser_ShouldThrowExceptionWhenUserWithEmailAlreadyExists(){
+    public void UserService_CreateUser_ShouldThrowExceptionWhenUserWithEmailAlreadyExists() {
         String email = "test@gmail.com";
 
         when(userRepository.existsByEmail(email)).thenReturn(true);
@@ -117,7 +119,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_FindByEmail_ShouldReturnCorrectUser(){
+    public void UserService_FindByEmail_ShouldReturnCorrectUser() {
         String email = expected.getEmail();
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(dummyUser1));
@@ -129,7 +131,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_FindByEmail_ShouldThrowExceptionIfUserNotFound(){
+    public void UserService_FindByEmail_ShouldThrowExceptionIfUserNotFound() {
         String email = "no@gmail.com";
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
@@ -138,7 +140,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_ExistsByEmail_ShouldReturnTrueOnUserExistence(){
+    public void UserService_ExistsByEmail_ShouldReturnTrueOnUserExistence() {
         String email = dummyUser1.getEmail();
 
         when(userRepository.existsByEmail(anyString())).thenReturn(true);
@@ -149,7 +151,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_ExistsByEmail_ShouldReturnFalseIfUserNotExist(){
+    public void UserService_ExistsByEmail_ShouldReturnFalseIfUserNotExist() {
         String email = dummyUser1.getEmail();
 
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
@@ -160,7 +162,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_FindByEmailConfirmationToken_ShouldReturnCorrectUser(){
+    public void UserService_FindByEmailConfirmationToken_ShouldReturnCorrectUser() {
         EmailConfirmationToken token = EmailConfirmationToken.builder()
                 .token("test")
                 .build();
@@ -175,7 +177,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_FindByEmailConfirmationToken_ShouldThrowExceptionIfWithThatTokenNotExist(){
+    public void UserService_FindByEmailConfirmationToken_ShouldThrowExceptionIfWithThatTokenNotExist() {
         EmailConfirmationToken token = EmailConfirmationToken.builder()
                 .token("test")
                 .build();
@@ -188,7 +190,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_UpdateUser_ShouldReturnCorrectUpdatedUser(){
+    public void UserService_UpdateUser_ShouldReturnCorrectUpdatedUser() {
         when(userMapper.mapFrom(expected)).thenReturn(dummyUser1);
         when(userMapper.mapTo(dummyUser1)).thenReturn(expected);
         when(userRepository.save(dummyUser1)).thenReturn(dummyUser1);
@@ -199,7 +201,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_FindUserByPublicId_ShouldReturnCorrectUser(){
+    public void UserService_FindUserByPublicId_ShouldReturnCorrectUser() {
         String publicId = expected.getPublicId();
 
         when(userMapper.mapTo(dummyUser1)).thenReturn(expected);
@@ -211,7 +213,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_FindUserByPublicId_ShouldThrowExceptionIfUserNotExist(){
+    public void UserService_FindUserByPublicId_ShouldThrowExceptionIfUserNotExist() {
         String publicId = expected.getPublicId();
 
         when(userRepository.findByPublicId(publicId)).thenReturn(Optional.empty());
@@ -221,7 +223,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_FindAllUsers_ShouldReturnPageOfUsers(){
+    public void UserService_FindAllUsers_ShouldReturnPageOfUsers() {
         List<UserEntity> listOfUsers = Collections.singletonList(dummyUser1);
         Page<UserEntity> pageOfUsers = new PageImpl<>(listOfUsers);
 
@@ -235,7 +237,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_RemoveUserByPublicId_ShouldRemoveUser(){
+    public void UserService_RemoveUserByPublicId_ShouldRemoveUser() {
         when(userRepository.existsByPublicId(anyString())).thenReturn(true);
         userService.removeUserByPublicId(expected.getPublicId());
 
@@ -243,13 +245,13 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_RemoveUserByPublicId_ShouldThrowExceptionIfUserNotExist(){
+    public void UserService_RemoveUserByPublicId_ShouldThrowExceptionIfUserNotExist() {
         assertThrows(UserNotFoundException.class,
                 () -> userService.removeUserByPublicId(expected.getPublicId()));
     }
 
     @Test
-    public void UserService_UpdateUserFully_ShouldReturnUpdatedUser(){
+    public void UserService_UpdateUserFully_ShouldReturnUpdatedUser() {
         String publicId = expected.getPublicId();
 
         when(userMapper.mapTo(dummyUser1)).thenReturn(expected);
@@ -262,7 +264,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_UpdateUserFully_ShouldThrowExceptionIfUserNotExist(){
+    public void UserService_UpdateUserFully_ShouldThrowExceptionIfUserNotExist() {
         String publicId = expected.getPublicId();
 
         when(userRepository.findByPublicId(publicId)).thenReturn(Optional.empty());
@@ -272,7 +274,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_UpdateUserPatch_ShouldReturnUpdatedUser(){
+    public void UserService_UpdateUserPatch_ShouldReturnUpdatedUser() {
         String publicId = expected.getPublicId();
 
         when(userMapper.mapTo(dummyUser1)).thenReturn(expected);
@@ -286,7 +288,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void UserService_UpdateUserPatch_ShouldThrowExceptionIfUserNotExist(){
+    public void UserService_UpdateUserPatch_ShouldThrowExceptionIfUserNotExist() {
         String publicId = expected.getPublicId();
 
         assertThrows(UserNotFoundException.class,

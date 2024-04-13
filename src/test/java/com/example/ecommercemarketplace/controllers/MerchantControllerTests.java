@@ -31,7 +31,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,14 +48,14 @@ public class MerchantControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String publicId = "publicId";
+    private final String publicId = "publicId";
     private MerchantDto merchantDto;
     private MerchantResponseDto merchantResponseDto;
     private MerchantUpdateRequestDto merchantUpdateRequestDto;
     private MerchantUpdateResponseDto merchantUpdateResponseDto;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         merchantResponseDto = MerchantResponseDto.builder()
                 .publicId("publicId")
                 .firstName("Nikolay")
@@ -97,7 +96,7 @@ public class MerchantControllerTests {
     }
 
     @Test
-    public void MerchantController_GetMerchantByMerchantPublicId_ShouldReturnCorrectMerchant() throws Exception{
+    public void MerchantController_GetMerchantByMerchantPublicId_ShouldReturnCorrectMerchant() throws Exception {
         when(merchantService.findMerchantByPublicId(anyString())).thenReturn(merchantDto);
 
         MvcResult mvcResult = mockMvc.perform(get("/api/merchants/{id}", merchantDto.getPublicId()))
@@ -153,7 +152,7 @@ public class MerchantControllerTests {
     }
 
     @Test
-    public void MerchantController_UpdateMerchantFully_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception{
+    public void MerchantController_UpdateMerchantFully_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception {
         when(merchantService.updateMerchantFully(anyString(), any(MerchantDto.class))).thenThrow(new MerchantNotFoundException(publicId));
 
         mockMvc.perform(put("/api/merchants/{id}", publicId)
@@ -163,7 +162,7 @@ public class MerchantControllerTests {
     }
 
     @Test
-    public void MerchantController_UpdateMerchantFully_ShouldReturnBadRequestStatus_IfMerchantEnterInvalidData() throws Exception{
+    public void MerchantController_UpdateMerchantFully_ShouldReturnBadRequestStatus_IfMerchantEnterInvalidData() throws Exception {
         MerchantUpdateRequestDto invalidMerchantRequest = new MerchantUpdateRequestDto();
 
         mockMvc.perform(put("/api/merchants/{id}", publicId)
@@ -173,7 +172,7 @@ public class MerchantControllerTests {
     }
 
     @Test
-    public void MerchantController_UpdateMerchantPatch_ShouldUpdate() throws Exception{
+    public void MerchantController_UpdateMerchantPatch_ShouldUpdate() throws Exception {
         when(merchantService.updateMerchantPatch(anyString(), any(MerchantDto.class))).thenReturn(merchantDto);
 
         MvcResult mvcResult = mockMvc.perform(patch("/api/merchants/{id}", publicId)
@@ -189,7 +188,7 @@ public class MerchantControllerTests {
     }
 
     @Test
-    public void MerchantController_UpdateMerchantPatch_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist()throws Exception{
+    public void MerchantController_UpdateMerchantPatch_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception {
         when(merchantService.updateMerchantPatch(anyString(), any(MerchantDto.class))).thenThrow(new MerchantNotFoundException(publicId));
 
         mockMvc.perform(patch("/api/merchants/{id}", publicId)
@@ -199,7 +198,7 @@ public class MerchantControllerTests {
     }
 
     @Test
-    public void MerchantController_UpdateMerchantPatch_ShouldReturnBadRequestStatus_IfMerchantEnterInvalidData() throws Exception{
+    public void MerchantController_UpdateMerchantPatch_ShouldReturnBadRequestStatus_IfMerchantEnterInvalidData() throws Exception {
         MerchantPatchUpdateRequestDto invalidMerchantRequest = MerchantPatchUpdateRequestDto.builder()
                 .phoneNumber("+")
                 .build();
@@ -211,13 +210,13 @@ public class MerchantControllerTests {
     }
 
     @Test
-    public void MerchantController_DeleteMerchant_ShouldDeleteMerchant() throws Exception{
+    public void MerchantController_DeleteMerchant_ShouldDeleteMerchant() throws Exception {
         mockMvc.perform(delete("/api/merchants/{id}", publicId))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    public void MerchantController_DeleteMerchant_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception{
+    public void MerchantController_DeleteMerchant_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception {
         doThrow(new MerchantNotFoundException(publicId)).when(merchantService).removeMerchantByPublicId(anyString());
 
         mockMvc.perform(delete("/api/merchants/{id}", publicId))
@@ -233,8 +232,6 @@ public class MerchantControllerTests {
         }
         return merchants;
     }
-
-
 
 
 }

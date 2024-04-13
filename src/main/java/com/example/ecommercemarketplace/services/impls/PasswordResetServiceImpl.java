@@ -39,7 +39,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     public boolean requestPasswordReset(PasswordResetRequestDto passwordResetRequestDto) {
         String email = passwordResetRequestDto.getEmail();
 
-        if (!userService.existsByEmail(email)){
+        if (!userService.existsByEmail(email)) {
             return false;
         }
 
@@ -47,7 +47,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         UserEntity user = userMapper.mapFrom(userService.findByEmail(email));
 
         String tokenValue = jwtService.generatePasswordResetToken(email);
-        if (passwordResetTokenRepository.existsByUser(user)){
+        if (passwordResetTokenRepository.existsByUser(user)) {
             passwordResetToken = passwordResetTokenRepository.findByUser(user).get();
             passwordResetToken.setToken(tokenValue);
         } else {
@@ -67,7 +67,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Override
     public boolean confirmPasswordReset(PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto) {
         String token = passwordResetConfirmationRequestDto.getToken();
-        if (!jwtService.isValid(token)){
+        if (!jwtService.isValid(token)) {
             return false;
         }
 
@@ -75,16 +75,15 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
 
-        if(passwordResetToken.isEmpty()){
+        if (passwordResetToken.isEmpty()) {
             return false;
         }
 
         String newPassword = passwordEncoder.encode(passwordResetConfirmationRequestDto.getPassword());
-        UserEntity user = (UserEntity)passwordResetToken.get().getUser();
+        UserEntity user = passwordResetToken.get().getUser();
         user.setPassword(newPassword);
 
-        if (user instanceof Merchant){
-            Merchant merchant = (Merchant)user;
+        if (user instanceof Merchant merchant) {
             merchantService.updateMerchant(merchantMapper.mapTo(merchant));
         } else {
             userService.updateUser(userMapper.mapTo(user));
@@ -98,10 +97,10 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     public void deleteExpiredTokens() {
         List<PasswordResetToken> tokens = passwordResetTokenRepository.findAll();
 
-        for (var token : tokens){
+        for (var token : tokens) {
             try {
                 jwtService.isValid(token.getToken());
-            } catch (Exception e){
+            } catch (Exception e) {
                 passwordResetTokenRepository.delete(token);
             }
         }

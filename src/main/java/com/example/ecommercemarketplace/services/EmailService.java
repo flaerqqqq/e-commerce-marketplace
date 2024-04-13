@@ -2,7 +2,6 @@ package com.example.ecommercemarketplace.services;
 
 import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.UserDto;
-import jakarta.mail.MessagingException;
 
 public interface EmailService {
 

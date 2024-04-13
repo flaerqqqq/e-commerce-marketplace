@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PasswordResetViewController {
 
     @GetMapping("/password-reset")
-    public String passwordResetPage(){
+    public String passwordResetPage() {
         return "password-reset";
     }
 

@@ -1,9 +1,7 @@
 package com.example.ecommercemarketplace.listeners;
 
 import com.example.ecommercemarketplace.dto.MerchantDto;
-import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.events.MerchantRegistrationEvent;
-import com.example.ecommercemarketplace.events.UserRegistrationEvent;
 import com.example.ecommercemarketplace.services.EmailService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

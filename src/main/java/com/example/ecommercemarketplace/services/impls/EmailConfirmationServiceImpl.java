@@ -23,7 +23,7 @@ public class EmailConfirmationServiceImpl implements EmailConfirmationService {
 
     @Override
     public void confirm(String token) {
-        if (merchantService.existsByEmailConfirmationToken(token)){
+        if (merchantService.existsByEmailConfirmationToken(token)) {
             MerchantDto merchantDto = merchantService.findByEmailConfirmationToken(token);
 
             merchantDto.setEnabled(true);
@@ -31,7 +31,7 @@ public class EmailConfirmationServiceImpl implements EmailConfirmationService {
             merchantService.updateMerchant(merchantDto);
 
             eventPublisher.publishEvent(new MerchantRegistrationEvent(this, merchantDto));
-        } else if (userService.existsByEmailConfirmationToken(token)){
+        } else if (userService.existsByEmailConfirmationToken(token)) {
             UserDto userDto = userService.findByEmailConfirmationToken(token);
 
             userDto.setEnabled(true);
@@ -41,8 +41,6 @@ public class EmailConfirmationServiceImpl implements EmailConfirmationService {
             eventPublisher.publishEvent(new UserRegistrationEvent(this, userDto));
         }
     }
-
-
 
 
 }

@@ -5,7 +5,6 @@ import com.example.ecommercemarketplace.models.enums.MerchantType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class MerchantUpdateRequestDto extends UserUpdateResponseDto{
+public class MerchantUpdateRequestDto extends UserUpdateResponseDto {
 
     @NotNull(message = "Merchant type is required")
     private MerchantType type;

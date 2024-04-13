@@ -2,7 +2,6 @@ package com.example.ecommercemarketplace.exceptions.handlers;
 
 
 import com.example.ecommercemarketplace.exceptions.*;
-import org.modelmapper.spi.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +24,7 @@ public class CustomGlobalExceptionHandler {
             UsernameNotFoundException.class,
             MerchantNotFoundException.class
     })
-    public ResponseEntity<ErrorObject> handleEntityNotFoundException(RuntimeException ex, WebRequest webRequest){
+    public ResponseEntity<ErrorObject> handleEntityNotFoundException(RuntimeException ex, WebRequest webRequest) {
         ErrorObject object = ErrorObject.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
@@ -36,7 +35,7 @@ public class CustomGlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorObject> handleSideExceptions(Exception exception,  WebRequest request){
+    public ResponseEntity<ErrorObject> handleSideExceptions(Exception exception, WebRequest request) {
         ErrorObject errorObject = ErrorObject.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
@@ -47,10 +46,10 @@ public class CustomGlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorObject> handleValidationExceptions(MethodArgumentNotValidException exception){
+    public ResponseEntity<ErrorObject> handleValidationExceptions(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
         exception.getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError)error).getField();
+            String fieldName = ((FieldError) error).getField();
             String errorName = error.getDefaultMessage();
             errors.put(fieldName, errorName);
         });
@@ -64,7 +63,7 @@ public class CustomGlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingAuthorizationHeaderException.class)
-    public ResponseEntity<ErrorObject> handleMissingAuthorizationHeaderException(MissingAuthorizationHeaderException exception){
+    public ResponseEntity<ErrorObject> handleMissingAuthorizationHeaderException(MissingAuthorizationHeaderException exception) {
         ErrorObject errorObject = ErrorObject.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.UNAUTHORIZED.value())

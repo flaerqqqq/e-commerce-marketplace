@@ -4,7 +4,6 @@ import com.example.ecommercemarketplace.models.enums.MerchantStatus;
 import com.example.ecommercemarketplace.models.enums.MerchantType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class Merchant extends UserEntity{
+public class Merchant extends UserEntity {
 
     @Column(name = "website_url", unique = true)
     private String websiteUrl;

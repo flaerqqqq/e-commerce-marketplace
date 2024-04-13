@@ -1,11 +1,8 @@
 package com.example.ecommercemarketplace.services;
 
 import com.example.ecommercemarketplace.dto.UserDto;
-import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface UserService {
 

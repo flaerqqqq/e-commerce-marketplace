@@ -8,7 +8,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
@@ -19,10 +22,10 @@ public class PasswordResetController {
 
     @PostMapping("/password-reset-request")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequestDto passwordResetRequestDto){
+    public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
         boolean sendStatus = passwordResetService.requestPasswordReset(passwordResetRequestDto);
 
-        if (sendStatus){
+        if (sendStatus) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -30,10 +33,10 @@ public class PasswordResetController {
 
     @PostMapping("/confirm-password-reset")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> confirmPasswordReset(@RequestBody PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto){
+    public ResponseEntity<?> confirmPasswordReset(@RequestBody PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto) {
         boolean resetStatus = passwordResetService.confirmPasswordReset(passwordResetConfirmationRequestDto);
 
-        if (resetStatus){
+        if (resetStatus) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

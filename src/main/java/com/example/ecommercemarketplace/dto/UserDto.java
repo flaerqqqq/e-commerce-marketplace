@@ -4,11 +4,9 @@ package com.example.ecommercemarketplace.dto;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.Role;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.Super;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.example.ecommercemarketplace.events;
 
 import com.example.ecommercemarketplace.dto.MerchantDto;
-import com.example.ecommercemarketplace.dto.UserDto;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -14,7 +13,7 @@ public class MerchantRegistrationEvent extends ApplicationEvent {
         super(source);
     }
 
-    public MerchantRegistrationEvent(Object source, MerchantDto merchantDto){
+    public MerchantRegistrationEvent(Object source, MerchantDto merchantDto) {
         super(source);
         this.merchantDto = merchantDto;
     }

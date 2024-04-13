@@ -4,5 +4,5 @@ public enum MerchantStatus {
     ACTIVE,
     INACTIVE,
     SUSPENDED,
-    BLOCKED;
+    BLOCKED
 }

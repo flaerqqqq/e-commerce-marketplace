@@ -32,7 +32,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .user(user)
                 .build();
 
-        if (refreshTokenRepository.existsByUser(user)){
+        if (refreshTokenRepository.existsByUser(user)) {
             refreshToken.setId(refreshTokenRepository.findByUser(user).get().getId());
         }
 
@@ -60,7 +60,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public void removeByToken(String token) {
-        if (!refreshTokenRepository.existsByToken(token)){
+        if (!refreshTokenRepository.existsByToken(token)) {
             throw new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(token));
         }
 
@@ -84,10 +84,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public void deleteExpiredTokens() {
         List<RefreshToken> tokens = refreshTokenRepository.findAll();
 
-        for(var token : tokens){
+        for (var token : tokens) {
             try {
                 jwtService.isValid(token.getToken());
-            } catch (Exception e){
+            } catch (Exception e) {
                 refreshTokenRepository.removeByToken(token.getToken());
             }
         }

@@ -5,9 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,11 +18,10 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    private final UserDetailsService customUserDetailsService;
-
     private final static String AUTHORIZATION_HEADER = "Authorization";
     private final static String BEARER_PREFIX = "Bearer ";
+    private final JwtService jwtService;
+    private final UserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -33,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(AUTHORIZATION_HEADER);
 
-        if (header == null || !header.startsWith(BEARER_PREFIX)){
+        if (header == null || !header.startsWith(BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,16 +38,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = header.substring(7);
         String username = jwtService.extractEmail(jwt);
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
-             if (jwtService.isValid(jwt)){
-                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                         userDetails.getUsername(), null, userDetails.getAuthorities()
-                 );
+            if (jwtService.isValid(jwt)) {
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                        userDetails.getUsername(), null, userDetails.getAuthorities()
+                );
 
-                 SecurityContextHolder.getContext().setAuthentication(token);
-             }
+                SecurityContextHolder.getContext().setAuthentication(token);
+            }
         }
 
         filterChain.doFilter(request, response);

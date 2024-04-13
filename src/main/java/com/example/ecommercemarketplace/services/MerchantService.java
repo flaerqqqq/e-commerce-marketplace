@@ -1,7 +1,6 @@
 package com.example.ecommercemarketplace.services;
 
 import com.example.ecommercemarketplace.dto.MerchantDto;
-import com.example.ecommercemarketplace.dto.UserDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -10,7 +10,6 @@ import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.RefreshToken;
 import com.example.ecommercemarketplace.models.UserEntity;
-import com.example.ecommercemarketplace.repositories.RefreshTokenRepository;
 import com.example.ecommercemarketplace.security.CustomUserDetails;
 import com.example.ecommercemarketplace.security.CustomUserDetailsService;
 import com.example.ecommercemarketplace.security.JwtService;
@@ -27,13 +26,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 @Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private final static String AUTHORIZATION_HEADER = "Authorization";
+    private final static String BEARER_PREFIX = "Bearer ";
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -46,9 +46,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final EmailConfirmationTokenService emailConfirmationTokenService;
     private final Mapper<UserDto, MerchantDto> userMerchantMapper;
 
-    private final static String AUTHORIZATION_HEADER = "Authorization";
-    private final static String BEARER_PREFIX = "Bearer ";
-
     @Override
     public UserJwtTokenResponseDto login(UserLoginRequestDto loginRequest) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -57,7 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         authenticationManager.authenticate(token);
 
-        if(token.isAuthenticated()){
+        if (token.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(token);
         }
 
@@ -67,7 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwtToken = jwtService.generateToken(userDetails);
         String refreshToken = refreshTokenService.createRefreshToken(userDto.getEmail()).getToken();
 
-        if (merchantService.isMerchant(loginRequest.getEmail())){
+        if (merchantService.isMerchant(loginRequest.getEmail())) {
             eventPublisher.publishEvent(new MerchantLoginEvent(this, userMerchantMapper.mapTo(userDto)));
         } else if (userService.isUserEntity(loginRequest.getEmail())) {
             eventPublisher.publishEvent(new UserLoginEvent(this, userDto));
@@ -81,9 +78,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest){
+    public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest) {
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(registrationRequest,userDto);
+        BeanUtils.copyProperties(registrationRequest, userDto);
 
         EmailConfirmationToken confirmationToken = emailConfirmationTokenService.buildEmailConfirmationToken();
         userDto.setEmailConfirmationToken(confirmationToken);
@@ -91,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDto savedUser = userService.createUser(userDto);
 
         UserRegistrationResponseDto response = new UserRegistrationResponseDto();
-        BeanUtils.copyProperties(savedUser,response);
+        BeanUtils.copyProperties(savedUser, response);
 
         emailService.sendMessageWithVerificationCode(userDto.getEmail(), confirmationToken.getToken());
 
@@ -102,13 +99,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public UserJwtTokenResponseDto refresh(HttpServletRequest request) {
         String header = request.getHeader(AUTHORIZATION_HEADER);
 
-        if (header == null || !header.startsWith(BEARER_PREFIX)){
+        if (header == null || !header.startsWith(BEARER_PREFIX)) {
             throw new MissingAuthorizationHeaderException("Missing authorization header or 'bearer' prefix");
         }
 
         String requestRefreshToken = header.substring(7);
 
-        if(!refreshTokenService.existsByToken(requestRefreshToken)){
+        if (!refreshTokenService.existsByToken(requestRefreshToken)) {
             throw new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(requestRefreshToken));
         }
 
@@ -116,7 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         try {
             jwtService.isValid(requestRefreshToken);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RefreshTokenAlreadyExpired("Refresh token=%s is expired".formatted(requestRefreshToken));
         }
 

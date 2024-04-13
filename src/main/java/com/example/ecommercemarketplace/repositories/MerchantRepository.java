@@ -2,7 +2,6 @@ package com.example.ecommercemarketplace.repositories;
 
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.Merchant;
-import com.example.ecommercemarketplace.models.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

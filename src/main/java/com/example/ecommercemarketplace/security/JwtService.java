@@ -10,35 +10,30 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class JwtService {
 
+    private final SecretKey key;
     @Value("${jwt.token.expiration.time}")
     private long expirationTime;
-
     @Value("${jwt.refresh.token.expiration.time}")
     private long refreshTokenExpirationTime;
-
     @Value("${jwt.password.reset.token.expiration.time}")
     private long passwordResetTokenExpirationTime;
-
-    private final SecretKey key;
 
     public JwtService(@Value("${jwt.token.secret}") String secret) {
         key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails) {
         Date issuedAt = new Date();
         Date expiredAt = new Date(issuedAt.getTime() + expirationTime);
 
         return buildToken(userDetails.getUsername(), issuedAt, expiredAt);
     }
 
-    public String generateRefreshToken(String email){
+    public String generateRefreshToken(String email) {
         Date issuedAt = new Date();
         Date expiredAt = new Date(issuedAt.getTime() + refreshTokenExpirationTime);
 
@@ -47,12 +42,12 @@ public class JwtService {
 
     public String generatePasswordResetToken(String email) {
         Date issuedAt = new Date();
-        Date expiredAt = new Date(issuedAt.getTime()  + passwordResetTokenExpirationTime);
+        Date expiredAt = new Date(issuedAt.getTime() + passwordResetTokenExpirationTime);
 
         return buildToken(email, issuedAt, expiredAt);
     }
 
-    private String buildToken(String subject, Date issuedAt, Date expiredAt){
+    private String buildToken(String subject, Date issuedAt, Date expiredAt) {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(issuedAt)
@@ -61,7 +56,7 @@ public class JwtService {
                 .compact();
     }
 
-    private Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -69,17 +64,17 @@ public class JwtService {
                 .getBody();
     }
 
-    public String extractEmail(String token){
+    public String extractEmail(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    public boolean isValid(String token){
+    public boolean isValid(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
-                                .setSigningKey(key)
-                                .build()
-                                .parseClaimsJws(token)
-                                .getBody();
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
             return !claims.getExpiration().before(new Date());
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException

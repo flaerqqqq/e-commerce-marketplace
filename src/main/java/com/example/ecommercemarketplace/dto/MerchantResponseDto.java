@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class MerchantResponseDto extends UserResponseDto{
+public class MerchantResponseDto extends UserResponseDto {
 
     private String websiteUrl;
 

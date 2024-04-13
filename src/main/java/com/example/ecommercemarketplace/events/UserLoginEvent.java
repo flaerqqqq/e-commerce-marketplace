@@ -13,7 +13,7 @@ public class UserLoginEvent extends ApplicationEvent {
         super(source);
     }
 
-    public UserLoginEvent(Object source, UserDto userDto){
+    public UserLoginEvent(Object source, UserDto userDto) {
         super(source);
         this.userDto = userDto;
     }

@@ -4,7 +4,6 @@ package com.example.ecommercemarketplace.repository;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.UserService;
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
@@ -34,7 +32,7 @@ public class UserRepositoryTests {
     private UserEntity dummyUser2;
 
     @BeforeEach
-    public void prepare(){
+    public void prepare() {
         dummyUser1 = UserEntity.builder()
                 .publicId("somePublicId")
                 .firstName("Vitaliy")
@@ -56,19 +54,19 @@ public class UserRepositoryTests {
     }
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         dummyUser1 = dummyUser2 = null;
     }
 
     @Test
-    public void UserRepository_Save_ReturnsSavedUser(){
+    public void UserRepository_Save_ReturnsSavedUser() {
         UserEntity savedUser = userRepository.save(dummyUser1);
 
         assertThat(savedUser).isEqualTo(dummyUser1);
     }
 
     @Test
-    public void UserRepository_FindAll_ReturnsListOfAllSavedUsers(){
+    public void UserRepository_FindAll_ReturnsListOfAllSavedUsers() {
         userRepository.save(dummyUser1);
         userRepository.save(dummyUser2);
 
@@ -79,7 +77,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void UserRepository_FindByPublicId_ShouldReturnCorrectUser(){
+    public void UserRepository_FindByPublicId_ShouldReturnCorrectUser() {
         String publicId = dummyUser1.getPublicId();
         userRepository.save(dummyUser1);
 
@@ -90,7 +88,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void UserRepository_FindByEmail_ShouldReturnCorrectUser(){
+    public void UserRepository_FindByEmail_ShouldReturnCorrectUser() {
         String email = dummyUser1.getEmail();
         userRepository.save(dummyUser1);
 
@@ -101,7 +99,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void UserRepository_ExistsByEmail_ShouldReturnTrueOnUserExistence(){
+    public void UserRepository_ExistsByEmail_ShouldReturnTrueOnUserExistence() {
         String email = dummyUser1.getEmail();
         userRepository.save(dummyUser1);
 
@@ -111,7 +109,7 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void UserRepository_ExistsByPublicId_ShouldReturnTrueOnUserExistence(){
+    public void UserRepository_ExistsByPublicId_ShouldReturnTrueOnUserExistence() {
         String publicId = dummyUser1.getPublicId();
         userRepository.save(dummyUser1);
 

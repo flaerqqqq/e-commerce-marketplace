@@ -6,5 +6,5 @@ public enum MerchantType {
     RETAILER,
     SERVICE_PROVIDER,
     DROPSHIPPER,
-    MANUFACTURER;
+    MANUFACTURER
 }
