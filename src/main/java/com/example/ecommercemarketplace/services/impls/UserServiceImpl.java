@@ -80,6 +80,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto) {
+        if (!userRepository.existsById(userDto.getId())){
+            throw new UserNotFoundException("User with id=%d is not found".formatted(userDto.getId()));
+        }
         UserEntity updatedUser = userRepository.save(userMapper.mapFrom(userDto));
 
         return userMapper.mapTo(updatedUser);
