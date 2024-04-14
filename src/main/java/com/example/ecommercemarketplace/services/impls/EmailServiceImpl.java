@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    private final JavaMailSender mailSender;
+    private final  JavaMailSender mailSender;
 
     @Override
     public void sendMessageWithVerificationCode(String toEmail, String code) {
