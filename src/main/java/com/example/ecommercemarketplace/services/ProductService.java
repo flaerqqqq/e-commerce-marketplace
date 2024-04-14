@@ -14,13 +14,25 @@ public interface ProductService {
 
     ProductDto createProduct(ProductDto productDto);
 
+    ProductDto createProductWithMerchantId(String merchantPublicId, ProductDto productDto);
+
     void deleteProduct(Long id);
+
+    void deleteProductWithMerchantId(String merchantPublicId, Long productId);
 
     ProductDto updateProductFully(Long productId, ProductDto productDto);
 
+    ProductDto updateProductFullyWithMerchantId(String merchantPublicId, Long productId, ProductDto productDto);
+
     ProductDto updateProductPatch(Long productId, ProductDto productDto);
+
+    ProductDto updateProductPatchWithMerchantId(String merchantPublicId, Long productId, ProductDto productDto);
 
     ProductDto updateProduct(ProductDto productDto);
 
     ProductDto findById(Long id);
+
+    ProductDto findByIdWithMerchantId(String merchantPublicId, Long productId);
+
+    void throwIfProductNotFound(Long productId);
 }

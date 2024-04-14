@@ -2,7 +2,9 @@ package com.example.ecommercemarketplace.controllers;
 
 
 import com.example.ecommercemarketplace.dto.*;
+import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
 import com.example.ecommercemarketplace.services.MerchantService;
+import com.example.ecommercemarketplace.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class MerchantController {
 
     private final MerchantService merchantService;
+    private final ProductService productService;
+    private final ProductMapper productMapper;
 
     @GetMapping("/{id}")
     public MerchantResponseDto getMerchantByMerchantPublicId(@PathVariable("id") String id) {
@@ -75,4 +79,64 @@ public class MerchantController {
     public void deleteMerchant(@PathVariable("id") String id) {
         merchantService.removeMerchantByPublicId(id);
     }
+
+    @GetMapping("/{id}/products")
+    public Page<ProductResponseDto> getProductsByMerchant(@PathVariable("id") String publicId, Pageable pageable){
+        Page<ProductResponseDto> pageOfProducts = productService.findPageOfProductsByMerchant(publicId, pageable)
+                .map(productMapper::toResponseDto);
+
+        return pageOfProducts;
+    }
+
+    @GetMapping("/{id}/products/{productId}")
+    public ProductResponseDto getProductById(@PathVariable("id") String publicId,
+                                             @PathVariable("productId") Long productId){
+        ProductResponseDto productResponseDto = productMapper.toResponseDto(productService.findByIdWithMerchantId(publicId, productId));
+
+        return productResponseDto;
+    }
+
+    @PostMapping("/{id}/products")
+    public ProductResponseDto createProduct(@PathVariable("id") String publicId,
+                                            @RequestBody ProductRequestDto productRequestDto){
+        ProductDto productDto = productMapper.requestToProductDto(productRequestDto);
+
+        ProductDto createdUser = productService.createProductWithMerchantId(publicId, productDto);
+
+        return productMapper.toResponseDto(createdUser);
+    }
+
+    @PutMapping("/{id}/products/{productId}")
+    public ProductResponseDto updateProductFully(@PathVariable("id") String publicId,
+                                                 @PathVariable("productId") Long productId,
+                                                 @RequestBody ProductUpdateRequestDto productUpdateRequestDto){
+        ProductDto updatedProduct = productService.updateProductFullyWithMerchantId(
+                publicId,
+                productId,
+                productMapper.updateRequestToProductDto(publicId, productId, productUpdateRequestDto)
+        );
+
+        return productMapper.toResponseDto(updatedProduct);
+    }
+
+    @PatchMapping("/{id}/products/{productId}")
+    public ProductResponseDto updateProductPatch(@PathVariable("id") String publicId,
+                                                 @PathVariable("productId") Long productId,
+                                                 @RequestBody ProductPatchUpdateRequestDto productPatchUpdateRequestDto){
+        ProductDto updatedProduct = productService.updateProductPatchWithMerchantId(
+                publicId,
+                productId,
+                productMapper.patchUpdateRequestToProductDto(publicId, productId, productPatchUpdateRequestDto)
+        );
+
+        return productMapper.toResponseDto(updatedProduct);
+    }
+
+    @DeleteMapping("/{id}/products/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable("id") String publicId,
+                              @PathVariable("productId") Long productId){
+        productService.deleteProductWithMerchantId(publicId, productId);
+    }
+
 }

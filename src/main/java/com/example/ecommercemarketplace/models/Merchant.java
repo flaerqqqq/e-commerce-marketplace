@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
 public class Merchant extends UserEntity {
 
     @Column(name = "website_url", unique = true)

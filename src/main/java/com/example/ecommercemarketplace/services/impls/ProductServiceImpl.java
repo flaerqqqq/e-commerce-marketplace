@@ -3,6 +3,7 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.ProductDto;
+import com.example.ecommercemarketplace.exceptions.MerchantNotFoundException;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.Category;
@@ -16,6 +17,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -63,19 +66,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductDto createProductWithMerchantId(String merchantPublicId, ProductDto productDto) {
+        Merchant merchant = merchantMapper.mapFrom(merchantService.findMerchantByPublicId(merchantPublicId));
+
+        productDto.setMerchant(merchant);
+
+        return createProduct(productDto);
+    }
+
+    @Override
     public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)){
-            throw new ProductNotFoundException("Product with id=%d is not found".formatted(id));
-        }
+        throwIfProductNotFound(id);
+
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteProductWithMerchantId(String merchantPublicId, Long productId) {
+        merchantService.throwIfMerchantNotFoundByPublicId(merchantPublicId);
+
+        deleteProduct(productId);
     }
 
 
     @Override
     public ProductDto updateProductFully(Long productId, ProductDto productDto) {
-        if (!productRepository.existsById(productId)){
-            throw new ProductNotFoundException("Product with id=%d is not found".formatted(productId));
-        }
+        throwIfProductNotFound(productId);
 
         Product product = productMapper.mapFrom(productDto);
         product.setId(productId);
@@ -86,15 +102,38 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductDto updateProductFullyWithMerchantId(String merchantPublicId, Long productId, ProductDto productDto) {
+        merchantService.throwIfMerchantNotFoundByPublicId(merchantPublicId);
+
+        return updateProductFully(productId, productDto);
+    }
+
+    @Override
     public ProductDto updateProductPatch(Long productId, ProductDto productDto) {
-        return null;
+        throwIfProductNotFound(productId);
+
+        Product product = productRepository.findById(productId).map(prod -> {
+            Optional.ofNullable(productDto.getName()).ifPresent(prod::setName);
+            Optional.ofNullable(productDto.getCategory()).ifPresent(prod::setCategory);
+            Optional.ofNullable(productDto.getPrice()).ifPresent(prod::setPrice);
+            Optional.ofNullable(productDto.getInventory()).ifPresent(prod::setInventory);
+            Optional.ofNullable(productDto.getDescription()).ifPresent(prod::setDescription);
+            return prod;
+        }).get();
+        Product savedProduct = productRepository.save(product);
+        return productMapper.mapTo(savedProduct);
+    }
+
+    @Override
+    public ProductDto updateProductPatchWithMerchantId(String merchantPublicId, Long productId, ProductDto productDto) {
+        merchantService.throwIfMerchantNotFoundByPublicId(merchantPublicId);
+
+        return updateProductPatch(productId, productDto);
     }
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
-        if (!productRepository.existsById(productDto.getId())) {
-            throw new ProductNotFoundException("Product with id=%d is not found".formatted(productDto.getId()));
-        }
+        throwIfProductNotFound(productDto.getId());
 
         Product savedProduct = productRepository.save(productMapper.mapFrom(productDto));
 
@@ -107,6 +146,20 @@ public class ProductServiceImpl implements ProductService {
                 new ProductNotFoundException("Product with id=%d is not found".formatted(id)));
 
         return productMapper.mapTo(product);
+    }
+
+    @Override
+    public ProductDto findByIdWithMerchantId(String merchantPublicId, Long productId) {
+        merchantService.throwIfMerchantNotFoundByPublicId(merchantPublicId);
+
+        return findById(productId);
+    }
+
+    @Override
+    public void throwIfProductNotFound(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new ProductNotFoundException("Product with id=%d is not found".formatted(productId));
+        }
     }
 
 

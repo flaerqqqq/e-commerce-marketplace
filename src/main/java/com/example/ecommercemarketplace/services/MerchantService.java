@@ -10,6 +10,8 @@ public interface MerchantService {
 
     boolean existsByEmail(String email);
 
+    boolean existsByPublicId(String publicId);
+
     boolean existsByEmailConfirmationToken(String token);
 
     boolean isMerchant(String email);
@@ -29,4 +31,6 @@ public interface MerchantService {
     MerchantDto updateMerchantPatch(String publicId, MerchantDto merchantDto);
 
     void removeMerchantByPublicId(String publicId);
+
+    void throwIfMerchantNotFoundByPublicId(String publicId);
 }

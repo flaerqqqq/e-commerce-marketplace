@@ -194,6 +194,7 @@ public class UserServiceTests {
         when(userMapper.mapFrom(expected)).thenReturn(dummyUser1);
         when(userMapper.mapTo(dummyUser1)).thenReturn(expected);
         when(userRepository.save(dummyUser1)).thenReturn(dummyUser1);
+        when(userRepository.existsByPublicId(anyString())).thenReturn(true);
 
         UserDto actual = userService.updateUser(expected);
 
