@@ -3,6 +3,7 @@ package com.example.ecommercemarketplace.controllers;
 import com.example.ecommercemarketplace.dto.MerchantRegistrationRequestDto;
 import com.example.ecommercemarketplace.dto.MerchantRegistrationResponseDto;
 import com.example.ecommercemarketplace.services.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class MerchantAuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public MerchantRegistrationResponseDto register(@RequestBody MerchantRegistrationRequestDto registrationRequestDto) {
+    public MerchantRegistrationResponseDto register(@RequestBody @Valid MerchantRegistrationRequestDto registrationRequestDto) {
         return authenticationService.registerMerchant(registrationRequestDto);
     }
 }

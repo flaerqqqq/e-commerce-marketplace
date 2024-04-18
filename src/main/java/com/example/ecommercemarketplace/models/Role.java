@@ -19,14 +19,12 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private String name;
+    private RoleName name;
 
 
     public enum RoleName {
-        USER,
-        ADMIN,
-        MERCHANT
+        ROLE_USER,
+        ROLE_ADMIN,
+        ROLE_MERCHANT
     }
-
-
 }

@@ -9,7 +9,9 @@ import com.example.ecommercemarketplace.exceptions.RefreshTokenNotFoundException
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.RefreshToken;
+import com.example.ecommercemarketplace.models.Role;
 import com.example.ecommercemarketplace.models.UserEntity;
+import com.example.ecommercemarketplace.repositories.RoleRepository;
 import com.example.ecommercemarketplace.security.CustomUserDetails;
 import com.example.ecommercemarketplace.security.CustomUserDetailsService;
 import com.example.ecommercemarketplace.security.JwtService;
@@ -26,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -45,6 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final Mapper<UserEntity, UserDto> userMapper;
     private final EmailConfirmationTokenService emailConfirmationTokenService;
     private final Mapper<UserDto, MerchantDto> userMerchantMapper;
+    private final RoleRepository roleRepository;
 
     @Override
     public UserJwtTokenResponseDto login(UserLoginRequestDto loginRequest) {
@@ -80,6 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest) {
         UserDto userDto = new UserDto();
+        userDto.setRoles(List.of(roleRepository.findByName(Role.RoleName.ROLE_USER).get()));
         BeanUtils.copyProperties(registrationRequest, userDto);
 
         EmailConfirmationToken confirmationToken = emailConfirmationTokenService.buildEmailConfirmationToken();
@@ -135,6 +140,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public MerchantRegistrationResponseDto registerMerchant(MerchantRegistrationRequestDto registrationRequestDto) {
         MerchantDto merchantDto = new MerchantDto();
+        merchantDto.setRoles(List.of(roleRepository.findByName(Role.RoleName.ROLE_USER).get(),
+                roleRepository.findByName(Role.RoleName.ROLE_MERCHANT).get()));
         merchantDto.setRegistrationDate(LocalDateTime.now());
         BeanUtils.copyProperties(registrationRequestDto, merchantDto);
 

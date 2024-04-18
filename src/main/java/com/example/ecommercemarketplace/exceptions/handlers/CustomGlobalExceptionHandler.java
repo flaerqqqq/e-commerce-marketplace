@@ -34,7 +34,7 @@ public class CustomGlobalExceptionHandler {
         return new ResponseEntity<>(object, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(Exception.class)
+/*    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorObject> handleSideExceptions(Exception exception, WebRequest request) {
         ErrorObject errorObject = ErrorObject.builder()
                 .timestamp(LocalDateTime.now())
@@ -43,7 +43,7 @@ public class CustomGlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    }*/
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorObject> handleValidationExceptions(MethodArgumentNotValidException exception) {

@@ -5,6 +5,7 @@ import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.ProductService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -33,7 +34,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@RequestBody CategoryRequestDto categoryRequestDto){
+    public CategoryDto createCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto){
         CategoryDto categoryDto = new CategoryDto();
         BeanUtils.copyProperties(categoryRequestDto, categoryDto);
 
@@ -41,7 +42,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public CategoryDto updateCategoryFully(@RequestBody CategoryRequestDto categoryRequestDto,
+    public CategoryDto updateCategoryFully(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
                                            @PathVariable("id") Long id){
         CategoryDto categoryDto = new CategoryDto();
         BeanUtils.copyProperties(categoryRequestDto, categoryDto);

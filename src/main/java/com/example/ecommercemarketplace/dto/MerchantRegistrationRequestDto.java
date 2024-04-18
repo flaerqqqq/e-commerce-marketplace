@@ -15,6 +15,6 @@ public class MerchantRegistrationRequestDto extends UserRegistrationRequestDto {
 
     private String websiteUrl;
 
-    @NotNull
+    @NotNull(message = "Merchant type is required")
     private MerchantType type;
 }
