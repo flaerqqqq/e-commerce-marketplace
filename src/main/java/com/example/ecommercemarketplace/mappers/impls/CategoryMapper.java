@@ -18,8 +18,7 @@ public class CategoryMapper implements Mapper<Category, CategoryDto> {
 
     @Override
     public Category mapFrom(CategoryDto categoryDto) {
-        return categoryRepository.findById(categoryDto.getId()).orElseThrow( () ->
-                new CategoryNotFoundException("Category with id=%d is not found".formatted(categoryDto.getId())));
+        return modelMapper.map(categoryDto, Category.class);
     }
 
     @Override
