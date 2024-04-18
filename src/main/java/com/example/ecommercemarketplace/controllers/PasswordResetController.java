@@ -21,7 +21,6 @@ public class PasswordResetController {
     private final PasswordResetService passwordResetService;
 
     @PostMapping("/password-reset-request")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequestDto passwordResetRequestDto) {
         boolean sendStatus = passwordResetService.requestPasswordReset(passwordResetRequestDto);
 
@@ -32,7 +31,6 @@ public class PasswordResetController {
     }
 
     @PostMapping("/confirm-password-reset")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<?> confirmPasswordReset(@RequestBody PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto) {
         boolean resetStatus = passwordResetService.confirmPasswordReset(passwordResetConfirmationRequestDto);
 

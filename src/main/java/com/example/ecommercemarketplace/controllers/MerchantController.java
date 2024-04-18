@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,6 +47,7 @@ public class MerchantController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
     public MerchantUpdateResponseDto updateMerchantFully(@RequestBody @Valid MerchantUpdateRequestDto merchantUpdateRequestDto,
                                                          @PathVariable("id") String id) {
         MerchantDto merchantDto = new MerchantDto();
@@ -61,6 +63,7 @@ public class MerchantController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
     public MerchantUpdateResponseDto updateMerchantPatch(@RequestBody @Valid MerchantPatchUpdateRequestDto merchantPatchUpdateRequestDto,
                                                          @PathVariable("id") String id) {
         MerchantDto merchantDto = new MerchantDto();
@@ -76,6 +79,7 @@ public class MerchantController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
     public void deleteMerchant(@PathVariable("id") String id) {
         merchantService.removeMerchantByPublicId(id);
     }
@@ -97,6 +101,7 @@ public class MerchantController {
     }
 
     @PostMapping("/{id}/products")
+    @PreAuthorize("hasRole('MERCHANT')")
     public ProductResponseDto createProduct(@PathVariable("id") String publicId,
                                             @RequestBody ProductRequestDto productRequestDto){
         ProductDto productDto = productMapper.requestToProductDto(productRequestDto);
@@ -107,6 +112,7 @@ public class MerchantController {
     }
 
     @PutMapping("/{id}/products/{productId}")
+    @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
     public ProductResponseDto updateProductFully(@PathVariable("id") String publicId,
                                                  @PathVariable("productId") Long productId,
                                                  @RequestBody ProductUpdateRequestDto productUpdateRequestDto){
@@ -120,6 +126,7 @@ public class MerchantController {
     }
 
     @PatchMapping("/{id}/products/{productId}")
+    @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
     public ProductResponseDto updateProductPatch(@PathVariable("id") String publicId,
                                                  @PathVariable("productId") Long productId,
                                                  @RequestBody ProductPatchUpdateRequestDto productPatchUpdateRequestDto){
@@ -134,6 +141,7 @@ public class MerchantController {
 
     @DeleteMapping("/{id}/products/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
     public void deleteProduct(@PathVariable("id") String publicId,
                               @PathVariable("productId") Long productId){
         productService.deleteProductWithMerchantId(publicId, productId);

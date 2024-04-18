@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,6 +35,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoryDto createCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto){
         CategoryDto categoryDto = new CategoryDto();
         BeanUtils.copyProperties(categoryRequestDto, categoryDto);
@@ -42,6 +44,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoryDto updateCategoryFully(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
                                            @PathVariable("id") Long id){
         CategoryDto categoryDto = new CategoryDto();
@@ -51,6 +54,7 @@ public class CategoryController {
     }
 
     @PatchMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoryDto updateCategoryPatch(@RequestBody CategoryPatchUpdateRequestDto updateRequestDto,
                                            @PathVariable("id") Long id){
         CategoryDto categoryDto = new CategoryDto();
@@ -61,6 +65,7 @@ public class CategoryController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCategoryById(@PathVariable("id") Long id){
         categoryService.deleteCategory(id);
     }

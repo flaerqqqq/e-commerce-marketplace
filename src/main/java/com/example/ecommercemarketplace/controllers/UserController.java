@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -42,6 +43,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public UserUpdateResponseDto updateUserFully(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto,
                                                  @PathVariable("id") String id) {
         UserDto userDto = new UserDto();
@@ -57,6 +59,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public UserUpdateResponseDto updateUserPatch(@RequestBody @Valid UserPatchUpdateRequestDto userPatchUpdateRequestDto,
                                                  @PathVariable("id") String id) {
         UserDto userDto = new UserDto();
@@ -72,6 +75,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public void deleteUser(@PathVariable("id") String id) {
         userService.removeUserByPublicId(id);
     }
