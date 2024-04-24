@@ -32,6 +32,12 @@ public class UserRegistrationRequestDto {
             message = "Password must contain at least one uppercase letter and one special symbol")
     private String password;
 
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'|\\\\<>,.?/~]).*$",
+            message = "Password must contain at least one uppercase letter and one special symbol")
+    private String passwordConfirm;
+
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^\\+(?:[0-9] ?){6,14}[0-9]$", message = "Phone number should be valid")
     private String phoneNumber;
