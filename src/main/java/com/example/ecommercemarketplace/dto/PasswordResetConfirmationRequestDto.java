@@ -1,6 +1,7 @@
 package com.example.ecommercemarketplace.dto;
 
 
+import com.example.ecommercemarketplace.validation.PasswordMatches;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@PasswordMatches
 public class PasswordResetConfirmationRequestDto {
 
     private String token;
@@ -21,9 +23,5 @@ public class PasswordResetConfirmationRequestDto {
             message = "Password must contain at least one uppercase letter and one special symbol")
     private String password;
 
-    @NotBlank(message = "Password repeat is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'|\\\\<>,.?/~]).*$",
-            message = "Password must contain at least one uppercase letter and one special symbol")
     private String passwordConfirm;
 }

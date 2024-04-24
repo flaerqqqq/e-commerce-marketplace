@@ -45,9 +45,13 @@ public class CustomGlobalExceptionHandler{
     public ResponseEntity<ErrorObject> handleValidationExceptions(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
         exception.getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorName = error.getDefaultMessage();
-            errors.put(fieldName, errorName);
+            if (error instanceof FieldError) {
+                String fieldName = ((FieldError) error).getField();
+                String errorName = error.getDefaultMessage();
+                errors.put(fieldName, errorName);
+            } else {
+                errors.put("Fields", error.getDefaultMessage());
+            }
         });
 
         ErrorObject errorObject = ErrorObject.builder()
