@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 public class MerchantControllerTests {
 
     @Autowired
@@ -136,6 +137,7 @@ public class MerchantControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_UpdateMerchantFully_ShouldUpdate() throws Exception {
         when(merchantService.updateMerchantFully(anyString(), any(MerchantDto.class))).thenReturn(merchantDto);
 
@@ -152,6 +154,7 @@ public class MerchantControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_UpdateMerchantFully_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception {
         when(merchantService.updateMerchantFully(anyString(), any(MerchantDto.class))).thenThrow(new MerchantNotFoundException(publicId));
 
@@ -162,6 +165,7 @@ public class MerchantControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_UpdateMerchantFully_ShouldReturnBadRequestStatus_IfMerchantEnterInvalidData() throws Exception {
         MerchantUpdateRequestDto invalidMerchantRequest = new MerchantUpdateRequestDto();
 
@@ -172,6 +176,7 @@ public class MerchantControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_UpdateMerchantPatch_ShouldUpdate() throws Exception {
         when(merchantService.updateMerchantPatch(anyString(), any(MerchantDto.class))).thenReturn(merchantDto);
 
@@ -188,6 +193,7 @@ public class MerchantControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_UpdateMerchantPatch_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception {
         when(merchantService.updateMerchantPatch(anyString(), any(MerchantDto.class))).thenThrow(new MerchantNotFoundException(publicId));
 
@@ -198,6 +204,7 @@ public class MerchantControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_UpdateMerchantPatch_ShouldReturnBadRequestStatus_IfMerchantEnterInvalidData() throws Exception {
         MerchantPatchUpdateRequestDto invalidMerchantRequest = MerchantPatchUpdateRequestDto.builder()
                 .phoneNumber("+")
@@ -210,12 +217,14 @@ public class MerchantControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_DeleteMerchant_ShouldDeleteMerchant() throws Exception {
         mockMvc.perform(delete("/api/merchants/{id}", publicId))
                 .andExpect(status().isNoContent());
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles  = {"MERCHANT", "ADMIN"})
     public void MerchantController_DeleteMerchant_ShouldReturnNotFoundStatus_IfMerchantWithIdNotExist() throws Exception {
         doThrow(new MerchantNotFoundException(publicId)).when(merchantService).removeMerchantByPublicId(anyString());
 
