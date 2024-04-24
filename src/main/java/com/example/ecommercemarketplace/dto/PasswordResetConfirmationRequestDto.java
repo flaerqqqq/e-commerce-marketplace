@@ -23,5 +23,6 @@ public class PasswordResetConfirmationRequestDto {
             message = "Password must contain at least one uppercase letter and one special symbol")
     private String password;
 
+    @NotBlank(message = "Confirm password is required")
     private String passwordConfirm;
 }
