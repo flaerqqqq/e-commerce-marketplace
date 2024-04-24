@@ -126,7 +126,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_UpdateUserFully_ShouldUpdate() throws Exception {
         when(userService.updateUserFully(anyString(), any(UserDto.class))).thenReturn(userDto);
 
@@ -143,7 +143,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_UpdateUserFully_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception {
         when(userService.updateUserFully(anyString(), any(UserDto.class))).thenThrow(new UserNotFoundException(publicId));
 
@@ -154,7 +154,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_UpdateUserFully_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception {
         UserUpdateRequestDto invalidUserRequest = new UserUpdateRequestDto();
 
@@ -165,7 +165,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_UpdateUserPatch_ShouldUpdate() throws Exception {
         when(userService.updateUserPatch(anyString(), any(UserDto.class))).thenReturn(userDto);
 
@@ -182,7 +182,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_UpdateUserPatch_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception {
         when(userService.updateUserPatch(anyString(), any(UserDto.class))).thenThrow(new UserNotFoundException(publicId));
 
@@ -193,7 +193,7 @@ public class UserControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_UpdateUserPatch_ShouldReturnBadRequestStatus_IfUserEnterInvalidData() throws Exception {
         UserPatchUpdateRequestDto invalidUserRequest = UserPatchUpdateRequestDto.builder()
                 .phoneNumber("+")
@@ -206,14 +206,14 @@ public class UserControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_DeleteUser_ShouldDeleteUser() throws Exception {
         mockMvc.perform(delete("/api/users/{id}", publicId))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    @WithMockUser(username = "test", password = "test", roles  = {"USER", "ADMIN"})
+    @WithMockUser(username = "test", password = "test", roles = {"USER", "ADMIN"})
     public void UserController_DeleteUser_ShouldReturnNotFoundStatus_IfUserWithIdNotExist() throws Exception {
         doThrow(new UserNotFoundException(publicId)).when(userService).removeUserByPublicId(anyString());
 
