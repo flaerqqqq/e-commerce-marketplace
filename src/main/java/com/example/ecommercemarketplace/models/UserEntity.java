@@ -58,7 +58,10 @@ public class UserEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
-    private Integer loginAttemps;
+    @Column(name = "login_attempts")
+    private Integer loginAttempts;
 
+    @Column(name = "login_disabled")
+    private Boolean loginDisabled;
 
 }
