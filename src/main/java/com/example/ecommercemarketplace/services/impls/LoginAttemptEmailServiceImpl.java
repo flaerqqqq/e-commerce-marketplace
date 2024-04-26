@@ -11,6 +11,7 @@ import com.example.ecommercemarketplace.services.LoginAttemptEmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -67,12 +68,23 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
         for (LoginData loginData : blockedUsersLoginData) {
             LocalDateTime lastLoginAttemptTime = loginData.getLastLoginAttemptTime();
             LocalDateTime now = LocalDateTime.now();
-            if (now.isAfter(lastLoginAttemptTime.plus(2, ChronoUnit.HOURS))) {
+            if (now.isAfter(lastLoginAttemptTime.plus(1, ChronoUnit.HOURS))) {
                 loginData.setLoginDisabled(false);
                 loginData.setLoginAttempts(0);
                 loginData.setLastLoginAttemptTime(null);
                 loginDataRepository.save(loginData);
             }
         }
+    }
+
+    @Override
+    public String calculateTimeToUnblock(String email) {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User with email=%s is not found".formatted(email)));
+        LoginData loginData = loginDataRepository.findByUser(user);
+
+        Duration duration = Duration.between(LocalDateTime.now(), loginData.getLastLoginAttemptTime().plusHours(2));
+
+        return duration.toMinutesPart() + " minutes";
     }
 }

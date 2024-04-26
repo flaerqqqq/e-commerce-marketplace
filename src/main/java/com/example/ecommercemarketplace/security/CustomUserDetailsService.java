@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (loginAttemptIPService.isBlocked()) {
             throw new LoginAttemptExceedingException("Login attempts for IP_ADDRESS=%s has been exceeded".formatted(loginAttemptIPService.getClientIP()));
         } else if (loginAttemptEmailService.isBlocked(username)){
-            throw new LoginAttemptExceedingException("Login attempts for EMAIL=%s has been exceeded".formatted(username));
+            throw new LoginAttemptExceedingException("Login attempts for EMAIL=%s has been exceeded. Return in %s".formatted(username, loginAttemptEmailService.calculateTimeToUnblock(username)));
         }
 
 
