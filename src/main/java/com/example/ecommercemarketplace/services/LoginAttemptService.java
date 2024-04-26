@@ -6,5 +6,7 @@ public interface LoginAttemptService {
 
     void registerSuccessLogin(final String ipAddressKey);
 
+    String getClientIP();
+
     boolean isBlocked();
 }

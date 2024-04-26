@@ -18,15 +18,9 @@ public class AuthenticationSuccessListener implements ApplicationListener<Authen
 
     @Override
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
-        String xfHeader = request.getHeader("X-Forwarded-For");
-        String ipAddress;
-        if(xfHeader != null){
-            ipAddress = xfHeader.split(",")[0];
-        }
-        ipAddress = request.getRemoteAddr();
+        String ipAddress = loginAttemptService.getClientIP();
 
         loginAttemptService.registerSuccessLogin(ipAddress);
-
         log.info("User with IP_ADDRESS=%s has logged in successfully".formatted(ipAddress));
     }
 }

@@ -55,13 +55,13 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
     @Override
     public boolean isBlocked() {
         try {
-           return cachedAttempts.get(getIP()) >= MAX_ATTEMPT;
+           return cachedAttempts.get(getClientIP()) >= MAX_ATTEMPT;
         } catch (Exception e){
             return false;
         }
     }
 
-    private String getIP(){
+    public String getClientIP(){
         final String xfHeader = httpServletRequest.getHeader("X-Forwarded-For");
 
         if (xfHeader != null){

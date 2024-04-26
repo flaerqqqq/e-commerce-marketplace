@@ -19,15 +19,9 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
 
     @Override
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
-        String xfHeader = request.getHeader("X-Forwarded-For");
-        String ipAddress;
-        if(xfHeader != null){
-            ipAddress = xfHeader.split(",")[0];
-        }
-        ipAddress = request.getRemoteAddr();
+        String ipAddress = loginAttemptService.getClientIP();
 
         loginAttemptService.registerFailedLogin(ipAddress);
-
         log.info("User with IP_ADDRESS=%s failed to login".formatted(ipAddress));
     }
 }
