@@ -1,6 +1,6 @@
 package com.example.ecommercemarketplace.services.impls;
 
-import com.example.ecommercemarketplace.services.LoginAttemptService;
+import com.example.ecommercemarketplace.services.LoginAttemptIPService;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class LoginAttemptServiceImpl implements LoginAttemptService {
+public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
 
-    public static final int MAX_ATTEMPT = 5;
+    public static final int IP_MAX_ATTEMPT = 10;
 
     @Autowired
     private HttpServletRequest httpServletRequest;
 
     private LoadingCache<String, Integer> cachedAttempts;
 
-    public LoginAttemptServiceImpl(){
+    public LoginAttemptIPServiceImpl(){
         cachedAttempts = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build(new CacheLoader<String, Integer>() {
             @Override
             public Integer load(String s) throws Exception {
@@ -55,7 +55,7 @@ public class LoginAttemptServiceImpl implements LoginAttemptService {
     @Override
     public boolean isBlocked() {
         try {
-           return cachedAttempts.get(getClientIP()) >= MAX_ATTEMPT;
+           return cachedAttempts.get(getClientIP()) >= IP_MAX_ATTEMPT;
         } catch (Exception e){
             return false;
         }

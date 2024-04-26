@@ -57,4 +57,8 @@ public class UserEntity {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
+
+    private Integer loginAttemps;
+
+
 }

@@ -1,6 +1,6 @@
 package com.example.ecommercemarketplace.listeners;
 
-import com.example.ecommercemarketplace.services.LoginAttemptService;
+import com.example.ecommercemarketplace.services.LoginAttemptIPService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,14 +13,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class AuthenticationSuccessListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
-    private final LoginAttemptService loginAttemptService;
-    private final HttpServletRequest request;
+    private final LoginAttemptIPService loginAttemptIPService;
 
     @Override
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
-        String ipAddress = loginAttemptService.getClientIP();
+        String ipAddress = loginAttemptIPService.getClientIP();
 
-        loginAttemptService.registerSuccessLogin(ipAddress);
+        loginAttemptIPService.registerSuccessLogin(ipAddress);
         log.info("User with IP_ADDRESS=%s has logged in successfully".formatted(ipAddress));
     }
 }

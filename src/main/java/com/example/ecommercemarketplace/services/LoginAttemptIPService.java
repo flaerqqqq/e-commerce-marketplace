@@ -1,6 +1,6 @@
 package com.example.ecommercemarketplace.services;
 
-public interface LoginAttemptService {
+public interface LoginAttemptIPService {
 
     void registerFailedLogin(final String ipAddressKey);
 
