@@ -92,11 +92,11 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         return true;
     }
 
-    private void publishEvent(UserEntity user){
+    private void publishEvent(UserEntity user) {
         eventPublisher.publishEvent(new EmailChangeEvent(this, user));
     }
 
-    private void updateUserMerchant(UserEntity user){
+    private void updateUserMerchant(UserEntity user) {
         if (user instanceof Merchant merchant) {
             merchantService.updateMerchant(merchantMapper.mapTo(merchant));
         } else {

@@ -14,11 +14,9 @@ import java.util.concurrent.TimeUnit;
 public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
 
     public static final int IP_MAX_ATTEMPT = 10;
-
+    private final LoadingCache<String, Integer> cachedAttempts;
     @Autowired
     private HttpServletRequest httpServletRequest;
-
-    private final LoadingCache<String, Integer> cachedAttempts;
 
     public LoginAttemptIPServiceImpl() {
         cachedAttempts = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build(new CacheLoader<String, Integer>() {

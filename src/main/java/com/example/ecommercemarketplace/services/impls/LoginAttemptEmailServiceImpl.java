@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -68,7 +67,8 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
         for (LoginData loginData : blockedUsersLoginData) {
             LocalDateTime lastLoginAttemptTime = loginData.getLastLoginAttemptTime();
             LocalDateTime now = LocalDateTime.now();
-            if (now.isAfter(lastLoginAttemptTime.plus(1, ChronoUnit.HOURS))) {
+
+            if (now.isAfter(lastLoginAttemptTime.plusHours(1))) {
                 loginData.setLoginDisabled(false);
                 loginData.setLoginAttempts(0);
                 loginData.setLastLoginAttemptTime(null);
