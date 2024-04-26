@@ -19,6 +19,6 @@ public class UnblockUserLoginTask {
 
     @Scheduled(fixedRate = 60000)
     public void unblockUserToLogin(){
-        loginAttemptEmailService.unblockUserLogin();
+        loginAttemptEmailService.unblockUsersLogin();
     }
 }

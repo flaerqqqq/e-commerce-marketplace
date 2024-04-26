@@ -5,6 +5,7 @@ import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequestDto;
 import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
 import com.example.ecommercemarketplace.dto.UserDto;
+import com.example.ecommercemarketplace.events.EmailChangeEvent;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.PasswordResetToken;
@@ -16,6 +17,7 @@ import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.PasswordResetService;
 import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private final EmailService emailService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public boolean requestPasswordReset(PasswordResetRequestDto passwordResetRequestDto) {
@@ -71,8 +74,6 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             return false;
         }
 
-        System.out.println(token);
-
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
 
         if (passwordResetToken.isEmpty()) {
@@ -83,14 +84,24 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         UserEntity user = passwordResetToken.get().getUser();
         user.setPassword(newPassword);
 
+        updateUserMerchant(user);
+
+        publishEvent(user);
+
+        passwordResetTokenRepository.delete(passwordResetToken.get());
+        return true;
+    }
+
+    private void publishEvent(UserEntity user){
+        eventPublisher.publishEvent(new EmailChangeEvent(this, user));
+    }
+
+    private void updateUserMerchant(UserEntity user){
         if (user instanceof Merchant merchant) {
             merchantService.updateMerchant(merchantMapper.mapTo(merchant));
         } else {
             userService.updateUser(userMapper.mapTo(user));
         }
-
-        passwordResetTokenRepository.delete(passwordResetToken.get());
-        return true;
     }
 
     @Override

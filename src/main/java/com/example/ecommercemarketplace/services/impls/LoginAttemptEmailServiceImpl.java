@@ -62,7 +62,7 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
     }
 
     @Override
-    public void unblockUserLogin() {
+    public void unblockUsersLogin() {
         List<LoginData> blockedUsersLoginData = loginDataRepository.findAllByLoginDisabled(true);
 
         for (LoginData loginData : blockedUsersLoginData) {
@@ -75,6 +75,19 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
                 loginDataRepository.save(loginData);
             }
         }
+    }
+
+    @Override
+    public void unblockUserLogin(String email) {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User with email=%s is not found".formatted(email)));
+        LoginData loginData = loginDataRepository.findByUser(user);
+
+        loginData.setLoginDisabled(false);
+        loginData.setLoginAttempts(0);
+        loginData.setLastLoginAttemptTime(null);
+
+        loginDataRepository.save(loginData);
     }
 
     @Override

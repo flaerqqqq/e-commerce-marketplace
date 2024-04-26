@@ -8,7 +8,9 @@ public interface LoginAttemptEmailService {
     
     boolean isBlocked(String email);
 
-    void unblockUserLogin();
+    void unblockUsersLogin();
+
+    void unblockUserLogin(String email);
 
     String calculateTimeToUnblock(String email);
 }
