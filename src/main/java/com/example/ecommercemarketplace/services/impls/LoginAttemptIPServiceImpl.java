@@ -18,9 +18,9 @@ public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
     @Autowired
     private HttpServletRequest httpServletRequest;
 
-    private LoadingCache<String, Integer> cachedAttempts;
+    private final LoadingCache<String, Integer> cachedAttempts;
 
-    public LoginAttemptIPServiceImpl(){
+    public LoginAttemptIPServiceImpl() {
         cachedAttempts = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build(new CacheLoader<String, Integer>() {
             @Override
             public Integer load(String s) throws Exception {
@@ -55,16 +55,16 @@ public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
     @Override
     public boolean isBlocked() {
         try {
-           return cachedAttempts.get(getClientIP()) >= IP_MAX_ATTEMPT;
-        } catch (Exception e){
+            return cachedAttempts.get(getClientIP()) >= IP_MAX_ATTEMPT;
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public String getClientIP(){
+    public String getClientIP() {
         final String xfHeader = httpServletRequest.getHeader("X-Forwarded-For");
 
-        if (xfHeader != null){
+        if (xfHeader != null) {
             return xfHeader.split(",")[0];
         }
 
