@@ -7,4 +7,6 @@ public interface LoginAttemptEmailService {
     void registerFailureLogin(String email);
     
     boolean isBlocked(String email);
+
+    void unblockUserLogin();
 }

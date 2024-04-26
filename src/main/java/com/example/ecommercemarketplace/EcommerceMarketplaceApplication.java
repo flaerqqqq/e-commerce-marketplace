@@ -20,6 +20,5 @@ public class EcommerceMarketplaceApplication implements CommandLineRunner{
 
     @Override
     public void run(String... args) throws Exception {
-        loginAttemptEmailService.registerFailureLogin("vitaliyverzyn25@gmail.com");
     }
 }
