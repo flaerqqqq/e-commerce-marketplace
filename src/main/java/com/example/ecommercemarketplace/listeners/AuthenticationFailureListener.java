@@ -1,25 +1,32 @@
 package com.example.ecommercemarketplace.listeners;
 
 import com.example.ecommercemarketplace.services.LoginAttemptEmailService;
+import com.example.ecommercemarketplace.services.LoginAttemptIPService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
+
 
 
 @Component
 @AllArgsConstructor
+@Slf4j
 @Transactional(Transactional.TxType.REQUIRES_NEW)
 public class AuthenticationFailureListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
 
     private final LoginAttemptEmailService loginAttemptEmailService;
+    private final LoginAttemptIPService loginAttemptIpService;
 
     @Override
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
         String email = event.getAuthentication().getName();
+        String ipAddress = loginAttemptIpService.getClientIP();
+
+        loginAttemptIpService.registerFailedLogin(ipAddress);
         loginAttemptEmailService.registerFailureLogin(email);
+        log.info("User with IP_ADDRESS={} and EMAIL={} is failed to login", ipAddress, email);
     }
 }

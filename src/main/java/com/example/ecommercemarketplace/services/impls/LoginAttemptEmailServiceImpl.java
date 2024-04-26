@@ -22,18 +22,26 @@ import java.time.LocalDateTime;
 public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
 
     public final static int EMAIL_LOGIN_ATTEMPT = 50;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final Mapper<UserEntity, UserDto> userMapper;
     private final LoginDataRepository loginDataRepository;
 
     @Override
     public void registerSuccessfulLogin(String email) {
+        UserDto user = userService.findByEmail(email);
+        LoginData loginData = loginDataRepository.findByUser(userMapper.mapFrom(user));
+
+        loginData.setLoginAttempts(0);
+        loginData.setLastLoginTime(LocalDateTime.now());
+        loginData.setLastLoginAttemptTime(null);
+
+        loginDataRepository.save(loginData);
     }
 
     @Override
     public void registerFailureLogin(String email) {
-        UserEntity user = userRepository.findByEmail(email).get();
-        LoginData loginData = user.getLoginData();
+        UserDto user = userService.findByEmail(email);
+        LoginData loginData = loginDataRepository.findByUser(userMapper.mapFrom(user));
 
         loginData.setLoginAttempts(loginData.getLoginAttempts() + 1);
         loginData.setLastLoginAttemptTime(LocalDateTime.now());
@@ -42,12 +50,12 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
             loginData.setLoginDisabled(true);
         }
 
-        UserEntity savedUser = userRepository.save(user);
-        System.out.println(savedUser.getLoginData());
+        loginDataRepository.save(loginData);
     }
 
     @Override
     public boolean isBlocked(String email) {
-        return false;
+        UserDto user = userService.findByEmail(email);
+        return user.getLoginData().isLoginDisabled();
     }
 }
