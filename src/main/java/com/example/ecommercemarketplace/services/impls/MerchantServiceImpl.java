@@ -5,6 +5,7 @@ import com.example.ecommercemarketplace.exceptions.MerchantAlreadyExistsExceptio
 import com.example.ecommercemarketplace.exceptions.MerchantNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
+import com.example.ecommercemarketplace.models.LoginData;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.models.enums.MerchantStatus;
@@ -71,6 +72,7 @@ public class MerchantServiceImpl implements MerchantService {
         merchantDto.setPublicId(publicId);
         merchantDto.setPassword(hashedPassword);
         merchantDto.setStatus(MerchantStatus.ACTIVE);
+        merchantDto.setLoginData(new LoginData());
 
         Merchant savedMerchant = merchantRepository.save(merchantMapper.mapFrom(merchantDto));
 

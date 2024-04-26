@@ -2,6 +2,7 @@ package com.example.ecommercemarketplace.dto;
 
 
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
+import com.example.ecommercemarketplace.models.LoginData;
 import com.example.ecommercemarketplace.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,7 +37,5 @@ public class UserDto {
 
     private List<Role> roles;
 
-    private Integer loginAttempts;
-
-    private Boolean loginDisabled;
+    private LoginData loginData;
 }

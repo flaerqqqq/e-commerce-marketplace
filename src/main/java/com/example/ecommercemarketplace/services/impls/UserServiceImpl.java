@@ -5,6 +5,7 @@ import com.example.ecommercemarketplace.exceptions.UserAlreadyExistsException;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
+import com.example.ecommercemarketplace.models.LoginData;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.EmailConfirmationTokenService;
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
 
         userDto.setPublicId(publicId);
         userDto.setPassword(hashedPassword);
+        userDto.setLoginData(new LoginData());
 
         UserEntity savedUser = userRepository.save(userMapper.mapFrom(userDto));
 
