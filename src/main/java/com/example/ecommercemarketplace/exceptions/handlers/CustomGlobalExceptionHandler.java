@@ -2,6 +2,7 @@ package com.example.ecommercemarketplace.exceptions.handlers;
 
 
 import com.example.ecommercemarketplace.exceptions.*;
+import com.fasterxml.jackson.core.JsonToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -62,6 +63,13 @@ public class CustomGlobalExceptionHandler{
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(LoginAttemptExceedingException.class)
+    public ResponseEntity<ErrorObject> handleLoginAttemptExceedingException(LoginAttemptExceedingException exception) {
+        ErrorObject errorObject = generateErrorObject(HttpStatus.LOCKED, exception);
+        System.out.println("TEST");
+        return new ResponseEntity<>(errorObject, HttpStatus.LOCKED);
+    }
+
     @ExceptionHandler(MissingAuthorizationHeaderException.class)
     public ResponseEntity<ErrorObject> handleMissingAuthorizationHeaderException(MissingAuthorizationHeaderException exception) {
         ErrorObject errorObject = generateErrorObject(HttpStatus.UNAUTHORIZED, exception);
@@ -71,12 +79,17 @@ public class CustomGlobalExceptionHandler{
 
     @ExceptionHandler(value = {
             AuthenticationException.class,
-            AccessDeniedException.class
+            AccessDeniedException.class,
     })
     public ResponseEntity<ErrorObject> handleAuthenticationException(Exception exception){
-        ErrorObject errorObject = generateErrorObject(HttpStatus.UNAUTHORIZED, exception);
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
 
-        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
+        if (exception.getCause() instanceof LoginAttemptExceedingException) {
+            status = HttpStatus.LOCKED;
+        }
+
+        ErrorObject errorObject = generateErrorObject(status, exception);
+        return new ResponseEntity<>(errorObject, status);
     }
 
     public static ErrorObject generateErrorObject(HttpStatus code, Exception exception){
