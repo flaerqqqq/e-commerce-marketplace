@@ -1,6 +1,7 @@
 package com.example.ecommercemarketplace.mappers.impls;
 
 import com.example.ecommercemarketplace.dto.CartItemDto;
+import com.example.ecommercemarketplace.dto.CartItemResponseDto;
 import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.CartItem;
@@ -29,6 +30,16 @@ public class CartItemMapper implements Mapper<CartItem, CartItemDto> {
         return CartItemDto.builder()
                 .id(cartItem.getId())
                 .product(productMapper.mapTo(cartItem.getProduct()))
+                .quantity(cartItem.getQuantity())
+                .build();
+    }
+
+    public CartItemResponseDto mapToResponseDto(CartItem cartItem){
+        return CartItemResponseDto.builder()
+                .id(cartItem.getId())
+                .productId(cartItem.getProduct().getId())
+                .productName(cartItem.getProduct().getName())
+                .productPrice(cartItem.getProduct().getPrice())
                 .quantity(cartItem.getQuantity())
                 .build();
     }

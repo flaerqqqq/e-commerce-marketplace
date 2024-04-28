@@ -13,5 +13,5 @@ public class CartItemRequestDto {
 
     private Long productId;
 
-    private Long quantity;
+    private int quantity;
 }
