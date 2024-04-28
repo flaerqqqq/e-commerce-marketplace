@@ -1,5 +1,6 @@
 package com.example.ecommercemarketplace.dto;
 
+import jakarta.annotation.Nonnull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,14 +9,12 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ShoppingCartDto {
+public class ShoppingCartResponseDto {
 
     private Long id;
 
-    private UserDto user;
-
-    private List<CartItemDto> cartItems;
+    private List<CartItemResponseDto> cartItems;
 }

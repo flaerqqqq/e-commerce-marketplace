@@ -5,17 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ShoppingCartDto {
+public class CartItemRequestDto {
 
-    private Long id;
+    private Long productId;
 
-    private UserDto user;
-
-    private List<CartItemDto> cartItems;
+    private Long quantity;
 }
