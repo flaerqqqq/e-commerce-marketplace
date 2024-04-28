@@ -15,20 +15,22 @@ import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
 import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Service
 @AllArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-    private final UserService userService;
     private final ShoppingCartRepository shoppingCartRepository;
     private final ShoppingCartMapper shoppingCartMapper;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    private final CartItemRepository cartItemRepository;
 
     private ShoppingCart createShoppingCart(String email) {
         UserEntity user = getUserByEmail(email);
@@ -45,23 +47,30 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDto addItemToShoppingCart(Authentication authentication, CartItemRequestDto cartItem) {
-        Product product = productRepository.findById(cartItem.getProductId()).orElseThrow(() ->
-                new ProductNotFoundException("Product with id=%d is not found".formatted(cartItem.getProductId())));
+        Product product = productRepository.findById(cartItem.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Product with id=" + cartItem.getProductId() + " is not found"));
+
+        String email = authentication.getName();
+        UserEntity user = getUserByEmail(email);
+
+        ShoppingCart shoppingCart;
+        if (!shoppingCartRepository.existsByUser(user)) {
+            shoppingCart = createShoppingCart(email);
+            shoppingCart.setCartItems(new ArrayList<>());
+        } else {
+            shoppingCart = user.getShoppingCart();
+        }
 
         CartItem cartItemEntity = CartItem.builder()
                 .product(product)
                 .quantity(cartItem.getQuantity())
+                .shoppingCart(shoppingCart)
                 .build();
 
-        String email = authentication.getName();
-        UserEntity user = getUserByEmail(email);
-        ShoppingCart cart = shoppingCartRepository.findByUser(user).orElseGet(() -> createShoppingCart(email));
+        shoppingCart.getCartItems().add(cartItemEntity);
+        shoppingCartRepository.save(shoppingCart);
 
-        cartItemEntity.setShoppingCart(cart);
-
-        cartItemRepository.save(cartItemEntity);
-
-        return shoppingCartMapper.mapToResponseDto(shoppingCartRepository.findByUser(user).get());
+        return shoppingCartMapper.mapToResponseDto(shoppingCart);
     }
 
     @Override

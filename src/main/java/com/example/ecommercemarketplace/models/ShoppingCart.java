@@ -2,10 +2,7 @@ package com.example.ecommercemarketplace.models;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -26,5 +23,6 @@ public class ShoppingCart {
     private UserEntity user;
 
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<CartItem> cartItems;
 }
