@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +15,8 @@ import lombok.experimental.SuperBuilder;
 public class MerchantRegistrationResponseDto extends UserRegistrationResponseDto {
 
     private MerchantType type;
+
+    private String websiteUrl;
+
+    private LocalDateTime registrationDate;
 }

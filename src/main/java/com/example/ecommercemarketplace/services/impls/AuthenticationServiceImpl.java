@@ -19,7 +19,7 @@ import com.example.ecommercemarketplace.services.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,18 +49,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final EmailConfirmationTokenService emailConfirmationTokenService;
     private final Mapper<UserDto, MerchantDto> userMerchantMapper;
     private final RoleRepository roleRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public UserJwtTokenResponseDto login(UserLoginRequestDto loginRequest) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(), loginRequest.getPassword()
-        );
-
-        authenticationManager.authenticate(token);
-
-        if (token.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(token);
-        }
+        authenticateUser(loginRequest);
 
         UserDto userDto = userService.findByEmail(loginRequest.getEmail());
 
@@ -68,11 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwtToken = jwtService.generateToken(userDetails);
         String refreshToken = refreshTokenService.createRefreshToken(userDto.getEmail()).getToken();
 
-        if (merchantService.isMerchant(loginRequest.getEmail())) {
-            eventPublisher.publishEvent(new MerchantLoginEvent(this, userMerchantMapper.mapTo(userDto)));
-        } else if (userService.isUserEntity(loginRequest.getEmail())) {
-            eventPublisher.publishEvent(new UserLoginEvent(this, userDto));
-        }
+        publishLoginEvent(loginRequest, userDto);
 
         return UserJwtTokenResponseDto.builder()
                 .publicId(userDto.getPublicId())
@@ -82,45 +71,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest) {
-        UserDto userDto = new UserDto();
-        userDto.setRoles(List.of(roleRepository.findByName(Role.RoleName.ROLE_USER).get()));
-        BeanUtils.copyProperties(registrationRequest, userDto);
-
-        EmailConfirmationToken confirmationToken = emailConfirmationTokenService.buildEmailConfirmationToken();
-        userDto.setEmailConfirmationToken(confirmationToken);
-
-        UserDto savedUser = userService.createUser(userDto);
-
-        UserRegistrationResponseDto response = new UserRegistrationResponseDto();
-        BeanUtils.copyProperties(savedUser, response);
-
-        emailService.sendMessageWithVerificationCode(userDto.getEmail(), confirmationToken.getToken());
-
-        return response;
-    }
-
-    @Override
     public UserJwtTokenResponseDto refresh(HttpServletRequest request) {
-        String header = request.getHeader(AUTHORIZATION_HEADER);
-
-        if (header == null || !header.startsWith(BEARER_PREFIX)) {
-            throw new MissingAuthorizationHeaderException("Missing authorization header or 'bearer' prefix");
-        }
-
-        String requestRefreshToken = header.substring(7);
-
-        if (!refreshTokenService.existsByToken(requestRefreshToken)) {
-            throw new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(requestRefreshToken));
-        }
+        String requestRefreshToken = validateHttpHeader(request);
 
         refreshTokenService.removeByToken(requestRefreshToken);
 
-        try {
-            jwtService.isValid(requestRefreshToken);
-        } catch (Exception e) {
-            throw new RefreshTokenAlreadyExpired("Refresh token=%s is expired".formatted(requestRefreshToken));
-        }
+        validateRefreshTokenToken(requestRefreshToken);
 
         String userEmail = jwtService.extractEmail(requestRefreshToken);
         UserEntity user = userMapper.mapFrom(userService.findByEmail(userEmail));
@@ -138,24 +94,82 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public UserRegistrationResponseDto register(UserRegistrationRequestDto registrationRequest) {
+        UserDto userDto = modelMapper.map(registrationRequest, UserDto.class);
+        userDto.setRoles(List.of(roleRepository.findByName(Role.RoleName.ROLE_USER).get()));
+
+        EmailConfirmationToken confirmationToken = emailConfirmationTokenService.buildEmailConfirmationToken();
+        userDto.setEmailConfirmationToken(confirmationToken);
+
+        UserDto savedUser = userService.createUser(userDto);
+        UserRegistrationResponseDto response = modelMapper.map(savedUser, UserRegistrationResponseDto.class);
+
+        emailService.sendMessageWithVerificationCode(userDto.getEmail(), confirmationToken.getToken());
+
+        return response;
+    }
+
+    @Override
     public MerchantRegistrationResponseDto registerMerchant(MerchantRegistrationRequestDto registrationRequestDto) {
-        MerchantDto merchantDto = new MerchantDto();
+        MerchantDto merchantDto = modelMapper.map(registrationRequestDto, MerchantDto.class);
+
         merchantDto.setRoles(List.of(roleRepository.findByName(Role.RoleName.ROLE_USER).get(),
                 roleRepository.findByName(Role.RoleName.ROLE_MERCHANT).get()));
         merchantDto.setRegistrationDate(LocalDateTime.now());
-        BeanUtils.copyProperties(registrationRequestDto, merchantDto);
 
         EmailConfirmationToken token = emailConfirmationTokenService.buildEmailConfirmationToken();
         merchantDto.setEmailConfirmationToken(token);
 
         MerchantDto savedMerchant = merchantService.createMerchant(merchantDto);
-
-        MerchantRegistrationResponseDto response = new MerchantRegistrationResponseDto();
-        BeanUtils.copyProperties(savedMerchant, response);
+        MerchantRegistrationResponseDto response = modelMapper.map(savedMerchant, MerchantRegistrationResponseDto.class);
 
         emailService.sendMessageWithVerificationCode(merchantDto.getEmail(), token.getToken());
 
         return response;
+    }
+
+    private void publishLoginEvent(UserLoginRequestDto loginRequestDto, UserDto userDto) {
+        if (merchantService.isMerchant(loginRequestDto.getEmail())) {
+            eventPublisher.publishEvent(new MerchantLoginEvent(this, userMerchantMapper.mapTo(userDto)));
+        } else if (userService.isUserEntity(loginRequestDto.getEmail())) {
+            eventPublisher.publishEvent(new UserLoginEvent(this, userDto));
+        }
+    }
+
+    private void authenticateUser(UserLoginRequestDto loginRequestDto) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                loginRequestDto.getEmail(), loginRequestDto.getPassword()
+        );
+
+        authenticationManager.authenticate(token);
+
+        if (token.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(token);
+        }
+    }
+
+    private String validateHttpHeader(HttpServletRequest request) {
+        String header = request.getHeader(AUTHORIZATION_HEADER);
+
+        if (header == null || !header.startsWith(BEARER_PREFIX)) {
+            throw new MissingAuthorizationHeaderException("Missing authorization header or 'bearer' prefix");
+        }
+
+        String requestRefreshToken = header.substring(7);
+
+        if (!refreshTokenService.existsByToken(requestRefreshToken)) {
+            throw new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(requestRefreshToken));
+        }
+
+        return requestRefreshToken;
+    }
+
+    private void validateRefreshTokenToken(String requestRefreshToken) {
+        try {
+            jwtService.isValid(requestRefreshToken);
+        } catch (Exception e) {
+            throw new RefreshTokenAlreadyExpired("Refresh token=%s is expired".formatted(requestRefreshToken));
+        }
     }
 
 

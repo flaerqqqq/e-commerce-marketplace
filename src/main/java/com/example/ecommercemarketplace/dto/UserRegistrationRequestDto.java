@@ -1,6 +1,7 @@
 package com.example.ecommercemarketplace.dto;
 
 
+import com.example.ecommercemarketplace.validation.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -14,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@PasswordMatches
 public class UserRegistrationRequestDto {
 
     @NotBlank(message = "First name is required")
@@ -31,6 +33,9 @@ public class UserRegistrationRequestDto {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;\"'|\\\\<>,.?/~]).*$",
             message = "Password must contain at least one uppercase letter and one special symbol")
     private String password;
+
+    @NotBlank(message = "Confirm password is required")
+    private String passwordConfirm;
 
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "^\\+(?:[0-9] ?){6,14}[0-9]$", message = "Phone number should be valid")

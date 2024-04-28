@@ -57,4 +57,9 @@ public class UserEntity {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "login_data_id")
+    private LoginData loginData;
+
 }
