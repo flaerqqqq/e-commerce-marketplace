@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = "shoppingCart")
 @Table(name = "cart_items")
 public class CartItem {
 
@@ -17,6 +16,7 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "cart_id", nullable = false)
     private ShoppingCart shoppingCart;
 

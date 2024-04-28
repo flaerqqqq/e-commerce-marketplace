@@ -1,9 +1,12 @@
 package com.example.ecommercemarketplace.controllers;
 
 import com.example.ecommercemarketplace.dto.CartItemRequestDto;
+import com.example.ecommercemarketplace.dto.CartItemResponseDto;
 import com.example.ecommercemarketplace.dto.ShoppingCartResponseDto;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,12 @@ public class ShoppingCartController {
     public ShoppingCartResponseDto addItemToShoppingCart(Authentication authentication,
                                                          @RequestBody CartItemRequestDto cartItemRequestDto){
         return shoppingCartService.addItemToShoppingCart(authentication, cartItemRequestDto);
+    }
+
+    @GetMapping("/cart-items")
+    public Page<CartItemResponseDto> getAllItemsByCart(Authentication authentication,
+                                                       Pageable pageable){
+        return shoppingCartService.getAllItemsByShoppingCart(authentication, pageable);
     }
 
 }

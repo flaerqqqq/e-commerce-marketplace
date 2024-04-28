@@ -3,6 +3,7 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
+import com.example.ecommercemarketplace.mappers.impls.CartItemMapper;
 import com.example.ecommercemarketplace.mappers.impls.ShoppingCartMapper;
 import com.example.ecommercemarketplace.models.CartItem;
 import com.example.ecommercemarketplace.models.Product;
@@ -17,6 +18,7 @@ import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +30,11 @@ import java.util.Collections;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
-    private final ShoppingCartMapper shoppingCartMapper;
+    private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ShoppingCartMapper shoppingCartMapper;
+    private final CartItemMapper cartItemMapper;
 
     private ShoppingCart createShoppingCart(String email) {
         UserEntity user = getUserByEmail(email);
@@ -74,7 +78,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public Page<CartItemDto> findAllItemsByShoppingCart(ShoppingCartDto shoppingCart) {
-        return null;
+    public Page<CartItemResponseDto> getAllItemsByShoppingCart(Authentication authentication, Pageable pageable) {
+        String email = authentication.getName();
+        ShoppingCart cart = getShoppingCartByUser(email);
+
+        return cartItemRepository.findByShoppingCart(cart, pageable).map(cartItemMapper::mapToResponseDto);
     }
+
+    private ShoppingCart getShoppingCartByUser(String email){
+        return shoppingCartRepository.findByUser(getUserByEmail(email)).orElseGet(() ->
+                createShoppingCart(email));
+    }
+
 }
