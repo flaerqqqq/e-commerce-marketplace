@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class MerchantUpdateRequestDto extends UserUpdateResponseDto {
+public class MerchantUpdateRequestDto extends UserUpdateRequestDto {
 
     @NotNull(message = "Merchant type is required")
     private MerchantType type;
