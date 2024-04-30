@@ -11,10 +11,6 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findAllByMerchant(Merchant merchant);
-
-    List<Product> findAllByCategory(Category category);
-
     Page<Product> findByMerchant(Merchant merchant, Pageable pageable);
 
     Page<Product> findByCategory(Category category, Pageable pageable);
