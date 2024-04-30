@@ -41,10 +41,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshToken findByToken(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(token).orElseThrow(() ->
+        return refreshTokenRepository.findByToken(token).orElseThrow(() ->
                 new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(token)));
-
-        return refreshToken;
     }
 
     @Override
@@ -63,16 +61,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         if (!refreshTokenRepository.existsByToken(token)) {
             throw new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(token));
         }
-
         refreshTokenRepository.removeByToken(token);
     }
 
     @Override
     public RefreshToken findByUser(UserDto userDto) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUser(userMapper.mapFrom(userDto)).orElseThrow(() ->
+        return refreshTokenRepository.findByUser(userMapper.mapFrom(userDto)).orElseThrow(() ->
                 new RefreshTokenNotFoundException("Refresh for user with id=%s is not found".formatted(userDto.getPublicId())));
-
-        return refreshToken;
     }
 
     @Override

@@ -5,9 +5,9 @@ import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
 
 public interface PasswordResetService {
 
-    boolean requestPasswordReset(PasswordResetRequestDto passwordResetRequestDto);
+    void requestPasswordReset(PasswordResetRequestDto passwordResetRequestDto);
 
-    boolean confirmPasswordReset(PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto);
+    void confirmPasswordReset(PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto);
 
     void deleteExpiredTokens();
 }
