@@ -26,7 +26,10 @@ public class CustomGlobalExceptionHandler{
             UserNotFoundException.class,
             EmailConfirmationTokenNotFoundException.class,
             UsernameNotFoundException.class,
-            MerchantNotFoundException.class
+            MerchantNotFoundException.class,
+            CartItemNotFoundException.class,
+            CartItemNotFoundInCartException.class,
+            ShoppingCartNotFoundException.class
     })
     public ResponseEntity<ErrorObject> handleEntityNotFoundException(RuntimeException ex, WebRequest webRequest) {
         ErrorObject errorObject = generateErrorObject(HttpStatus.NOT_FOUND, ex);
