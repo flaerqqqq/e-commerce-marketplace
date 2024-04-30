@@ -1,8 +1,6 @@
 package com.example.ecommercemarketplace.services.impls;
 
-import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.LoginData;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.LoginDataRepository;
@@ -21,15 +19,13 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
 
     public final static int EMAIL_LOGIN_ATTEMPT = 5;
     private final UserRepository userRepository;
-    private final Mapper<UserEntity, UserDto> userMapper;
     private final LoginDataRepository loginDataRepository;
 
     @Override
     public void registerSuccessfulLogin(String email) {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email=%s is not found".formatted(email)));
-        LoginData loginData = loginDataRepository.findByUser(user);
+        UserEntity user = findUserByEmail(email);
 
+        LoginData loginData = loginDataRepository.findByUser(user);
         loginData.setLoginAttempts(0);
         loginData.setLastLoginTime(LocalDateTime.now());
         loginData.setLastLoginAttemptTime(null);
@@ -39,10 +35,9 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
 
     @Override
     public void registerFailureLogin(String email) {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email=%s is not found".formatted(email)));
-        LoginData loginData = loginDataRepository.findByUser(user);
+        UserEntity user = findUserByEmail(email);
 
+        LoginData loginData = loginDataRepository.findByUser(user);
         loginData.setLoginAttempts(loginData.getLoginAttempts() + 1);
         loginData.setLastLoginAttemptTime(LocalDateTime.now());
 
@@ -55,8 +50,7 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
 
     @Override
     public boolean isBlocked(String email) {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email=%s is not found".formatted(email)));
+        UserEntity user = findUserByEmail(email);
         return user.getLoginData().isLoginDisabled();
     }
 
@@ -79,10 +73,9 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
 
     @Override
     public void unblockUserLogin(String email) {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email=%s is not found".formatted(email)));
-        LoginData loginData = loginDataRepository.findByUser(user);
+        UserEntity user = findUserByEmail(email);
 
+        LoginData loginData = loginDataRepository.findByUser(user);
         loginData.setLoginDisabled(false);
         loginData.setLoginAttempts(0);
         loginData.setLastLoginAttemptTime(null);
@@ -92,12 +85,16 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
 
     @Override
     public String calculateTimeToUnblock(String email) {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email=%s is not found".formatted(email)));
+        UserEntity user = findUserByEmail(email);
         LoginData loginData = loginDataRepository.findByUser(user);
 
         Duration duration = Duration.between(LocalDateTime.now(), loginData.getLastLoginAttemptTime().plusHours(2));
 
         return duration.toMinutesPart() + " minutes";
+    }
+
+    private UserEntity findUserByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User with email=%s is not found".formatted(email)));
     }
 }

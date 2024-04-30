@@ -33,8 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findByEmail(String email) {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email=" + email + " is not found"));
-
+                new UserNotFoundException("User with email=%s is not found".formatted(email)));
         return userMapper.mapTo(user);
     }
 
@@ -57,7 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
-            throw new UserAlreadyExistsException("User with email=" + userDto.getEmail() + " already exists");
+            throw new UserAlreadyExistsException("User with email=%s already exists".formatted(userDto.getEmail()));
         }
 
         String publicId = publicIdGenerator.generate();
@@ -75,16 +74,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findByEmailConfirmationToken(String token) {
         EmailConfirmationToken emailConfirmationToken = emailConfirmationTokenService.findByToken(token);
-        UserEntity user = userRepository.findByEmailConfirmationToken(emailConfirmationToken).orElseThrow(() -> new UserNotFoundException("User with confirmationToken=" + token + " is not found"));
+        UserEntity user = userRepository.findByEmailConfirmationToken(emailConfirmationToken).orElseThrow(() ->
+                new UserNotFoundException("User with confirmationToken=%s is not found".formatted(token)));
 
         return userMapper.mapTo(user);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        if (!userRepository.existsByPublicId(userDto.getPublicId())) {
-            throw new UserNotFoundException("User with id=%s is not found".formatted(userDto.getPublicId()));
-        }
+        throwIfUserNotFoundByPublicId(userDto.getPublicId());
+
         UserEntity updatedUser = userRepository.save(userMapper.mapFrom(userDto));
 
         return userMapper.mapTo(updatedUser);
@@ -94,22 +93,18 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserByPublicId(String publicId) {
         UserEntity user = userRepository.findByPublicId(publicId).orElseThrow(() ->
                 new UserNotFoundException("User with publicId=%s is not found".formatted(publicId)));
-
         return userMapper.mapTo(user);
     }
 
     @Override
     public Page<UserDto> findAllUsers(Pageable pageable) {
-        Page<UserDto> users = userRepository.findAll(pageable).map(userMapper::mapTo);
-
-        return users;
+        return userRepository.findAll(pageable).map(userMapper::mapTo);
     }
 
     @Override
     public UserDto updateUserFully(String publicId, UserDto userDto) {
         UserEntity user = userRepository.findByPublicId(publicId).orElseThrow(() ->
                 new UserNotFoundException("User with publicId=%s is not found".formatted(publicId)));
-
         user.setFirstName(userDto.getFirstName());
         user.setLastName((userDto.getLastName()));
         user.setPhoneNumber(userDto.getPhoneNumber());
@@ -122,9 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUserPatch(String publicId, UserDto userDto) {
-        if (!userRepository.existsByPublicId(publicId)) {
-            throw new UserNotFoundException("User with publicId=%s is not found".formatted(publicId));
-        }
+        throwIfUserNotFoundByPublicId(publicId);
 
         UserEntity updatedUser = userRepository.findByPublicId(publicId).map(user -> {
             Optional.ofNullable(userDto.getFirstName()).ifPresent(user::setFirstName);
@@ -140,11 +133,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void removeUserByPublicId(String publicId) {
+        throwIfUserNotFoundByPublicId(publicId);
+        userRepository.deleteByPublicId(publicId);
+    }
+
+    private void throwIfUserNotFoundByPublicId(String publicId){
         if (!userRepository.existsByPublicId(publicId)) {
             throw new UserNotFoundException("User with publicId=%s is not found".formatted(publicId));
         }
-
-        userRepository.deleteByPublicId(publicId);
     }
 
 

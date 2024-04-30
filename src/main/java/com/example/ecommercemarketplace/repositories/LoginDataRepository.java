@@ -11,5 +11,4 @@ public interface LoginDataRepository extends JpaRepository<LoginData, Long> {
     LoginData findByUser(UserEntity userEntity);
 
     List<LoginData> findAllByLoginDisabled(boolean loginDisabled);
-
 }
