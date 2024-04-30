@@ -7,14 +7,11 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class MerchantRegistrationEvent extends ApplicationEvent {
 
-    private MerchantDto merchantDto;
+    private MerchantDto merchant;
 
-    public MerchantRegistrationEvent(Object source) {
-        super(source);
-    }
 
-    public MerchantRegistrationEvent(Object source, MerchantDto merchantDto) {
+    public MerchantRegistrationEvent(Object source, MerchantDto merchant) {
         super(source);
-        this.merchantDto = merchantDto;
+        this.merchant = merchant;
     }
 }

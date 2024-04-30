@@ -34,8 +34,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public MerchantDto findByEmail(String email) {
         Merchant merchant = merchantRepository.findByEmail(email).orElseThrow(() ->
-                new MerchantNotFoundException("Merchant with email=" + email + " is not found"));
-
+                new MerchantNotFoundException("Merchant with email=%s is not found".formatted(email)));
         return merchantMapper.mapTo(merchant);
     }
 
@@ -63,7 +62,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public MerchantDto createMerchant(MerchantDto merchantDto) {
         if (merchantRepository.existsByEmail(merchantDto.getEmail())) {
-            throw new MerchantAlreadyExistsException("Merchant with email=" + merchantDto.getEmail() + " already exists");
+            throw new MerchantAlreadyExistsException("Merchant with email=%s already exists".formatted(merchantDto.getEmail()));
         }
 
         String publicId = publicIdGenerator.generate();
@@ -83,37 +82,30 @@ public class MerchantServiceImpl implements MerchantService {
     public MerchantDto findByEmailConfirmationToken(String token) {
         EmailConfirmationToken emailConfirmationToken = emailConfirmationTokenService.findByToken(token);
         Merchant merchant = merchantRepository.findByEmailConfirmationToken(emailConfirmationToken).orElseThrow(() ->
-                new MerchantNotFoundException("Merchant with confirmationToken=" + token + " is not found"));
-
+                new MerchantNotFoundException("Merchant with confirmationToken=%s is not found".formatted(token)));
         return merchantMapper.mapTo(merchant);
     }
 
     @Override
     public MerchantDto updateMerchant(MerchantDto merchantDto) {
         Merchant updatedMerchant = merchantRepository.save(merchantMapper.mapFrom(merchantDto));
-
         return merchantMapper.mapTo(updatedMerchant);
     }
 
     @Override
     public MerchantDto findMerchantByPublicId(String publicId) {
-        Merchant merchant = merchantRepository.findByPublicId(publicId).orElseThrow(() ->
-                new MerchantNotFoundException("Merchant with publicId=%s is not found".formatted(publicId)));
-
+        Merchant merchant = findByPublicId(publicId);
         return merchantMapper.mapTo(merchant);
     }
 
     @Override
     public Page<MerchantDto> findAllMerchants(Pageable pageable) {
-        Page<MerchantDto> merchants = merchantRepository.findAll(pageable).map(merchantMapper::mapTo);
-
-        return merchants;
+        return merchantRepository.findAll(pageable).map(merchantMapper::mapTo);
     }
 
     @Override
     public MerchantDto updateMerchantFully(String publicId, MerchantDto merchantDto) {
-        Merchant merchant = merchantRepository.findByPublicId(publicId).orElseThrow(() ->
-                new MerchantNotFoundException("Merchant with publicId=%s is not found".formatted(publicId)));
+        Merchant merchant = findByPublicId(publicId);
 
         merchant.setFirstName(merchantDto.getFirstName());
         merchant.setLastName((merchantDto.getLastName()));
@@ -146,14 +138,18 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void removeMerchantByPublicId(String publicId) {
         throwIfMerchantNotFoundByPublicId(publicId);
-
         merchantRepository.deleteByPublicId(publicId);
     }
 
     @Override
     public void throwIfMerchantNotFoundByPublicId(String publicId) {
-        if (!merchantRepository.existsByPublicId(publicId)){
+        if (!merchantRepository.existsByPublicId(publicId)) {
             throw new MerchantNotFoundException("Merchant with publicId=%s is not found".formatted(publicId));
         }
+    }
+
+    private Merchant findByPublicId(String publicId){
+        return merchantRepository.findByPublicId(publicId).orElseThrow(() ->
+                new MerchantNotFoundException("Merchant with publicId=%s is not found".formatted(publicId)));
     }
 }

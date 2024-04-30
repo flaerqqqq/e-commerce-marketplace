@@ -32,6 +32,5 @@ public class EmailConfirmationTokenServiceImpl implements EmailConfirmationToken
         return EmailConfirmationToken.builder()
                 .token(tokenValue)
                 .build();
-
     }
 }

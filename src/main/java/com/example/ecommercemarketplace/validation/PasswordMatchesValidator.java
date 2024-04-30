@@ -15,21 +15,18 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
     @Override
     public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
         if (o instanceof PasswordResetConfirmationRequestDto) {
-            PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto = (PasswordResetConfirmationRequestDto) o;
-            try {
-                return passwordResetConfirmationRequestDto.getPassword().equals(passwordResetConfirmationRequestDto.getPasswordConfirm());
-            } catch (Exception e) {
-                return false;
-            }
+            return isValidPasswordMatch(((PasswordResetConfirmationRequestDto) o).getPassword(), ((PasswordResetConfirmationRequestDto) o).getPasswordConfirm());
         } else if (o instanceof UserRegistrationRequestDto) {
-            UserRegistrationRequestDto userRegistrationRequestDto = (UserRegistrationRequestDto) o;
-            try {
-                return userRegistrationRequestDto.getPassword().equals(userRegistrationRequestDto.getPasswordConfirm());
-            } catch (Exception e) {
-                return false;
-            }
+            return isValidPasswordMatch(((UserRegistrationRequestDto) o).getPassword(), ((UserRegistrationRequestDto) o).getPasswordConfirm());
         }
-
         return false;
+    }
+
+    private boolean isValidPasswordMatch(String password, String passwordConfirm) {
+        try {
+            return password != null && password.equals(passwordConfirm);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
