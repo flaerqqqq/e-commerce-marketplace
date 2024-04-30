@@ -79,7 +79,6 @@ public class MerchantControllerTests {
                 .websiteUrl("url")
                 .build();
         merchantUpdateRequestDto = MerchantUpdateRequestDto.builder()
-                .publicId("publicId")
                 .firstName("Nikolay")
                 .lastName("Twink")
                 .phoneNumber("+123456789")
