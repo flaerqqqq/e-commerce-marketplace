@@ -2,6 +2,7 @@ package com.example.ecommercemarketplace.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringSummary;
 
 @Data
 @NoArgsConstructor
@@ -21,6 +22,7 @@ public class CartItem {
     private ShoppingCart shoppingCart;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

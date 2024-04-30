@@ -1,8 +1,9 @@
 package com.example.ecommercemarketplace.services.impls;
 
-import com.example.ecommercemarketplace.dto.*;
-import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
-import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
+import com.example.ecommercemarketplace.dto.CartItemRequestDto;
+import com.example.ecommercemarketplace.dto.CartItemResponseDto;
+import com.example.ecommercemarketplace.dto.ShoppingCartResponseDto;
+import com.example.ecommercemarketplace.exceptions.*;
 import com.example.ecommercemarketplace.mappers.impls.CartItemMapper;
 import com.example.ecommercemarketplace.mappers.impls.ShoppingCartMapper;
 import com.example.ecommercemarketplace.models.CartItem;
@@ -14,16 +15,14 @@ import com.example.ecommercemarketplace.repositories.ProductRepository;
 import com.example.ecommercemarketplace.repositories.ShoppingCartRepository;
 import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
-import com.example.ecommercemarketplace.services.UserService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 @Service
 @AllArgsConstructor
@@ -44,7 +43,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartRepository.save(cart);
     }
 
-    private UserEntity getUserByEmail(String email){
+    private UserEntity getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("User with email=%s is not found".formatted(email)));
     }
@@ -85,7 +84,27 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return cartItemRepository.findByShoppingCart(cart, pageable).map(cartItemMapper::mapToResponseDto);
     }
 
-    private ShoppingCart getShoppingCartByUser(String email){
+    @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public void deleteCartItem(Authentication authentication, Long id) {
+        if (!cartItemRepository.existsById(id)) {
+            throw new CartItemNotFoundException("Cart item with id=%d is not found".formatted(id));
+        }
+
+        String email = authentication.getName();
+        ShoppingCart cart = shoppingCartRepository.findByUser(getUserByEmail(email)).orElseThrow(() ->
+                new ShoppingCartNotFoundException("Shopping cart for user with email=%s is not found".formatted(email)));
+
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(c -> c.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() ->
+                        new CartItemNotFoundInCartException("Cart item with id=%d is not found in shopping cart with id=%d".formatted(id, cart.getId())));
+
+        cartItemRepository.delete(cartItem);
+    }
+
+    private ShoppingCart getShoppingCartByUser(String email) {
         return shoppingCartRepository.findByUser(getUserByEmail(email)).orElseGet(() ->
                 createShoppingCart(email));
     }

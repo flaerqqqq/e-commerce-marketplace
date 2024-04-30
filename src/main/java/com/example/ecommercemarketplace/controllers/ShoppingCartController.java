@@ -4,6 +4,7 @@ import com.example.ecommercemarketplace.dto.CartItemRequestDto;
 import com.example.ecommercemarketplace.dto.CartItemResponseDto;
 import com.example.ecommercemarketplace.dto.ShoppingCartResponseDto;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +21,22 @@ public class ShoppingCartController {
 
     @PostMapping("/cart-items")
     @ResponseStatus(HttpStatus.CREATED)
-    public ShoppingCartResponseDto addItemToShoppingCart(Authentication authentication,
-                                                         @RequestBody CartItemRequestDto cartItemRequestDto){
+    public ShoppingCartResponseDto addItemToShoppingCart(@RequestBody CartItemRequestDto cartItemRequestDto,
+                                                         Authentication authentication){
         return shoppingCartService.addItemToShoppingCart(authentication, cartItemRequestDto);
     }
 
     @GetMapping("/cart-items")
-    public Page<CartItemResponseDto> getAllItemsByCart(Authentication authentication,
-                                                       Pageable pageable){
+    public Page<CartItemResponseDto> getAllItemsByCart(Pageable pageable,
+                                                       Authentication authentication){
         return shoppingCartService.getAllItemsByShoppingCart(authentication, pageable);
+    }
+
+    @DeleteMapping("/cart-items/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCartItem(@PathVariable("id") Long id,
+                               Authentication authentication){
+        shoppingCartService.deleteCartItem(authentication, id);
     }
 
 }

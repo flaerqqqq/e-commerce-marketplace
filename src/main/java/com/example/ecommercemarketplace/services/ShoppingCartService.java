@@ -10,4 +10,6 @@ public interface ShoppingCartService {
     ShoppingCartResponseDto addItemToShoppingCart(Authentication authentication, CartItemRequestDto cartItem);
 
     Page<CartItemResponseDto> getAllItemsByShoppingCart(Authentication authentication, Pageable pageable);
+
+    void deleteCartItem(Authentication authentication, Long id);
 }
