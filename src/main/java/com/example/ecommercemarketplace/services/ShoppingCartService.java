@@ -12,4 +12,6 @@ public interface ShoppingCartService {
     Page<CartItemResponseDto> getAllItemsByShoppingCart(Authentication authentication, Pageable pageable);
 
     void deleteCartItem(Authentication authentication, Long id);
+
+    CartItemResponseDto updateCartItemQuantity(Authentication authentication, Long id, CartItemQuantityUpdateRequest updateRequest);
 }

@@ -1,5 +1,6 @@
 package com.example.ecommercemarketplace.services.impls;
 
+import com.example.ecommercemarketplace.dto.CartItemQuantityUpdateRequest;
 import com.example.ecommercemarketplace.dto.CartItemRequestDto;
 import com.example.ecommercemarketplace.dto.CartItemResponseDto;
 import com.example.ecommercemarketplace.dto.ShoppingCartResponseDto;
@@ -17,6 +18,7 @@ import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -34,6 +36,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ProductRepository productRepository;
     private final ShoppingCartMapper shoppingCartMapper;
     private final CartItemMapper cartItemMapper;
+    private final ModelMapper modelMapper;
 
     private ShoppingCart createShoppingCart(String email) {
         UserEntity user = getUserByEmail(email);
@@ -87,6 +90,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public void deleteCartItem(Authentication authentication, Long id) {
+        CartItem cartItem = validateAndGetCartItem(authentication, id);
+        cartItemRepository.delete(cartItem);
+    }
+
+    @Override
+    public CartItemResponseDto updateCartItemQuantity(Authentication authentication, Long id, CartItemQuantityUpdateRequest updateRequest) {
+        CartItem cartItem = validateAndGetCartItem(authentication, id);
+        cartItem.setQuantity(updateRequest.getQuantity());
+        CartItem updatedCart = cartItemRepository.save(cartItem);
+
+        return  modelMapper.map(updatedCart, CartItemResponseDto.class);
+    }
+
+    private CartItem validateAndGetCartItem(Authentication authentication, Long id){
         if (!cartItemRepository.existsById(id)) {
             throw new CartItemNotFoundException("Cart item with id=%d is not found".formatted(id));
         }
@@ -95,14 +112,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         ShoppingCart cart = shoppingCartRepository.findByUser(getUserByEmail(email)).orElseThrow(() ->
                 new ShoppingCartNotFoundException("Shopping cart for user with email=%s is not found".formatted(email)));
 
-        CartItem cartItem = cart.getCartItems().stream()
+        return cart.getCartItems().stream()
                 .filter(c -> c.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() ->
                         new CartItemNotFoundInCartException("Cart item with id=%d is not found in shopping cart with id=%d".formatted(id, cart.getId())));
-
-        cartItemRepository.delete(cartItem);
     }
+
 
     private ShoppingCart getShoppingCartByUser(String email) {
         return shoppingCartRepository.findByUser(getUserByEmail(email)).orElseGet(() ->
