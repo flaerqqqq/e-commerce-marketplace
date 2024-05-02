@@ -3,7 +3,6 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.ProductDto;
-import com.example.ecommercemarketplace.exceptions.MerchantNotFoundException;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.Category;
@@ -34,32 +33,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductDto> findPageOfProductsByMerchant(String publicId, Pageable pageable) {
         Merchant merchant = merchantMapper.mapFrom(merchantService.findMerchantByPublicId(publicId));
-
-        Page<ProductDto> pageOfProducts = productRepository.findByMerchant(merchant, pageable).map(productMapper::mapTo);
-
-        return pageOfProducts;
+        return productRepository.findByMerchant(merchant, pageable).map(productMapper::mapTo);
     }
 
     @Override
     public Page<ProductDto> findPageOfProductByCategory(Long categoryId, Pageable pageable) {
         Category category = categoryMapper.mapFrom(categoryService.findById(categoryId));
+        return productRepository.findByCategory(category, pageable).map(productMapper::mapTo);
 
-        Page<ProductDto> pageOfProducts = productRepository.findByCategory(category, pageable).map(productMapper::mapTo);
-
-        return pageOfProducts;
     }
 
     @Override
     public Page<ProductDto> findAll(Pageable pageable) {
-        Page<ProductDto> pageOfUsers = productRepository.findAll(pageable).map(productMapper::mapTo);
-
-        return pageOfUsers;
+        return productRepository.findAll(pageable).map(productMapper::mapTo);
     }
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productMapper.mapFrom(productDto);
-
         Product savedProduct = productRepository.save(product);
 
         return productMapper.mapTo(savedProduct);
@@ -77,14 +68,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         throwIfProductNotFound(id);
-
         productRepository.deleteById(id);
     }
 
     @Override
     public void deleteProductWithMerchantId(String merchantPublicId, Long productId) {
         merchantService.throwIfMerchantNotFoundByPublicId(merchantPublicId);
-
         deleteProduct(productId);
     }
 
@@ -127,7 +116,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto updateProductPatchWithMerchantId(String merchantPublicId, Long productId, ProductDto productDto) {
         merchantService.throwIfMerchantNotFoundByPublicId(merchantPublicId);
-
         return updateProductPatch(productId, productDto);
     }
 
@@ -144,14 +132,12 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto findById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() ->
                 new ProductNotFoundException("Product with id=%d is not found".formatted(id)));
-
         return productMapper.mapTo(product);
     }
 
     @Override
     public ProductDto findByIdWithMerchantId(String merchantPublicId, Long productId) {
         merchantService.throwIfMerchantNotFoundByPublicId(merchantPublicId);
-
         return findById(productId);
     }
 

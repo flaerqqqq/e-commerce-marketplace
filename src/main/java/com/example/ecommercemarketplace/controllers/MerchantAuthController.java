@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class MerchantAuthController {
 
-    private final AuthenticationService authenticationService;
+    private final AuthenticationService authService;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public MerchantRegistrationResponseDto register(@RequestBody @Valid MerchantRegistrationRequestDto registrationRequestDto) {
-        return authenticationService.registerMerchant(registrationRequestDto);
+    public MerchantRegistrationResponseDto register(@RequestBody @Valid MerchantRegistrationRequestDto regRequest) {
+        return authService.registerMerchant(regRequest);
     }
 }

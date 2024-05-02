@@ -6,6 +6,8 @@ import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequestDto;
 import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.events.EmailChangeEvent;
+import com.example.ecommercemarketplace.exceptions.PasswordResetTokenNotFoundException;
+import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.PasswordResetToken;
@@ -39,11 +41,11 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public boolean requestPasswordReset(PasswordResetRequestDto passwordResetRequestDto) {
+    public void requestPasswordReset(PasswordResetRequestDto passwordResetRequestDto) {
         String email = passwordResetRequestDto.getEmail();
 
         if (!userService.existsByEmail(email)) {
-            return false;
+            throw new UserNotFoundException("User with email=%s is not found".formatted(email));
         }
 
         PasswordResetToken passwordResetToken;
@@ -63,33 +65,26 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         passwordResetTokenRepository.save(passwordResetToken);
 
         emailService.sendMessageWithPasswordResetCode(email, tokenValue);
-
-        return true;
     }
 
     @Override
-    public boolean confirmPasswordReset(PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto) {
+    public void confirmPasswordReset(PasswordResetConfirmationRequestDto passwordResetConfirmationRequestDto) {
         String token = passwordResetConfirmationRequestDto.getToken();
-        if (!jwtService.isValid(token)) {
-            return false;
-        }
 
-        Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        jwtService.isValid(token);
 
-        if (passwordResetToken.isEmpty()) {
-            return false;
-        }
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(() ->
+                new PasswordResetTokenNotFoundException("Password reset token is not found"));
 
         String newPassword = passwordEncoder.encode(passwordResetConfirmationRequestDto.getPassword());
-        UserEntity user = passwordResetToken.get().getUser();
+        UserEntity user = passwordResetToken.getUser();
         user.setPassword(newPassword);
 
         updateUserMerchant(user);
 
         publishEvent(user);
 
-        passwordResetTokenRepository.delete(passwordResetToken.get());
-        return true;
+        passwordResetTokenRepository.delete(passwordResetToken);
     }
 
     private void publishEvent(UserEntity user) {

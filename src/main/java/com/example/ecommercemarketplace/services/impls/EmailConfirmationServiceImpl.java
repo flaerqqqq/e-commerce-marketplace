@@ -5,7 +5,6 @@ import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.events.MerchantRegistrationEvent;
 import com.example.ecommercemarketplace.events.UserRegistrationEvent;
 import com.example.ecommercemarketplace.services.EmailConfirmationService;
-import com.example.ecommercemarketplace.services.EmailConfirmationTokenService;
 import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.UserService;
 import lombok.AllArgsConstructor;
@@ -18,14 +17,12 @@ public class EmailConfirmationServiceImpl implements EmailConfirmationService {
 
     private final UserService userService;
     private final MerchantService merchantService;
-    private final EmailConfirmationTokenService emailConfirmationTokenService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public void confirm(String token) {
         if (merchantService.existsByEmailConfirmationToken(token)) {
             MerchantDto merchantDto = merchantService.findByEmailConfirmationToken(token);
-
             merchantDto.setEnabled(true);
 
             merchantService.updateMerchant(merchantDto);
@@ -33,7 +30,6 @@ public class EmailConfirmationServiceImpl implements EmailConfirmationService {
             eventPublisher.publishEvent(new MerchantRegistrationEvent(this, merchantDto));
         } else if (userService.existsByEmailConfirmationToken(token)) {
             UserDto userDto = userService.findByEmailConfirmationToken(token);
-
             userDto.setEnabled(true);
 
             userService.updateUser(userDto);
