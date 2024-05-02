@@ -38,4 +38,8 @@ public class UserDto {
     private List<Role> roles;
 
     private LoginData loginData;
+
+    private List<AddressDto> addresses;
+
+    private List<OrderDto> orders;
 }
