@@ -7,11 +7,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class MerchantLoginEvent extends ApplicationEvent {
 
-    private MerchantDto merchantDto;
-
-    public MerchantLoginEvent(Object source) {
-        super(source);
-    }
+    private final MerchantDto merchantDto;
 
     public MerchantLoginEvent(Object source, MerchantDto merchantDto) {
         super(source);

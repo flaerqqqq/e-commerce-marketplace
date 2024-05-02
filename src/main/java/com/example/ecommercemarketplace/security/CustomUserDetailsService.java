@@ -27,9 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new LoginAttemptExceedingException("Login attempts for EMAIL=%s has been exceeded. Return in %s".formatted(username, loginAttemptEmailService.calculateTimeToUnblock(username)));
         }
 
-
         UserEntity userEntity = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
-
         return new CustomUserDetails(userEntity);
     }
 }

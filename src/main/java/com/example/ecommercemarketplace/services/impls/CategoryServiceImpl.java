@@ -23,7 +23,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
         Category savedCategory = categoryRepository.save(categoryMapper.mapFrom(categoryDto));
-
         return categoryMapper.mapTo(savedCategory);
     }
 
@@ -56,15 +55,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryDto> findAllCategories(Pageable pageable) {
-        Page<Category> pageOfCategories = categoryRepository.findAll(pageable);
-
-        return pageOfCategories.map(categoryMapper::mapTo);
+        return categoryRepository.findAll(pageable)
+                .map(categoryMapper::mapTo);
     }
 
     @Override
     public void deleteCategory(Long id) {
         throwIfCategoryNotFoundById(id);
-
         categoryRepository.deleteById(id);
     }
 
@@ -72,7 +69,6 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto findById(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() ->
                 new CategoryNotFoundException("Category with id=%d is not found".formatted(id)));
-
         return categoryMapper.mapTo(category);
     }
 

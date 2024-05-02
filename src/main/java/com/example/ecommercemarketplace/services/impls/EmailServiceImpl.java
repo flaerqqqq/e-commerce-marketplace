@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    private final  JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     @Override
     public void sendMessageWithVerificationCode(String toEmail, String code) {
@@ -64,7 +64,6 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED);
-
             mimeMessageHelper.setTo(to);
             mimeMessageHelper.setSubject(subject);
             mimeMessageHelper.setText(body, true);

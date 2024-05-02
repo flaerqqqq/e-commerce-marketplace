@@ -7,11 +7,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class EmailChangeEvent extends ApplicationEvent {
 
-    public UserEntity user;
-
-    public EmailChangeEvent(Object source) {
-        super(source);
-    }
+    public final UserEntity user;
 
     public EmailChangeEvent(Object source, UserEntity user){
         super(source);

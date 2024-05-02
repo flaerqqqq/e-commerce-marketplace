@@ -4,6 +4,7 @@ import com.example.ecommercemarketplace.dto.*;
 import com.example.ecommercemarketplace.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,65 +19,44 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/{id}")
-    public UserResponseDto getUserByUserPublicId(@PathVariable("id") String id) {
-        UserDto user = userService.findUserByPublicId(id);
-        UserResponseDto userResponseDto = new UserResponseDto();
-
-        BeanUtils.copyProperties(user, userResponseDto);
-
-        return userResponseDto;
+    public UserResponseDto findByPublicId(@PathVariable("id") String publicId) {
+        UserDto user = userService.findUserByPublicId(publicId);
+        return modelMapper.map(user, UserResponseDto.class);
     }
 
     @GetMapping
-    public Page<UserResponseDto> getAllUsers(Pageable pageable) {
-        Page<UserResponseDto> page = userService.findAllUsers(pageable).map(userDto ->
-        {
-            UserResponseDto userResponseDto = new UserResponseDto();
-            BeanUtils.copyProperties(userDto, userResponseDto);
-            return userResponseDto;
-        });
-
-        return page;
+    public Page<UserResponseDto> findAll(Pageable pageable) {
+        return  userService.findAllUsers(pageable).map(userDto ->
+            modelMapper.map(userDto, UserResponseDto.class));
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public UserUpdateResponseDto updateUserFully(@RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto,
-                                                 @PathVariable("id") String id) {
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userUpdateRequestDto, userDto);
+    public UserUpdateResponseDto updateUserFully(@RequestBody @Valid UserUpdateRequestDto updateRequest,
+                                                 @PathVariable("id") String publicId) {
+        UserDto userDto = modelMapper.map(updateRequest, UserDto.class);
+        UserDto updatedUser = userService.updateUserFully(publicId, userDto);
 
-        UserDto updatedUser = userService.updateUserFully(id, userDto);
-
-        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
-        BeanUtils.copyProperties(updatedUser, userUpdateResponseDto);
-
-        return userUpdateResponseDto;
+        return modelMapper.map(updatedUser, UserUpdateResponseDto.class);
     }
 
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public UserUpdateResponseDto updateUserPatch(@RequestBody @Valid UserPatchUpdateRequestDto userPatchUpdateRequestDto,
-                                                 @PathVariable("id") String id) {
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userPatchUpdateRequestDto, userDto);
+    public UserUpdateResponseDto updateUserPatch(@RequestBody @Valid UserPatchUpdateRequestDto updateRequest,
+                                                 @PathVariable("id") String publicId) {
+        UserDto userDto = modelMapper.map(updateRequest, UserDto.class);
+        UserDto updatedUser = userService.updateUserPatch(publicId, userDto);
 
-        UserDto updatedUser = userService.updateUserPatch(id, userDto);
-
-        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
-        BeanUtils.copyProperties(updatedUser, userUpdateResponseDto);
-
-        return userUpdateResponseDto;
+        return modelMapper.map(updatedUser, UserUpdateResponseDto.class);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public void deleteUser(@PathVariable("id") String id) {
-        userService.removeUserByPublicId(id);
+    public void deleteUser(@PathVariable("id") String publicId) {
+        userService.removeUserByPublicId(publicId);
     }
 }
