@@ -62,4 +62,6 @@ public class UserEntity {
     @JoinColumn(name = "login_data_id")
     private LoginData loginData;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private ShoppingCart shoppingCart;
 }
