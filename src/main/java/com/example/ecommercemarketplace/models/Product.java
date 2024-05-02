@@ -2,7 +2,10 @@ package com.example.ecommercemarketplace.models;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -35,7 +38,6 @@ public class Product {
     private String description;
 
     @ManyToOne
-    @ToString.Exclude
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
 }

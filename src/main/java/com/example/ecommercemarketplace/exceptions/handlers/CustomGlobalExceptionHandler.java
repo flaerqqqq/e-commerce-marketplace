@@ -24,9 +24,6 @@ public class CustomGlobalExceptionHandler {
             EmailConfirmationTokenNotFoundException.class,
             UsernameNotFoundException.class,
             MerchantNotFoundException.class,
-            CartItemNotFoundException.class,
-            CartItemNotFoundInCartException.class,
-            ShoppingCartNotFoundException.class,
             PasswordResetTokenNotFoundException.class
     })
     public ResponseEntity<ErrorObject> handleEntityNotFoundException(RuntimeException ex) {
