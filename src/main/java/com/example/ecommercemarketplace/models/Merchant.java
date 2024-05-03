@@ -34,4 +34,6 @@ public class Merchant extends UserEntity {
     @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL)
     private List<Product> products;
 
+    @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL)
+    private List<MerchantOrder> merchantOrders;
 }

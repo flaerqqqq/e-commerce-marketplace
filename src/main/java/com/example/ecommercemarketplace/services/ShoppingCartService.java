@@ -14,4 +14,6 @@ public interface ShoppingCartService {
     void deleteCartItem(Authentication authentication, Long id);
 
     CartItemResponseDto updateCartItemQuantity(Authentication authentication, Long id, CartItemQuantityUpdateRequest updateRequest);
+
+    void clearShoppingCart(Authentication authentication);
 }

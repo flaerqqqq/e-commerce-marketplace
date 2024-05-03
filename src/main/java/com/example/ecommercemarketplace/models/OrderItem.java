@@ -1,10 +1,7 @@
 package com.example.ecommercemarketplace.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -13,7 +10,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "order_items")
+@ToString(exclude = {"merchantOrder", "product"})
+@Table(name = "merchant_order_items")
 public class OrderItem {
 
     @Id
@@ -21,8 +19,12 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @JoinColumn(name = "merchant_order_id")
+    private MerchantOrder merchantOrder;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(nullable = false)
     private int quantity;

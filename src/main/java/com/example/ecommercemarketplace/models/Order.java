@@ -3,10 +3,7 @@ package com.example.ecommercemarketplace.models;
 
 import com.example.ecommercemarketplace.models.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString(exclude = {"user"})
 @Table(name = "orders")
 public class Order {
 
@@ -34,16 +32,19 @@ public class Order {
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OrderItem> orderItems;
+    @OneToMany(mappedBy = "parentOrder", cascade = CascadeType.ALL)
+    private List<MerchantOrder> merchantOrders;
 
     @Enumerated(value=EnumType.STRING)
     private OrderStatus status;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_data_id")
     private OrderDeliveryData deliveryData;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
 }
 
 

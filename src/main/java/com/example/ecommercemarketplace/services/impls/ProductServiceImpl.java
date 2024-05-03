@@ -51,6 +51,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productMapper.mapFrom(productDto);
+        product.setId(null);
         Product savedProduct = productRepository.save(product);
 
         return productMapper.mapTo(savedProduct);

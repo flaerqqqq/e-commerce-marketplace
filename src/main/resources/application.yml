@@ -26,7 +26,7 @@ jwt:
   token:
     secret: sl8d45b4o2h35g243ilk7fdsgsfdljkhgfldkgh94837wyhglkfdjshgsd98f7og643gldujfhlafsdkhf43q287r3t26kdgzjfds
     expiration:
-      time: 300000
+      time: 3000000
   refresh:
     token:
       expiration:

@@ -25,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -101,6 +102,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         CartItem updatedCart = cartItemRepository.save(cartItem);
 
         return  modelMapper.map(updatedCart, CartItemResponseDto.class);
+    }
+
+    @Override
+    public void clearShoppingCart(Authentication authentication) {
+        UserEntity user = getUserByEmail(authentication.getName());
+        List<CartItem> cartItems = user.getShoppingCart().getCartItems();
+
+        cartItemRepository.deleteAll(cartItems);
     }
 
     private CartItem validateAndGetCartItem(Authentication authentication, Long id){

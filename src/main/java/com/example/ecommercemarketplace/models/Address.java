@@ -1,16 +1,14 @@
 package com.example.ecommercemarketplace.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString(exclude = {"user"})
 @Table(name = "addresses")
 public class Address {
 
