@@ -31,6 +31,4 @@ public class OrderDto {
     private OrderStatus status;
 
     private OrderDeliveryData deliveryData;
-
-
 }
