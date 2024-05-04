@@ -1,13 +1,18 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.OrderCreateRequestDto;
+import com.example.ecommercemarketplace.dto.OrderItemResponseDto;
 import com.example.ecommercemarketplace.dto.OrderResponseDto;
 import com.example.ecommercemarketplace.exceptions.AddressNotFoundException;
+import com.example.ecommercemarketplace.exceptions.OrderNotFoundException;
+import com.example.ecommercemarketplace.exceptions.OrderNotFoundInUserException;
+import com.example.ecommercemarketplace.mappers.OrderItemMapper;
 import com.example.ecommercemarketplace.mappers.OrderMapper;
 import com.example.ecommercemarketplace.models.*;
 import com.example.ecommercemarketplace.models.enums.OrderStatus;
 import com.example.ecommercemarketplace.models.enums.PaymentMethod;
 import com.example.ecommercemarketplace.repositories.AddressRepository;
+import com.example.ecommercemarketplace.repositories.OrderItemRepository;
 import com.example.ecommercemarketplace.repositories.OrderRepository;
 import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.OrderService;
@@ -21,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,9 +38,11 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
     private final ModelMapper modelMapper;
     private final ShoppingCartService shoppingCartService;
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
 
     @Override
     public OrderResponseDto createOrder(OrderCreateRequestDto requestDto, Authentication authentication) {
@@ -59,10 +67,47 @@ public class OrderServiceImpl implements OrderService {
                 .map(orderMapper::toResponseDto);
     }
 
+    @Override
+    public Page<OrderItemResponseDto> findAllOrderItemsByOrderId(Long orderId, Pageable pageable, Authentication authentication) {
+        Order order = getOrderByIdOrThrow(orderId);
+
+        throwIfUserNotHaveThatOrder(orderId, authentication);
+
+        return orderItemRepository.findAllByMerchantOrderIn(order.getMerchantOrders(), pageable).map(orderItemMapper::toResponseDto);
+    }
+
+    @Override
+    public void deleteOrderById(Long orderId, Authentication authentication) {
+        throwIfUserNotHaveThatOrder(orderId, authentication);
+        Order order = getOrderByIdOrThrow(orderId);
+        orderRepository.delete(order);
+    }
+
+    @Override
+    public OrderResponseDto findOrderById(Long orderId, Authentication authentication) {
+        throwIfUserNotHaveThatOrder(orderId, authentication);
+        Order order = getOrderByIdOrThrow(orderId);
+
+        return orderMapper.toResponseDto(order);
+    }
+
+    private Order getOrderByIdOrThrow(Long orderId){
+        return orderRepository.findById(orderId).orElseThrow(() ->
+                new OrderNotFoundException("Order with id=%d is not found".formatted(orderId)));
+    }
+
+    private void throwIfUserNotHaveThatOrder(Long orderId, Authentication authentication){
+        UserEntity user = getUserByAuthentication(authentication);
+        user.getOrders().stream()
+                .map(Order::getId)
+                .filter(id -> id.equals(orderId))
+                .findFirst().orElseThrow(() ->
+                        new OrderNotFoundInUserException("Order with id=%d is not created by user with email=%s".formatted(orderId, user.getEmail())));
+    }
+
     private UserEntity getUserByAuthentication(Authentication authentication){
         return userRepository.findByEmail(authentication.getName()).get();
     }
-
 
     private Order buildOrder(BigDecimal totalAmount, OrderDeliveryData orderDeliveryData,
                              UserEntity user, List<MerchantOrder> merchantOrders) {

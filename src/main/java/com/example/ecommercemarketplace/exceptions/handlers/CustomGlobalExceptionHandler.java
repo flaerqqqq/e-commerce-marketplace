@@ -27,11 +27,21 @@ public class CustomGlobalExceptionHandler {
             CartItemNotFoundException.class,
             CartItemNotFoundInCartException.class,
             ShoppingCartNotFoundException.class,
-            PasswordResetTokenNotFoundException.class
+            PasswordResetTokenNotFoundException.class,
+            OrderNotFoundException.class,
+            OrderItemNotFoundException.class
     })
     public ResponseEntity<ErrorObject> handleEntityNotFoundException(RuntimeException ex) {
         ErrorObject errorObject = generateErrorObject(HttpStatus.NOT_FOUND, ex);
         return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {
+            OrderNotFoundInUserException.class
+    })
+    public ResponseEntity<ErrorObject> handleNotFoundForUser(RuntimeException exception){
+        ErrorObject errorObject = generateErrorObject(HttpStatus.BAD_REQUEST, exception);
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

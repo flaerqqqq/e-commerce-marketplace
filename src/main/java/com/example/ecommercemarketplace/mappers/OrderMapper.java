@@ -16,6 +16,7 @@ public interface OrderMapper {
 
 
     @Mapping(source = "deliveryData.method", target = "deliveryMethod")
+    @Mapping(source = "status", target = "status")
     @Mapping(source = "merchantOrders", target = "totalQuantity", qualifiedByName = "calculateTotalQuantity")
     OrderResponseDto toResponseDto(Order order);
 
