@@ -4,6 +4,7 @@ import com.example.ecommercemarketplace.dto.OrderCreateRequestDto;
 import com.example.ecommercemarketplace.dto.OrderItemResponseDto;
 import com.example.ecommercemarketplace.dto.OrderResponseDto;
 import com.example.ecommercemarketplace.exceptions.AddressNotFoundException;
+import com.example.ecommercemarketplace.exceptions.EmptyShoppingCartException;
 import com.example.ecommercemarketplace.exceptions.OrderNotFoundException;
 import com.example.ecommercemarketplace.exceptions.OrderNotFoundInUserException;
 import com.example.ecommercemarketplace.mappers.OrderItemMapper;
@@ -47,6 +48,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseDto createOrder(OrderCreateRequestDto requestDto, Authentication authentication) {
         UserEntity user = getUserByAuthentication(authentication);
+
+        throwIfShoppingCartEmpty(user);
+
         List<MerchantOrder> merchantOrders = getMerchantOrdersByCartItems(user.getShoppingCart().getCartItems());
         BigDecimal totalAmount = calculateTotalAmountByMerchantOrders(merchantOrders);
         OrderDeliveryData orderDeliveryData = getOrderDeliveryData(requestDto, authentication.getName());
@@ -89,6 +93,12 @@ public class OrderServiceImpl implements OrderService {
         Order order = getOrderByIdOrThrow(orderId);
 
         return orderMapper.toResponseDto(order);
+    }
+
+    private void throwIfShoppingCartEmpty(UserEntity user){
+        if (user.getShoppingCart().getCartItems().isEmpty()){
+            throw new EmptyShoppingCartException("Can't create order for user with email=%s because cart is empty".formatted(user.getEmail()));
+        }
     }
 
     private Order getOrderByIdOrThrow(Long orderId){
