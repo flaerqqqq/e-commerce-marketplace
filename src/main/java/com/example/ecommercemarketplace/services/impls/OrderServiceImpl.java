@@ -11,7 +11,6 @@ import com.example.ecommercemarketplace.repositories.OrderRepository;
 import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.OrderService;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,15 +35,22 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponseDto createOrder(OrderCreateRequestDto requestDto, Authentication authentication) {
         UserEntity user = userRepository.findByEmail(authentication.getName()).get();
-
-        Map<Merchant, MerchantOrder> merchantOrders = getMerchantOrdersByCartItems(user.getShoppingCart().getCartItems());
-        List<MerchantOrder> merchantOrderList = mapToList(merchantOrders);
-
-        BigDecimal totalAmount = calculateTotalAmountByMerchantOrders(merchantOrderList);
+        List<MerchantOrder> merchantOrders = getMerchantOrdersByCartItems(user.getShoppingCart().getCartItems());
+        BigDecimal totalAmount = calculateTotalAmountByMerchantOrders(merchantOrders);
         OrderDeliveryData orderDeliveryData = getOrderDeliveryData(requestDto, authentication.getName());
 
         shoppingCartService.clearShoppingCart(authentication);
 
+        Order order = buildOrder(totalAmount, orderDeliveryData, user, merchantOrders);
+
+        setPaymentToOrder(order, requestDto.getPaymentMethod(), totalAmount);
+
+        Order savedOrder = orderRepository.save(order);
+        return modelMapper.map(savedOrder, OrderResponseDto.class);
+    }
+
+    private Order buildOrder(BigDecimal totalAmount, OrderDeliveryData orderDeliveryData,
+                             UserEntity user, List<MerchantOrder> merchantOrders) {
         Order order = Order.builder()
                 .totalAmount(totalAmount)
                 .orderTime(LocalDateTime.now())
@@ -54,70 +59,56 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryData(orderDeliveryData)
                 .build();
 
-        merchantOrderList.forEach(mOrder -> mOrder.setParentOrder(order));
-        order.setMerchantOrders(merchantOrderList);
+        merchantOrders.forEach(mOrder -> mOrder.setParentOrder(order));
+        order.setMerchantOrders(merchantOrders);
 
-        setPaymentToOrder(order, requestDto.getPaymentMethod(), totalAmount);
-
-        Order savedOrder = orderRepository.save(order);
-        return modelMapper.map(savedOrder, OrderResponseDto.class);
+        return order;
     }
 
-    private List<OrderItem> mapCartItemsToOrderItems(List<CartItem> cartItems){
+    private List<OrderItem> mapCartItemsToOrderItems(List<CartItem> cartItems) {
         return cartItems.stream()
                 .map(cartItem ->
-                     OrderItem.builder()
-                            .product(cartItem.getProduct())
-                            .totalPrice(BigDecimal.valueOf(cartItem.getQuantity()).multiply(cartItem.getProduct().getPrice()))
-                            .quantity(cartItem.getQuantity())
-                            .build()
+                        OrderItem.builder()
+                                .product(cartItem.getProduct())
+                                .totalPrice(BigDecimal.valueOf(cartItem.getQuantity()).multiply(cartItem.getProduct().getPrice()))
+                                .quantity(cartItem.getQuantity())
+                                .build()
                 )
                 .collect(Collectors.toList());
     }
 
-    private BigDecimal calculateTotalAmountByMerchantOrders(List<MerchantOrder> merchantOrders){
+    private BigDecimal calculateTotalAmountByMerchantOrders(List<MerchantOrder> merchantOrders) {
         return merchantOrders.stream()
                 .map(MerchantOrder::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private List<MerchantOrder> mapToList(Map<Merchant, MerchantOrder> merchantOrders){
-        return merchantOrders.values().stream().toList();
-    }
-
-    private Map<Merchant, MerchantOrder> getMerchantOrdersByCartItems(List<CartItem> cartItems){
+    private List<MerchantOrder> getMerchantOrdersByCartItems(List<CartItem> cartItems) {
         Map<Merchant, List<OrderItem>> orderItemsByMerchant = mapCartItemsToOrderItems(cartItems).stream()
                 .collect(Collectors.groupingBy(orderItem -> orderItem.getProduct().getMerchant(), Collectors.toList()));
 
-        Map<Merchant, MerchantOrder> merchantOrders = new HashMap<>();
-
-        for (var entry : orderItemsByMerchant.entrySet()){
-            Merchant merchant = entry.getKey();
-            List<OrderItem> orderItems = entry.getValue();
-
-            merchantOrders.put(merchant, buildMerchantOrderByOrderItems(merchant, orderItems));
-        }
-
-        return merchantOrders;
+        return orderItemsByMerchant.entrySet().stream()
+                .map(entry -> buildMerchantOrderByOrderItems(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
-    private MerchantOrder buildMerchantOrderByOrderItems(Merchant merchant, List<OrderItem> orderItems){
+    private MerchantOrder buildMerchantOrderByOrderItems(Merchant merchant, List<OrderItem> orderItems) {
         BigDecimal totalAmount = orderItems.stream()
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         MerchantOrder merchantOrder = MerchantOrder.builder()
                 .merchant(merchant)
                 .totalAmount(totalAmount)
+                .orderItems(orderItems)
                 .build();
 
         orderItems.forEach(mOrder -> mOrder.setMerchantOrder(merchantOrder));
-        merchantOrder.setOrderItems(orderItems);
 
         return merchantOrder;
     }
 
-    private void setPaymentToOrder(Order order, PaymentMethod paymentMethod, BigDecimal totalAmount){
-        if (paymentMethod != PaymentMethod.CASH_ON_DELIVERY){
+    private void setPaymentToOrder(Order order, PaymentMethod paymentMethod, BigDecimal totalAmount) {
+        if (paymentMethod != PaymentMethod.CASH_ON_DELIVERY) {
             Payment payment = Payment.builder()
                     .paymentTime(LocalDateTime.now())
                     .amount(totalAmount)
@@ -127,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private OrderDeliveryData getOrderDeliveryData(OrderCreateRequestDto requestDto, String email){
+    private OrderDeliveryData getOrderDeliveryData(OrderCreateRequestDto requestDto, String email) {
         Long addressId = requestDto.getDeliveryData().getAddressId();
         Address address = addressRepository.findById(addressId).orElseThrow(() ->
                 new AddressNotFoundException("Address with id=%d for user with email=%s is not found".formatted(addressId, email)));
