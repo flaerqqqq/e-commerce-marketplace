@@ -3,6 +3,7 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.OrderCreateRequestDto;
 import com.example.ecommercemarketplace.dto.OrderResponseDto;
 import com.example.ecommercemarketplace.exceptions.AddressNotFoundException;
+import com.example.ecommercemarketplace.mappers.OrderMapper;
 import com.example.ecommercemarketplace.models.*;
 import com.example.ecommercemarketplace.models.enums.OrderStatus;
 import com.example.ecommercemarketplace.models.enums.PaymentMethod;
@@ -13,6 +14,8 @@ import com.example.ecommercemarketplace.services.OrderService;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +34,11 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
     private final ShoppingCartService shoppingCartService;
+    private final OrderMapper orderMapper;
 
     @Override
     public OrderResponseDto createOrder(OrderCreateRequestDto requestDto, Authentication authentication) {
-        UserEntity user = userRepository.findByEmail(authentication.getName()).get();
+        UserEntity user = getUserByAuthentication(authentication);
         List<MerchantOrder> merchantOrders = getMerchantOrdersByCartItems(user.getShoppingCart().getCartItems());
         BigDecimal totalAmount = calculateTotalAmountByMerchantOrders(merchantOrders);
         OrderDeliveryData orderDeliveryData = getOrderDeliveryData(requestDto, authentication.getName());
@@ -48,6 +52,17 @@ public class OrderServiceImpl implements OrderService {
         Order savedOrder = orderRepository.save(order);
         return modelMapper.map(savedOrder, OrderResponseDto.class);
     }
+
+    @Override
+    public Page<OrderResponseDto> findAllOrdersByUser(Pageable pageable, Authentication authentication) {
+        return orderRepository.findAllByUser(getUserByAuthentication(authentication), pageable)
+                .map(orderMapper::toResponseDto);
+    }
+
+    private UserEntity getUserByAuthentication(Authentication authentication){
+        return userRepository.findByEmail(authentication.getName()).get();
+    }
+
 
     private Order buildOrder(BigDecimal totalAmount, OrderDeliveryData orderDeliveryData,
                              UserEntity user, List<MerchantOrder> merchantOrders) {

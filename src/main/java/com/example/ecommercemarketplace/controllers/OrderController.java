@@ -6,11 +6,10 @@ import com.example.ecommercemarketplace.dto.OrderResponseDto;
 import com.example.ecommercemarketplace.services.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -24,6 +23,12 @@ public class OrderController {
     public OrderResponseDto createOrder(@RequestBody OrderCreateRequestDto requestDto,
                                         Authentication authentication) {
         return orderService.createOrder(requestDto, authentication);
+    }
+
+    @GetMapping
+    public Page<OrderResponseDto> getAllOrdersByUser(Pageable pageable,
+                                                     Authentication authentication){
+        return orderService.findAllOrdersByUser(pageable, authentication);
     }
 
 
