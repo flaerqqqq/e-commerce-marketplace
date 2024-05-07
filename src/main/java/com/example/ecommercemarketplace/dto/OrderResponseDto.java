@@ -1,15 +1,16 @@
 package com.example.ecommercemarketplace.dto;
 
 import com.example.ecommercemarketplace.models.enums.DeliveryMethod;
-import com.example.ecommercemarketplace.models.enums.OrderStatus;
+import com.example.ecommercemarketplace.models.enums.MerchantOrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.convert.DataSizeUnit;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -25,7 +26,7 @@ public class OrderResponseDto {
 
     private int totalQuantity;
 
-    private OrderStatus status;
+    private Map<Long, MerchantOrderStatus> statusesOfOrders;
 
     private DeliveryMethod deliveryMethod;
 }

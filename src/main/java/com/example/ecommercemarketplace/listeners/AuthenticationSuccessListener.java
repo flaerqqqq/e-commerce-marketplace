@@ -2,7 +2,6 @@ package com.example.ecommercemarketplace.listeners;
 
 import com.example.ecommercemarketplace.services.LoginAttemptEmailService;
 import com.example.ecommercemarketplace.services.LoginAttemptIPService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

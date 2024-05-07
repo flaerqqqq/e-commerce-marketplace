@@ -1,7 +1,6 @@
 package com.example.ecommercemarketplace.models;
 
 
-import com.example.ecommercemarketplace.models.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,9 +33,6 @@ public class Order {
 
     @OneToMany(mappedBy = "parentOrder", cascade = CascadeType.ALL)
     private List<MerchantOrder> merchantOrders;
-
-    @Enumerated(value=EnumType.STRING)
-    private OrderStatus status;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_data_id")

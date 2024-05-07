@@ -1,5 +1,6 @@
 package com.example.ecommercemarketplace.models;
 
+import com.example.ecommercemarketplace.models.enums.MerchantOrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,9 @@ public class MerchantOrder {
 
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
+
+    @Enumerated(EnumType.STRING)
+    private MerchantOrderStatus status;
 
     @ManyToOne
     @JoinColumn(name = "parent_order_id")

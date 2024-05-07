@@ -10,7 +10,7 @@ import com.example.ecommercemarketplace.exceptions.OrderNotFoundInUserException;
 import com.example.ecommercemarketplace.mappers.OrderItemMapper;
 import com.example.ecommercemarketplace.mappers.OrderMapper;
 import com.example.ecommercemarketplace.models.*;
-import com.example.ecommercemarketplace.models.enums.OrderStatus;
+import com.example.ecommercemarketplace.models.enums.MerchantOrderStatus;
 import com.example.ecommercemarketplace.models.enums.PaymentMethod;
 import com.example.ecommercemarketplace.repositories.AddressRepository;
 import com.example.ecommercemarketplace.repositories.OrderItemRepository;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
         setPaymentToOrder(order, requestDto.getPaymentMethod(), totalAmount);
 
         Order savedOrder = orderRepository.save(order);
-        return modelMapper.map(savedOrder, OrderResponseDto.class);
+        return orderMapper.toResponseDto(savedOrder);
     }
 
     @Override
@@ -95,18 +94,18 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toResponseDto(order);
     }
 
-    private void throwIfShoppingCartEmpty(UserEntity user){
-        if (user.getShoppingCart().getCartItems().isEmpty()){
+    private void throwIfShoppingCartEmpty(UserEntity user) {
+        if (user.getShoppingCart().getCartItems().isEmpty()) {
             throw new EmptyShoppingCartException("Can't create order for user with email=%s because cart is empty".formatted(user.getEmail()));
         }
     }
 
-    private Order getOrderByIdOrThrow(Long orderId){
+    private Order getOrderByIdOrThrow(Long orderId) {
         return orderRepository.findById(orderId).orElseThrow(() ->
                 new OrderNotFoundException("Order with id=%d is not found".formatted(orderId)));
     }
 
-    private void throwIfUserNotHaveThatOrder(Long orderId, Authentication authentication){
+    private void throwIfUserNotHaveThatOrder(Long orderId, Authentication authentication) {
         UserEntity user = getUserByAuthentication(authentication);
         user.getOrders().stream()
                 .map(Order::getId)
@@ -115,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
                         new OrderNotFoundInUserException("Order with id=%d is not created by user with email=%s".formatted(orderId, user.getEmail())));
     }
 
-    private UserEntity getUserByAuthentication(Authentication authentication){
+    private UserEntity getUserByAuthentication(Authentication authentication) {
         return userRepository.findByEmail(authentication.getName()).get();
     }
 
@@ -124,7 +123,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .totalAmount(totalAmount)
                 .orderTime(LocalDateTime.now())
-                .status(OrderStatus.PENDING)
                 .user(user)
                 .deliveryData(orderDeliveryData)
                 .build();
@@ -159,6 +157,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderItemsByMerchant.entrySet().stream()
                 .map(entry -> buildMerchantOrderByOrderItems(entry.getKey(), entry.getValue()))
+                .peek(order -> order.setStatus(MerchantOrderStatus.PENDING))
                 .collect(Collectors.toList());
     }
 

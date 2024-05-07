@@ -48,6 +48,7 @@ public class CustomGlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorObject> handleSideExceptions(Exception exception) {
         ErrorObject errorObject = generateErrorObject(HttpStatus.INTERNAL_SERVER_ERROR, exception);
+        exception.printStackTrace();
         return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

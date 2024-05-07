@@ -124,4 +124,12 @@ public class MerchantController {
         productService.deleteProductWithMerchantId(publicId, productId);
     }
 
+    @PatchMapping("/{id}/orders/{merchantOrderId}")
+    @PreAuthorize("hasAnyRole('MERCHANT', 'ADMIN')")
+    public void changeMerchantOrderStatus(@PathVariable("id") String merchandId,
+                                          @PathVariable("merchantOrderId") Long merchantOrderId,
+                                          @RequestBody MerchantOrderStatusRequestDto requestDto){
+
+    }
+
 }

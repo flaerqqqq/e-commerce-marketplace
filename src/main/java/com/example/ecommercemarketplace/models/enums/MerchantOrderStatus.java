@@ -1,6 +1,6 @@
 package com.example.ecommercemarketplace.models.enums;
 
-public enum OrderStatus {
+public enum MerchantOrderStatus {
     PENDING,
     PROCESSING,
     CONFIRMED,

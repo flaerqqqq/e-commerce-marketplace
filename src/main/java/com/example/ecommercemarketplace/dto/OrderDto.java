@@ -2,7 +2,6 @@ package com.example.ecommercemarketplace.dto;
 
 
 import com.example.ecommercemarketplace.models.OrderDeliveryData;
-import com.example.ecommercemarketplace.models.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,8 +26,6 @@ public class OrderDto {
     private BigDecimal totalAmount;
 
     private List<OrderItemDto> orderItems;
-
-    private OrderStatus status;
 
     private OrderDeliveryData deliveryData;
 }
