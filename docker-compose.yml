@@ -1,10 +1,85 @@
-version: "3"
-services:
-  db:
-    image: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: marketplace
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 452389
+  version: "3.8"
+
+  services:
+    db:
+      image: postgres
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_DB: marketplace
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: 452389
+      volumes:
+        - ./pg-data:/var/lib/postgresql/data
+        - ./dump:/docker-entrypoint-initdb.d
+    es-node:
+      image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+      container_name: elasticsearch
+      restart: always
+      volumes:
+        - ./elasticsearch-data:/usr/share/elasticsearch/data
+      ports:
+        - "9200:9200"
+        - "9600:9600"
+      environment:
+        - discovery.type=single-node
+        - node.name=es-node
+        - discovery.seed_hosts=es-node
+        - bootstrap.memory_lock=true
+        - xpack.security.enabled=false
+        - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+
+    kibana:
+      image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+      container_name: kibana
+      restart: always
+      volumes:
+        - ./kibana-data:/usr/share/kibana/data
+      depends_on:
+        - es-node
+      ports:
+        - ${KIBANA_PORT}:5601
+      environment:
+        - ELASTICSEARCH_URL=http://elasticsearch:9200
+
+    logstash:
+      image: docker.elastic.co/logstash/logstash-oss:${STACK_VERSION}
+      container_name: logstash
+      restart: always
+      logging:
+        driver: "json-file"
+        options:
+          max-size: "100m"
+          max-file: "3"
+      volumes:
+        - ./logstash-conf/config:/usr/share/logstash/pipeline
+        - ./logstash-data:/usr/share/logstash/data
+        - ./logstash-conf/postgresql:/usr/share/logstash/postgresql
+      command: logstash -f /usr/share/logstash/pipeline/logstash.conf
+      ports:
+        - "5044:5044"
+      depends_on:
+        - db
+        - es-node
+      environment:
+        - PIPELINE_WORKERS=1
+        - PIPELINE_BATCH_SIZE=125
+        - PIPELINE_BATCH_DELAY=50
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  volumes:
+    esdata:
+      driver: local
+    kibanadata:
+      driver: local
+    logstashdata:
+      driver: local
+
+  networks:
+    default:
+      name: elk
+      external: false
