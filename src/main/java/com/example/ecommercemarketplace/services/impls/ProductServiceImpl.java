@@ -162,6 +162,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDto> searchProductsByName(String name) {
         List<ProductDocument> productDocuments = productSearchRepository.findProductDocumentByProductName(name);
+        return mapDocumentsToResponseDto(productDocuments);
     }
 
     private List<ProductResponseDto> mapDocumentsToResponseDto(List<ProductDocument> productDocuments) {
