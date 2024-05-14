@@ -1,23 +1,31 @@
 package com.example.ecommercemarketplace.services.impls;
 
+import com.example.ecommercemarketplace.documents.ProductDocument;
 import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.ProductDto;
+import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
 import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
 import com.example.ecommercemarketplace.models.Category;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.Product;
 import com.example.ecommercemarketplace.repositories.ProductRepository;
+import com.example.ecommercemarketplace.repositories.elasticsearch.ProductSearchRepository;
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,8 +35,10 @@ public class ProductServiceImpl implements ProductService {
     private final MerchantService merchantService;
     private final CategoryService categoryService;
     private final Mapper<Merchant, MerchantDto> merchantMapper;
-    private final Mapper<Product, ProductDto> productMapper;
+    private final ProductMapper productMapper;
     private final Mapper<Category, CategoryDto> categoryMapper;
+    private final ElasticsearchOperations elasticsearchOperations;
+    private final ProductSearchRepository productSearchRepository;
 
     @Override
     public Page<ProductDto> findPageOfProductsByMerchant(String publicId, Pageable pageable) {
@@ -147,6 +157,23 @@ public class ProductServiceImpl implements ProductService {
         if (!productRepository.existsById(productId)) {
             throw new ProductNotFoundException("Product with id=%d is not found".formatted(productId));
         }
+    }
+
+    @Override
+    public List<ProductResponseDto> searchProductsByName(String name) {
+        List<ProductDocument> productDocuments = productSearchRepository.findProductDocumentByProductName(name);
+    }
+
+    private List<ProductResponseDto> mapDocumentsToResponseDto(List<ProductDocument> productDocuments) {
+        List<Product> products = new ArrayList<>();
+        for (ProductDocument productDocument : productDocuments) {
+            products.add(productRepository.findById(productDocument.getId()).orElseThrow(() ->
+                    new ProductNotFoundException("Product with id=%d is not found".formatted(productDocument.getId()))));
+        }
+        return products.stream()
+                .map(productMapper::mapTo)
+                .map(productMapper::toResponseDto)
+                .collect(Collectors.toList());
     }
 
 

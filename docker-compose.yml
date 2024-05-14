@@ -76,8 +76,8 @@ services:
       - "5044:5044"
     volumes:
       - logstashdata:/usr/share/logstash/data
-      - logstashconf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-      - logstashconf/postgresql-42.6.2.jar:/usr/share/logstash/postgresql-42.6.2.jar
+      - ./logstashconf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logstashconf/postgresql-42.6.2.jar:/usr/share/logstash/postgresql-42.6.2.jar
     environment:
       - PIPELINE_WORKERS=1
       - PIPELINE_BATCH_SIZE=125
