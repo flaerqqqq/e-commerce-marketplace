@@ -131,15 +131,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(ProductDto productDto) {
-        throwIfProductNotFound(productDto.getId());
-
-        Product savedProduct = productRepository.save(productMapper.mapFrom(productDto));
-
-        return productMapper.mapTo(savedProduct);
-    }
-
-    @Override
     public ProductDto findById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() ->
                 new ProductNotFoundException("Product with id=%d is not found".formatted(id)));
