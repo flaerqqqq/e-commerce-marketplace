@@ -24,4 +24,7 @@ public class ProductDocument {
 
     @Field(type = FieldType.Text)
     private String description;
+
+    @Field(type = FieldType.Text)
+    private String category;
 }
