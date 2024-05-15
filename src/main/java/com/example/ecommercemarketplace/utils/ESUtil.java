@@ -15,8 +15,9 @@ public class ESUtil {
         return queryBuilder.withQuery(QueryBuilders.multiMatch(builder ->
                     builder
                             .query(query)
-                            .fields(Arrays.asList("product_name", "category_name", "description"))
-                            .fuzziness("AUTO"))
+                            .fields(fields)
+                            .fuzziness("AUTO")
+                            .autoGenerateSynonymsPhraseQuery(true))
                 ).build();
     }
 }
