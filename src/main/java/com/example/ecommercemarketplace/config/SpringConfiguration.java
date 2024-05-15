@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         implementationPackage = "<PACKAGE_NAME>.impl")
-@EnableElasticsearchRepositories
+@EnableElasticsearchRepositories(basePackages = "com.example.ecommercemarketplace.repositories.elasticsearch")
 public class SpringConfiguration {
 
     @Bean

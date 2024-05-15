@@ -1,5 +1,6 @@
 package com.example.ecommercemarketplace.services.impls;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import com.example.ecommercemarketplace.documents.ProductDocument;
 import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.dto.MerchantDto;
@@ -16,13 +17,20 @@ import com.example.ecommercemarketplace.repositories.elasticsearch.ProductSearch
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.ProductService;
+import com.example.ecommercemarketplace.utils.ESUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -151,9 +159,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseDto> searchProductsByName(String name) {
-        List<ProductDocument> productDocuments = productSearchRepository.findProductDocumentByProductName(name);
-        return mapDocumentsToResponseDto(productDocuments);
+    public Page<ProductResponseDto> searchProducts(String query, Pageable pageable){
+        Query searchQuery = ESUtil.buildMultiLineSearchQuery(query, Arrays.asList("product_name", "category_name", "description"));
+        searchQuery.setPageable(pageable);
+
+        SearchHits<ProductDocument> searchHits = elasticsearchOperations.search(searchQuery, ProductDocument.class);
+        List<ProductDocument> results = searchHits.stream()
+                .map(SearchHit::getContent)
+                .toList();
+
+        List<ProductResponseDto> products =  mapDocumentsToResponseDto(results);
+        return new PageImpl<>(products, pageable, searchHits.getTotalHits());
     }
 
     private List<ProductResponseDto> mapDocumentsToResponseDto(List<ProductDocument> productDocuments) {
@@ -167,6 +183,5 @@ public class ProductServiceImpl implements ProductService {
                 .map(productMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
-
 
 }

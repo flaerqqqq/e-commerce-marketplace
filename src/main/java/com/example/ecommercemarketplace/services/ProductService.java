@@ -37,5 +37,5 @@ public interface ProductService {
 
     void throwIfProductNotFound(Long productId);
 
-     List<ProductResponseDto> searchProductsByName(String name);
+    Page<ProductResponseDto> searchProducts(String query, Pageable pageable);
 }
