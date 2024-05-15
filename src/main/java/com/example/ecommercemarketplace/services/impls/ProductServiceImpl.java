@@ -1,6 +1,8 @@
 package com.example.ecommercemarketplace.services.impls;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.example.ecommercemarketplace.documents.ProductDocument;
 import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.dto.MerchantDto;
@@ -19,14 +21,18 @@ import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.ProductService;
 import com.example.ecommercemarketplace.utils.ESUtil;
 import lombok.AllArgsConstructor;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
+import org.springframework.data.elasticsearch.core.suggest.response.Suggest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,7 +52,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final Mapper<Category, CategoryDto> categoryMapper;
     private final ElasticsearchOperations elasticsearchOperations;
-    private final ProductSearchRepository productSearchRepository;
 
     @Override
     public Page<ProductDto> findPageOfProductsByMerchant(String publicId, Pageable pageable) {

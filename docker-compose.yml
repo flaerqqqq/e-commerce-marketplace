@@ -77,6 +77,7 @@ services:
     volumes:
       - logstashdata:/usr/share/logstash/data
       - ./logstashconf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logstashconf/template.json:/usr/share/logstash/template/template.json
       - ./logstashconf/postgresql-42.6.2.jar:/usr/share/logstash/postgresql-42.6.2.jar
     environment:
       - PIPELINE_WORKERS=1
