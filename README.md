@@ -98,6 +98,9 @@ A list of technologies, frameworks, and tools used in the project.
 ### Testing
 - [About Tests](#testing-status-for-the-project)
 
+### How To Run On Your Machine
+- [About starting up](#running-the-project-with-docker-compose)
+
 # API Documentation
 
 # Authentication
@@ -611,5 +614,31 @@ Tests cover:
 
 The comprehensive testing approach helps maintain the quality and stability of the merchant management functionality, ensuring that it behaves as expected and meets the specified requirements.
 
+### Running the Project with Docker Compose
+
+To run the project locally, Docker Compose is used to orchestrate the deployment of the application along with its required services such as PostgreSQL, Elasticsearch, Logstash, and Kibana. Follow these steps to set up and run the project:
+
+1. **Clone the Repository:**  
+    - git clone https://github.com/flaerqqqq/e-commerce-marketplace.git
+    - cd e-commerce-marketplace
+2. **Build the Application:**  
+    - mvn clean package 
+3. **Start Docker Containers:**  
+    - docker-compose up -d  
+This command will start the Docker containers defined in the `docker-compose.yml` file. PostgreSQL, Elasticsearch, 
+   Logstash, and Kibana containers will be initialized along with the application container.
+
+4. **Access the Application:**
+    - Once the containers are up and running, you can access the application at [http://localhost:8080](http://localhost:8080).
+
+5. **Access Elasticsearch and Kibana:**  
+    - Elasticsearch: [http://localhost:9200](http://localhost:9200)
+    - Kibana: [http://localhost:5601](http://localhost:5601)
+
+6. **Stop the Containers:**  
+
+   - docker-compose down
+
+By following these steps, you can easily set up and run the project locally using Docker Compose. Make sure you have Docker and Docker Compose installed on your system before proceeding.
 
 # README FILE IS NOT COMPLETED
