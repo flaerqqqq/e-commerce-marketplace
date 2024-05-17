@@ -95,6 +95,13 @@ A list of technologies, frameworks, and tools used in this project.
 - [Change Merchant Order Status](#change-merchant-order-status)
 - [Get Merchant Orders By Merchant](#get-merchant-orders-by-merchant)
 
+### Addional Features
+ - [Jwt-Based Authentication](#jwt-based-authentication)
+ - [Email Verification](#email-verification)
+ - [Brute Froce Protection](#brute-force-login-protection)
+ - [Password Reset](#password-reset-flow)
+ - [Main Order Splitting Into Merchant' Ones](#automatic-splitting-of-main-order-into-merchant-orders)
+
 ### Testing
 - [About Tests](#testing-status-for-the-project)
 
@@ -167,6 +174,7 @@ To protect against brute force attacks, the following limits are enforced:
 - IP-based Limiting: A maximum of 10 login attempts per IP address.
 
 After exceeding these limits, further login attempts will be temporarily blocked.
+Block can be reset by changing the password.
 
 ### Password Reset
 
@@ -578,7 +586,7 @@ Additionally, data is piped from PostgreSQL to Elasticsearch via Logstash. Logst
   - `size`: Number of merchant orders per page (optional).
 - **Response:** `Page<MerchantOrderResponseDto>`
 
-### Feature: Automatic Splitting of Main Order into Merchant Orders
+### Automatic Splitting of Main Order into Merchant Orders
 
 #### Description
 When a user places an order for products from different merchants, the main order is automatically split into multiple merchant orders. Each merchant order corresponds to the products purchased from a specific merchant. This feature ensures efficient management and fulfillment of orders from various merchants.
