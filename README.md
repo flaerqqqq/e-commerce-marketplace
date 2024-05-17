@@ -5,12 +5,12 @@
 The e-commerce platform provides a feature-rich environment for both users and merchants to engage in online retail activities. With its robust architecture and extensive set of functionalities, it offers a seamless and secure shopping experience for all stakeholders involved.
 
 # Technologies Used
-A list of technologies, frameworks, and tools used in the project.
+A list of technologies, frameworks, and tools used in this project.
 
 * Java
 * Spring (Core, Boot, MVC, Security, Data JPA)
-* Postgresql, Hibernate
-* Maven, Lombok, Mapstruct
+* PostgreSQL, Hibernate
+* Maven, Lombok, MapStruct
 * ELK (Elasticsearch, Logstash, Kibana)
 * JUnit, Mockito
 * Docker
@@ -99,7 +99,7 @@ A list of technologies, frameworks, and tools used in the project.
 - [About Tests](#testing-status-for-the-project)
 
 ### How To Run On Your Machine
-- [About starting up](#running-the-project-with-docker-compose)
+- [About Starting Up](#running-the-project-with-docker-compose)
 
 # API Documentation
 
