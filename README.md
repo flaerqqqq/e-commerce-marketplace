@@ -38,14 +38,21 @@ The e-commerce platform provides a feature-rich environment for both users and m
 - [Partially Update Merchant](#partially-update-merchant)
 - [Delete Merchant](#delete-merchant)
 - [Get Merchant Products](#get-merchant-products)
+- [Get Product by ID](#get-product-by-id)
+- [Create Product](#create-product)
+- [Update Product Fully](#update-product-fully)
+- [Partially Update Product](#partially-update-product)
+- [Delete Product](#delete-product)
 
 ### Categories
 
 - [Find by ID](#get-category-by-id)
 - [Find All](#get-all-categories)
 - [Create Category](#create-category)
-- [Update Category](#update-category)
+- [Update Category Fully](#update-category-fully)
+- [Patrially Update Category](#partially-update-category)
 - [Delete Category](#delete-category)
+- [Find Products By Category](#get-products-by-category)
 
 ### Products
 
@@ -62,10 +69,15 @@ The e-commerce platform provides a feature-rich environment for both users and m
 ### Orders
 
 - [Create Order](#create-order)
-- [Get All Orders](#get-all-orders)
+- [Get All Orders](#get-all-orders-by-user)
 - [Get Order by ID](#get-order-by-id)
-- [Get All Order Items](#get-all-order-items)
-- [Delete Order](#delete-order)
+- [Get All Order Items](#get-all-order-items-by-order-id)
+- [Delete Order](#delete-order-by-id)
+
+### Merchant Orders
+
+- [Change Merchant Order Status](#change-merchant-order-status)
+- [Get Merchant Orders By Merchant](#get-merchant-orders-by-merchant)
 
 # Technologies Used
 A list of technologies, frameworks, and tools used in the project.
@@ -435,7 +447,7 @@ Additionally, data is piped from PostgreSQL to Elasticsearch via Logstash. Logst
 
 ### Shopping Cart Management
 
-#### Add Item to Shopping Cart
+#### Add Item
 
 - **Endpoint:** `/api/cart/cart-items`
 - **Method:** `POST`
@@ -444,7 +456,7 @@ Additionally, data is piped from PostgreSQL to Elasticsearch via Logstash. Logst
 - **Authorization:** User role required.
 - **Response:** `ShoppingCartResponseDto`
 
-#### Get All Items in Shopping Cart
+#### Get All Items
 
 - **Endpoint:** `/api/cart/cart-items`
 - **Method:** `GET`
@@ -455,7 +467,7 @@ Additionally, data is piped from PostgreSQL to Elasticsearch via Logstash. Logst
   - `size`: Number of items per page (optional).
 - **Response:** `Page<CartItemResponseDto>`
 
-#### Delete Item from Shopping Cart
+#### Delete Item
 
 - **Endpoint:** `/api/cart/cart-items/{id}`
 - **Method:** `DELETE`
@@ -465,7 +477,7 @@ Additionally, data is piped from PostgreSQL to Elasticsearch via Logstash. Logst
 - **Authorization:** User role required.
 - **Response:** No content (HTTP status code 204)
 
-#### Update Item Quantity in Shopping Cart
+#### Update Item Quantity
 
 - **Endpoint:** `/api/cart/cart-items/{id}`
 - **Method:** `PUT`
@@ -531,6 +543,31 @@ Additionally, data is piped from PostgreSQL to Elasticsearch via Logstash. Logst
   - `id`: The ID of the order.
 - **Authorization:** User role required.
 - **Response:** No content (HTTP status code 204)
+
+
+### Merchant Order Management
+
+#### Change Merchant Order Status
+
+- **Endpoint:** `/api/merchant-orders/{id}`
+- **Method:** `PATCH`
+- **Description:** Change the status of a merchant order.
+- **Path Parameters:**
+  - `id`: The ID of the merchant order.
+- **Request Body:** `StatusChangeRequestDto`
+- **Authorization:** Merchant or admin role required.
+- **Response:** `MerchantOrderResponseDto`
+
+#### Get Merchant Orders by Merchant
+
+- **Endpoint:** `/api/merchant-orders`
+- **Method:** `GET`
+- **Description:** Retrieve all merchant orders associated with the authenticated merchant.
+- **Authorization:** Merchant or admin role required.
+- **Query Parameters:**
+  - `page`: Page number for pagination (optional).
+  - `size`: Number of merchant orders per page (optional).
+- **Response:** `Page<MerchantOrderResponseDto>`
 
 ### Feature: Automatic Splitting of Main Order into Merchant Orders
 
