@@ -1,83 +1,8 @@
-# E-Commerce marketplace
+# E-Commerce Marketplace
 
 ## Description
 
 The e-commerce platform provides a feature-rich environment for both users and merchants to engage in online retail activities. With its robust architecture and extensive set of functionalities, it offers a seamless and secure shopping experience for all stakeholders involved.
-
-## Table of Contents
-
-### Authentication
-
-- [Login](#login)
-- [Register](#register-user)
-- [Register Merchant](#register-merchant)
-- [Refresh Token](#refresh-token)
-
-### Email Confirmation
-
-- [Confirm Email](#email-confirmation)
-
-### Password Reset
-
-- [Request Password Reset](#request-password-reset)
-- [Confirm Password Reset](#confirm-password-reset)
-
-### Users
-
-- [Find by ID](#get-user-by-id)
-- [Find All](#get-all-users)
-- [Update User Fully](#update-user-fully)
-- [Partially Update User](#partially-update-user)
-- [Delete User](#delete-user)
-
-### Mechants
-
-- [Get Merchant by ID](#get-merchant-by-id)
-- [Get All Merchants](#get-all-merchants)
-- [Update Merchant Fully](#update-merchant-fully)
-- [Partially Update Merchant](#partially-update-merchant)
-- [Delete Merchant](#delete-merchant)
-- [Get Merchant Products](#get-merchant-products)
-- [Get Product by ID](#get-product-by-id)
-- [Create Product](#create-product)
-- [Update Product Fully](#update-product-fully)
-- [Partially Update Product](#partially-update-product)
-- [Delete Product](#delete-product)
-
-### Categories
-
-- [Find by ID](#get-category-by-id)
-- [Find All](#get-all-categories)
-- [Create Category](#create-category)
-- [Update Category Fully](#update-category-fully)
-- [Patrially Update Category](#partially-update-category)
-- [Delete Category](#delete-category)
-- [Find Products By Category](#get-products-by-category)
-
-### Products
-
-- [Get All Products](#get-all-products)
-- [Search Products](#search-products)
-
-### Shopping Cart
-
-- [Add Item](#add-item)
-- [Get All Items](#get-all-items)
-- [Delete Item](#delete-item)
-- [Update Item Quantity](#update-item-quantity)
-
-### Orders
-
-- [Create Order](#create-order)
-- [Get All Orders](#get-all-orders-by-user)
-- [Get Order by ID](#get-order-by-id)
-- [Get All Order Items](#get-all-order-items-by-order-id)
-- [Delete Order](#delete-order-by-id)
-
-### Merchant Orders
-
-- [Change Merchant Order Status](#change-merchant-order-status)
-- [Get Merchant Orders By Merchant](#get-merchant-orders-by-merchant)
 
 # Technologies Used
 A list of technologies, frameworks, and tools used in the project.
@@ -91,6 +16,87 @@ A list of technologies, frameworks, and tools used in the project.
 * Docker
 * Swagger
 * JWT
+
+
+## Table of Contents
+
+### API Documentation
+
+#### Authentication
+
+- [Login](#login)
+- [Register](#register-user)
+- [Register Merchant](#register-merchant)
+- [Refresh Token](#refresh-token)
+
+#### Email Confirmation
+
+- [Confirm Email](#email-confirmation)
+
+#### Password Reset
+
+- [Request Password Reset](#request-password-reset)
+- [Confirm Password Reset](#confirm-password-reset)
+
+#### Users
+
+- [Find by ID](#get-user-by-id)
+- [Find All](#get-all-users)
+- [Update User Fully](#update-user-fully)
+- [Partially Update User](#partially-update-user)
+- [Delete User](#delete-user)
+
+#### Mechants
+
+- [Get Merchant by ID](#get-merchant-by-id)
+- [Get All Merchants](#get-all-merchants)
+- [Update Merchant Fully](#update-merchant-fully)
+- [Partially Update Merchant](#partially-update-merchant)
+- [Delete Merchant](#delete-merchant)
+- [Get Merchant Products](#get-merchant-products)
+- [Get Product by ID](#get-product-by-id)
+- [Create Product](#create-product)
+- [Update Product Fully](#update-product-fully)
+- [Partially Update Product](#partially-update-product)
+- [Delete Product](#delete-product)
+
+#### Categories
+
+- [Find by ID](#get-category-by-id)
+- [Find All](#get-all-categories)
+- [Create Category](#create-category)
+- [Update Category Fully](#update-category-fully)
+- [Patrially Update Category](#partially-update-category)
+- [Delete Category](#delete-category)
+- [Find Products By Category](#get-products-by-category)
+
+#### Products
+
+- [Get All Products](#get-all-products)
+- [Search Products](#search-products)
+
+#### Shopping Cart
+
+- [Add Item](#add-item)
+- [Get All Items](#get-all-items)
+- [Delete Item](#delete-item)
+- [Update Item Quantity](#update-item-quantity)
+
+#### Orders
+
+- [Create Order](#create-order)
+- [Get All Orders](#get-all-orders-by-user)
+- [Get Order by ID](#get-order-by-id)
+- [Get All Order Items](#get-all-order-items-by-order-id)
+- [Delete Order](#delete-order-by-id)
+
+#### Merchant Orders
+
+- [Change Merchant Order Status](#change-merchant-order-status)
+- [Get Merchant Orders By Merchant](#get-merchant-orders-by-merchant)
+
+### Testing
+- [About Tests](#testing-status-for-the-project)
 
 # API Documentation
 
@@ -440,7 +446,7 @@ After clicking the password reset link in the email, the user is directed to the
   - `size`: Number of products per page (optional).
 - **Response:** `Page<ProductResponseDto>`
 #### Implementation Details
-The search functionality is implemented using Elasticsearch or a similar search engine. Elasticsearch provides powerful full-text search capabilities, making it suitable for searching products by name efficiently. It indexes product data and enables fast retrieval based on search queries. Utilizing Elasticsearch enhances the search performance and provides relevant search results to users.
+The search functionality is implemented using Elasticsearch. Elasticsearch provides powerful full-text search capabilities, making it suitable for searching products by name efficiently. It indexes product data and enables fast retrieval based on search queries. Utilizing Elasticsearch enhances the search performance and provides relevant search results to users.
 
 Additionally, data is piped from PostgreSQL to Elasticsearch via Logstash. Logstash serves as a data pipeline, facilitating the transfer of data from PostgreSQL, where product information is stored, to Elasticsearch. This ensures that the search index in Elasticsearch is regularly updated with the latest product data from the PostgreSQL database, maintaining consistency and accuracy in search results.
 
@@ -590,6 +596,20 @@ When a user places an order for products from different merchants, the main orde
 #### Order Status Synchronization
 - Changes in the status of the main order are reflected in the associated merchant orders.
 - Updates to merchant orders, such as order cancellation or fulfillment, are reflected in the main order status.
+
+### Testing Status For The Project
+
+Most of the classes of the project are thoroughly tested to ensure their functionality, reliability, and security. Unit tests, integration tests, and possibly end-to-end tests have been conducted to validate the behavior of these classes under various scenarios.
+
+Tests cover:
+
+- **Controller Layer:** Unit tests ensure that controller endpoints handle requests correctly, handle edge cases, and return the expected responses.
+- **Service Layer:** Unit tests verify the business logic implemented in the service layer, ensuring that services perform the intended operations accurately.
+- **Repository Layer:** Integration tests validate the interaction between the application and the database, ensuring that data access operations function correctly.
+- **Input Validation:** Tests ensure that input validation mechanisms are working correctly, preventing invalid data from being processed.
+- **Security:** Tests validate that security measures, such as authentication and authorization, are implemented correctly to protect sensitive operations and resources.
+
+The comprehensive testing approach helps maintain the quality and stability of the merchant management functionality, ensuring that it behaves as expected and meets the specified requirements.
 
 
 # README FILE IS NOT COMPLETED
