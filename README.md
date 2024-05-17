@@ -1,17 +1,15 @@
-# Project Title
-
-A brief description of what your project does.
+# E-Commerce marketplace
 
 ## Description
 
-A more detailed description of your project, its purpose, and functionality.
+The e-commerce platform provides a feature-rich environment for both users and merchants to engage in online retail activities. With its robust architecture and extensive set of functionalities, it offers a seamless and secure shopping experience for all stakeholders involved.
 
 ## Table of Contents
 
 ### Authentication
 
 - [Login](#login)
-- [Register](#register)
+- [Register](#register-user)
 - [Register Merchant](#register-merchant)
 - [Refresh Token](#refresh-token)
 
@@ -21,14 +19,15 @@ A more detailed description of your project, its purpose, and functionality.
 
 ### Password Reset
 
-- [Request Password Reset](#password-reset-request)
+- [Request Password Reset](#request-password-reset)
 - [Confirm Password Reset](#confirm-password-reset)
 
 ### Users
 
-- [Find by ID](#find-by-id)
-- [Find All](#find-all)
-- [Update User](#update-user)
+- [Find by ID](#get-user-by-id)
+- [Find All](#get-all-users)
+- [Update User Fully](#update-user-fully)
+- [Partially Update User](#partially-update-user)
 - [Delete User](#delete-user)
 
 ### Mechants
@@ -42,8 +41,8 @@ A more detailed description of your project, its purpose, and functionality.
 
 ### Categories
 
-- [Find by ID](#find-category-by-id)
-- [Find All](#find-all-categories)
+- [Find by ID](#get-category-by-id)
+- [Find All](#get-all-categories)
 - [Create Category](#create-category)
 - [Update Category](#update-category)
 - [Delete Category](#delete-category)
@@ -123,7 +122,7 @@ After successfully registering as a user or merchant, an email verification link
 
 After clicking the email verification link sent to the user/merchant's email address, the user will be redirected to the `/api/confirm` endpoint with the verification token as a query parameter. The `EmailConfirmationController` will handle the confirmation process by invoking the `confirm` method in the `EmailConfirmationService`.
 
-#### Login User
+#### Login 
 
 - **Endpoint:** `/api/auth/login`
 - **Method:** `POST`
@@ -555,3 +554,5 @@ When a user places an order for products from different merchants, the main orde
 - Changes in the status of the main order are reflected in the associated merchant orders.
 - Updates to merchant orders, such as order cancellation or fulfillment, are reflected in the main order status.
 
+
+# README FILE IS NOT COMPLETED
