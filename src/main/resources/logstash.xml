@@ -6,6 +6,10 @@
         </encoder>
     </appender>
 
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <minimumEventLevel>WARN</minimumEventLevel>
+    </appender>
+
     <root level="info">
         <appender-ref ref="CONSOLE" />
     </root>

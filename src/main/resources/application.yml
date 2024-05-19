@@ -26,6 +26,10 @@ spring:
 
   elasticsearch:
     uris: "http://localhost:9200"
+
+sentry:
+  dsn: https://78319190a391ed170840ac8023e4ab6c@o4507282571067392.ingest.de.sentry.io/4507282575720528
+
 jwt:
   token:
     secret: sl8d45b4o2h35g243ilk7fdsgsfdljkhgfldkgh94837wyhglkfdjshgsd98f7og643gldujfhlafsdkhf43q287r3t26kdgzjfds
