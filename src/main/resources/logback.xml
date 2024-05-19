@@ -12,6 +12,7 @@
 
     <root level="info">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="Sentry" />
     </root>
 
     <logger name="com.example.ecommercemarketplace" level="debug" />
