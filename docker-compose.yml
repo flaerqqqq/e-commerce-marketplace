@@ -1,6 +1,37 @@
-version: "3"
+version: "3.8"
+
 services:
+  elasticsearch:
+    user: root
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1000m"
+        max-file: "10"
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - node.name=elastic
+      - discovery.seed_hosts=elastic
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms4096m -Xmx4096m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+
   db:
+    container_name: db
     image: postgres
     ports:
       - "5432:5432"
@@ -8,3 +39,75 @@ services:
       POSTGRES_DB: marketplace
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 452389
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+      - ./dump:/docker-entrypoint-initdb.d
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    ports:
+      - "5601:5601"
+    expose:
+      - "5601"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  logstash:
+    user: root
+    image: docker.elastic.co/logstash/logstash:7.9.1
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+      - db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    ports:
+      - "5044:5044"
+    volumes:
+      - logstashdata:/usr/share/logstash/data
+      - ./logstashconf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logstashconf/template.json:/usr/share/logstash/template/template.json
+      - ./logstashconf/postgresql-42.6.2.jar:/usr/share/logstash/postgresql-42.6.2.jar
+    environment:
+      - PIPELINE_WORKERS=1
+      - PIPELINE_BATCH_SIZE=125
+      - PIPELINE_BATCH_DELAY=50
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+
+  busybox:
+    image: busybox
+    container_name: busybox
+    restart: always
+    command: [ "tail", "-f", "/dev/null" ]
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+
+volumes:
+  certs:
+    driver: local
+  elasticsearch-data:
+    driver: local
+  kibanadata:
+    driver: local
+  logstashdata:
+    driver: local
+  logstashconf:
+    driver: local
+
+networks:
+  default:
+    name: elastic
+    external: false

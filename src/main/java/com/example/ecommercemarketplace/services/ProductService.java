@@ -1,8 +1,11 @@
 package com.example.ecommercemarketplace.services;
 
 import com.example.ecommercemarketplace.dto.ProductDto;
+import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface ProductService {
 
@@ -28,11 +31,11 @@ public interface ProductService {
 
     ProductDto updateProductPatchWithMerchantId(String merchantPublicId, Long productId, ProductDto productDto);
 
-    ProductDto updateProduct(ProductDto productDto);
-
     ProductDto findById(Long id);
 
     ProductDto findByIdWithMerchantId(String merchantPublicId, Long productId);
 
     void throwIfProductNotFound(Long productId);
+
+    Page<ProductResponseDto> searchProducts(String query, Pageable pageable);
 }
