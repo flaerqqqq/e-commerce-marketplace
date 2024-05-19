@@ -76,7 +76,10 @@ services:
       - "5044:5044"
     volumes:
       - logstashdata:/usr/share/logstash/data
-      - ./logstashconf/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - ./logs:/usr/share/logstash/logs
+      - ./logstashconf/postgresql_pipeline.conf:/usr/share/logstash/pipeline/postgresql_pipeline.conf:ro
+      - ./logstashconf/json_log_pipeline.conf:/usr/share/logstash/pipeline/json_log_pipeline.conf:ro
+      - ./logstashconf/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
       - ./logstashconf/template.json:/usr/share/logstash/template/template.json
       - ./logstashconf/postgresql-42.6.2.jar:/usr/share/logstash/postgresql-42.6.2.jar
     environment:
@@ -85,6 +88,7 @@ services:
       - PIPELINE_BATCH_DELAY=50
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+
 
   busybox:
     image: busybox
@@ -105,6 +109,8 @@ volumes:
   logstashdata:
     driver: local
   logstashconf:
+    driver: local
+  logs:
     driver: local
 
 networks:

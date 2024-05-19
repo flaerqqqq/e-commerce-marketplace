@@ -10,9 +10,15 @@
         <minimumEventLevel>WARN</minimumEventLevel>
     </appender>
 
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/spring-boot-app.log</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
     <root level="info">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="Sentry" />
+        <appender-ref ref="JSON_FILE" />
     </root>
 
     <logger name="com.example.ecommercemarketplace" level="debug" />

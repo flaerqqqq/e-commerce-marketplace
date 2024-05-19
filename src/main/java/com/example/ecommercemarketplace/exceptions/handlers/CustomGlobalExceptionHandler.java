@@ -2,6 +2,9 @@ package com.example.ecommercemarketplace.exceptions.handlers;
 
 
 import com.example.ecommercemarketplace.exceptions.*;
+import io.sentry.Sentry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,6 +21,8 @@ import java.util.Map;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(CustomGlobalExceptionHandler.class);
 
     @ExceptionHandler(value = {
             UserNotFoundException.class,
@@ -47,8 +52,9 @@ public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorObject> handleSideExceptions(Exception exception) {
+        Sentry.captureException(exception);
+        log.warn(exception.getMessage(), exception);
         ErrorObject errorObject = generateErrorObject(HttpStatus.INTERNAL_SERVER_ERROR, exception);
-        exception.printStackTrace();
         return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
