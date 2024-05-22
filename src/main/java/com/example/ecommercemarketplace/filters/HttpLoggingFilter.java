@@ -30,15 +30,19 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
-        filterChain.doFilter(requestWrapper, responseWrapper);
-        log(requestWrapper, responseWrapper);
+        try {
+            super.doFilter(requestWrapper, responseWrapper, filterChain);
+        } finally {
+            log(requestWrapper, responseWrapper);
+        }
     }
 
     private void log(ContentCachingRequestWrapper requestWrapper,
-                     ContentCachingResponseWrapper responseWrapper) throws JsonProcessingException {
+                     ContentCachingResponseWrapper responseWrapper) throws IOException {
         HttpLogMessage httpLogMessage = HttpLogMessage.builder()
                 .requestId(requestWrapper.getRequestId())
                 .request(HttpLogMessage.Request.builder()
@@ -53,6 +57,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
                         .body(new String(responseWrapper.getContentAsByteArray()))
                         .build())
                 .build();
+        responseWrapper.copyBodyToResponse();
         System.out.println(objectMapper.writeValueAsString(httpLogMessage));
         log.info(objectMapper.writeValueAsString(httpLogMessage));
     }
