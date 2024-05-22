@@ -65,6 +65,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED);
             mimeMessageHelper.setTo(to);
+            mimeMessageHelper.setFrom("local@email.com");
             mimeMessageHelper.setSubject(subject);
             mimeMessageHelper.setText(body, true);
 

@@ -1,2 +1,15 @@
-package com.example.ecommercemarketplace.events;public class IPLoginBlockEvent {
+package com.example.ecommercemarketplace.events;
+
+import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
+
+@Getter
+public class IpLoginBlockEvent extends ApplicationEvent {
+
+    private String ipAddress;
+
+    public IpLoginBlockEvent(Object source, String ipAddress) {
+        super(source);
+        this.ipAddress = ipAddress;
+    }
 }
