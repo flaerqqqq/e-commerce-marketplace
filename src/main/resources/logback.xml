@@ -10,7 +10,7 @@
         <minimumEventLevel>WARN</minimumEventLevel>
     </appender>
 
-    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="JSON_FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/spring-boot-app.log</file>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
