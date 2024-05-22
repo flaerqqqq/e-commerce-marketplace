@@ -20,8 +20,7 @@ public class UserRegistrationListener implements ApplicationListener<UserRegistr
     @Override
     public void onApplicationEvent(UserRegistrationEvent event) {
         UserDto user = event.getUserDto();
-
         emailService.sendSuccessfulRegistrationMessage(user);
-        log.info("User with id={} and email={} successfully registered.", user.getPublicId(), user.getEmail());
+        log.info("New user successfully registered with publicId={}.", user.getPublicId());
     }
 }
