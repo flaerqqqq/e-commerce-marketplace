@@ -18,6 +18,6 @@ public class EmailLoginBlockListener implements ApplicationListener<EmailLoginBl
     public void onApplicationEvent(EmailLoginBlockEvent event) {
         String email = event.getEmail();
         String entityName = entityUtils.determineEntityName(email);
-        log.info("User with email={} is suspended to login.", entityName);
+        log.info("{} with email={} is suspended to login.", entityName, email);
     }
 }
