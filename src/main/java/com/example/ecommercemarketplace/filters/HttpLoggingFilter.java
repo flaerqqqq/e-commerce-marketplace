@@ -3,6 +3,8 @@ package com.example.ecommercemarketplace.filters;
 import com.example.ecommercemarketplace.logging.HttpLogMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,21 +47,19 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
                      ContentCachingResponseWrapper responseWrapper) throws IOException {
         HttpLogMessage httpLogMessage = HttpLogMessage.builder()
                 .requestId(requestWrapper.getRequestId())
-                .request(HttpLogMessage.Request.builder()
-                        .method(requestWrapper.getMethod())
-                        .url(requestWrapper.getRequestURI())
-                        .clientIp(requestWrapper.getRemoteAddr())
-                        .body(new String(requestWrapper.getContentAsByteArray()))
-                        .headers(getHeaders(requestWrapper))
-                        .build())
-                .response(HttpLogMessage.Response.builder()
-                        .status(responseWrapper.getStatus())
-                        .body(new String(responseWrapper.getContentAsByteArray()))
-                        .build())
+                .request(new HttpLogMessage.Request(
+                            requestWrapper.getMethod(),
+                            requestWrapper.getRequestURI(),
+                            requestWrapper.getRemoteAddr(),
+                            new String(requestWrapper.getContentAsByteArray()),
+                            getHeaders(requestWrapper)))
+                .response(new HttpLogMessage.Response(
+                        responseWrapper.getStatus(),
+                        new String(responseWrapper.getContentAsByteArray())))
                 .build();
         responseWrapper.copyBodyToResponse();
-        System.out.println(objectMapper.writeValueAsString(httpLogMessage));
-        log.info(objectMapper.writeValueAsString(httpLogMessage));
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        log.info(gson.toJson(httpLogMessage));
     }
 
     private Map<String, String> getHeaders(ContentCachingRequestWrapper requestWrapper){
