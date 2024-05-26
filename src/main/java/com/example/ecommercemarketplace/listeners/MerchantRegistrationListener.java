@@ -20,8 +20,7 @@ public class MerchantRegistrationListener implements ApplicationListener<Merchan
     @Override
     public void onApplicationEvent(MerchantRegistrationEvent event) {
         MerchantDto merchantDto = event.getMerchantDto();
-
         emailService.sendSuccessfulMerchantRegistrationMessage(merchantDto);
-        log.info("Merchant with id={} and email={} successfully registered.", merchantDto.getPublicId(), merchantDto.getEmail());
+        log.info("New merchant successfully registered with publicId={}.", merchantDto.getPublicId());
     }
 }

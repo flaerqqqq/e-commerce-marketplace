@@ -25,6 +25,5 @@ public class AuthenticationSuccessListener implements ApplicationListener<Authen
 
         loginAttemptIPService.registerSuccessLogin(ipAddress);
         loginAttemptEmailService.registerSuccessfulLogin(email);
-        log.info("User with IP_ADDRESS={} and EMAIL={} has logged in successfully", ipAddress, email);
     }
 }

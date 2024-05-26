@@ -1,5 +1,6 @@
 package com.example.ecommercemarketplace.services.impls;
 
+import com.example.ecommercemarketplace.events.EmailLoginBlockEvent;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
 import com.example.ecommercemarketplace.models.LoginData;
 import com.example.ecommercemarketplace.models.UserEntity;
@@ -7,6 +8,7 @@ import com.example.ecommercemarketplace.repositories.LoginDataRepository;
 import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.LoginAttemptEmailService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -20,6 +22,7 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
     public final static int EMAIL_LOGIN_ATTEMPT = 5;
     private final UserRepository userRepository;
     private final LoginDataRepository loginDataRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void registerSuccessfulLogin(String email) {
@@ -41,11 +44,16 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
         loginData.setLoginAttempts(loginData.getLoginAttempts() + 1);
         loginData.setLastLoginAttemptTime(LocalDateTime.now());
 
+        blockUserLogin(loginData);
+
+        loginDataRepository.save(loginData);
+    }
+
+    private void blockUserLogin(LoginData loginData) {
         if (loginData.getLoginAttempts() >= EMAIL_LOGIN_ATTEMPT) {
             loginData.setLoginDisabled(true);
         }
-
-        loginDataRepository.save(loginData);
+        applicationEventPublisher.publishEvent(new EmailLoginBlockEvent(this,loginData.getUser().getEmail()));
     }
 
     @Override
