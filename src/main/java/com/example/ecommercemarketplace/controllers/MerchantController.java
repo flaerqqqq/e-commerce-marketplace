@@ -8,7 +8,6 @@ import com.example.ecommercemarketplace.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -123,5 +122,4 @@ public class MerchantController {
                               @PathVariable("productId") Long productId){
         productService.deleteProductWithMerchantId(publicId, productId);
     }
-
 }

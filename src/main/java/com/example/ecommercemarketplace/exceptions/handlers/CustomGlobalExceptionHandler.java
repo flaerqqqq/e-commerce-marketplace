@@ -27,23 +27,34 @@ public class CustomGlobalExceptionHandler {
             CartItemNotFoundException.class,
             CartItemNotFoundInCartException.class,
             ShoppingCartNotFoundException.class,
-            PasswordResetTokenNotFoundException.class
+            PasswordResetTokenNotFoundException.class,
+            OrderNotFoundException.class,
+            OrderItemNotFoundException.class
     })
     public ResponseEntity<ErrorObject> handleEntityNotFoundException(RuntimeException ex) {
         ErrorObject errorObject = generateErrorObject(HttpStatus.NOT_FOUND, ex);
         return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(value = {
+            OrderNotFoundInUserException.class,
+            EmptyShoppingCartException.class
+    })
+    public ResponseEntity<ErrorObject> handleBadRequestException(RuntimeException ex){
+        ErrorObject errorObject = generateErrorObject(HttpStatus.BAD_REQUEST, ex);
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorObject> handleSideExceptions(Exception exception) {
-        ErrorObject errorObject = generateErrorObject(HttpStatus.INTERNAL_SERVER_ERROR, exception);
+    public ResponseEntity<ErrorObject> handleSideExceptions(Exception ex) {
+        ErrorObject errorObject = generateErrorObject(HttpStatus.INTERNAL_SERVER_ERROR, ex);
         return new ResponseEntity<>(errorObject, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorObject> handleValidationExceptions(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorObject> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        exception.getAllErrors().forEach(error -> {
+        ex.getAllErrors().forEach(error -> {
             if (error instanceof FieldError) {
                 String fieldName = ((FieldError) error).getField();
                 String errorName = error.getDefaultMessage();
@@ -62,14 +73,14 @@ public class CustomGlobalExceptionHandler {
     }
 
     @ExceptionHandler(LoginAttemptExceedingException.class)
-    public ResponseEntity<ErrorObject> handleLoginAttemptExceedingException(LoginAttemptExceedingException exception) {
-        ErrorObject errorObject = generateErrorObject(HttpStatus.LOCKED, exception);
+    public ResponseEntity<ErrorObject> handleLoginAttemptExceedingException(LoginAttemptExceedingException ex) {
+        ErrorObject errorObject = generateErrorObject(HttpStatus.LOCKED, ex);
         return new ResponseEntity<>(errorObject, HttpStatus.LOCKED);
     }
 
     @ExceptionHandler(MissingAuthorizationHeaderException.class)
-    public ResponseEntity<ErrorObject> handleMissingAuthorizationHeaderException(MissingAuthorizationHeaderException exception) {
-        ErrorObject errorObject = generateErrorObject(HttpStatus.UNAUTHORIZED, exception);
+    public ResponseEntity<ErrorObject> handleMissingAuthorizationHeaderException(MissingAuthorizationHeaderException ex) {
+        ErrorObject errorObject = generateErrorObject(HttpStatus.UNAUTHORIZED, ex);
         return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
     }
 
@@ -77,22 +88,22 @@ public class CustomGlobalExceptionHandler {
             AuthenticationException.class,
             AccessDeniedException.class,
     })
-    public ResponseEntity<ErrorObject> handleAuthenticationException(Exception exception) {
+    public ResponseEntity<ErrorObject> handleAuthenticationException(Exception ex) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
 
-        if (exception.getCause() instanceof LoginAttemptExceedingException) {
+        if (ex.getCause() instanceof LoginAttemptExceedingException) {
             status = HttpStatus.LOCKED;
         }
 
-        ErrorObject errorObject = generateErrorObject(status, exception);
+        ErrorObject errorObject = generateErrorObject(status, ex);
         return new ResponseEntity<>(errorObject, status);
     }
 
-    public static ErrorObject generateErrorObject(HttpStatus code, Exception exception) {
+    public static ErrorObject generateErrorObject(HttpStatus code, Exception ex) {
         return ErrorObject.builder()
                 .timestamp(LocalDateTime.now())
                 .status(code.value())
-                .message(exception.getMessage())
+                .message(ex.getMessage())
                 .build();
     }
 }

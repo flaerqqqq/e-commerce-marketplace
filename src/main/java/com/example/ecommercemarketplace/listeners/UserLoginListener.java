@@ -17,7 +17,6 @@ public class UserLoginListener implements ApplicationListener<UserLoginEvent> {
     @Override
     public void onApplicationEvent(UserLoginEvent event) {
         UserDto userDto = event.getUserDto();
-
-        log.info("User with id={} has logged in.", userDto.getPublicId());
+        log.info("User with publicId={} has logged in.", userDto.getPublicId());
     }
 }

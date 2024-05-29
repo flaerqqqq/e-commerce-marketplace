@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"products"})
+@SuperBuilder
 @Entity
 public class Merchant extends UserEntity {
 
@@ -34,4 +36,6 @@ public class Merchant extends UserEntity {
     @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL)
     private List<Product> products;
 
+    @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL)
+    private List<MerchantOrder> merchantOrders;
 }

@@ -1,0 +1,6 @@
+
+- pipeline.id: json_log_pipeline
+  path.config: "/usr/share/logstash/pipeline/json_log_pipeline.conf"
+
+- pipeline.id: postgresql_pipeline
+  path.config: "/usr/share/logstash/pipeline/postgresql_pipeline.conf"

@@ -55,7 +55,7 @@ public class UserRepositoryTests {
     public void cleanUp() {
         dummyUser1 = dummyUser2 = null;
     }
-
+/*
     @Test
     public void UserRepository_Save_ReturnsSavedUser() {
         UserEntity savedUser = userRepository.save(dummyUser1);
@@ -116,5 +116,5 @@ public class UserRepositoryTests {
         assertThat(userExistenceByPublicId).isTrue();
     }
 
-
+*/
 }

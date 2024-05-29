@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString(exclude = {"merchant", "category"})
 @Table(name = "products")
 public class Product {
 
@@ -35,7 +36,6 @@ public class Product {
     private String description;
 
     @ManyToOne
-    @ToString.Exclude
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
 }

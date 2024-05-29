@@ -1,11 +1,15 @@
 package com.example.ecommercemarketplace.services.impls;
 
+import com.example.ecommercemarketplace.events.IpLoginBlockEvent;
 import com.example.ecommercemarketplace.services.LoginAttemptIPService;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -15,16 +19,19 @@ public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
 
     public static final int IP_MAX_ATTEMPT = 10;
     private final LoadingCache<String, Integer> cachedAttempts;
-    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
     private HttpServletRequest httpServletRequest;
 
-    public LoginAttemptIPServiceImpl() {
+    public LoginAttemptIPServiceImpl(ApplicationEventPublisher applicationEventPublisher,
+                                     HttpServletRequest httpServletRequest) {
         cachedAttempts = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build(new CacheLoader<String, Integer>() {
             @Override
             public Integer load(String s) throws Exception {
                 return 0;
             }
         });
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.httpServletRequest = httpServletRequest;
     }
 
     @Override
@@ -38,6 +45,9 @@ public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
         }
 
         attempts++;
+        if(attempts == 10){
+            applicationEventPublisher.publishEvent(new IpLoginBlockEvent(this, ipAddressKey));
+        }
         cachedAttempts.put(ipAddressKey, attempts);
     }
 

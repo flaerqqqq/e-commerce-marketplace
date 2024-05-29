@@ -15,8 +15,7 @@ public class MerchantLoginListener implements ApplicationListener<MerchantLoginE
     @Override
     public void onApplicationEvent(MerchantLoginEvent event) {
         MerchantDto merchantDto = event.getMerchantDto();
-
-        log.info("Merchant with id={} has logged in.", merchantDto.getPublicId());
+        log.info("Merchant with publicId={} has logged in.", merchantDto.getPublicId());
     }
 
 }
