@@ -13,7 +13,7 @@ public interface ProductService {
 
     Page<ProductDto> findPageOfProductByCategory(Long categoryId, Pageable pageable);
 
-    Page<ProductDto> findAll(Pageable pageable);
+    Page<ProductResponseDto> findAll(Pageable pageable);
 
     ProductDto createProduct(ProductDto productDto);
 
