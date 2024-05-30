@@ -2,7 +2,7 @@ package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.UserMapper;
 import com.example.ecommercemarketplace.models.RefreshToken;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.RefreshTokenRepository;
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private final Mapper<UserEntity, UserDto> userMapper;
+    private final UserMapper userMapper;
     private final UserService userService;
     private final JwtService jwtService;
     private final RefreshTokenRepository refreshTokenRepository;

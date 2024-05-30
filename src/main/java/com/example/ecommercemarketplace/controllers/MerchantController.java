@@ -2,7 +2,7 @@ package com.example.ecommercemarketplace.controllers;
 
 
 import com.example.ecommercemarketplace.dto.*;
-import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
+import com.example.ecommercemarketplace.mappers.ProductMapper;
 import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.ProductService;
 import jakarta.validation.Valid;

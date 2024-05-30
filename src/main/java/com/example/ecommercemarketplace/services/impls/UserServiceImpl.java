@@ -3,7 +3,7 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.exceptions.UserAlreadyExistsException;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.UserMapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.LoginData;
 import com.example.ecommercemarketplace.models.UserEntity;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final Mapper<UserEntity, UserDto> userMapper;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final PublicIdGenerator publicIdGenerator;
     private final EmailConfirmationTokenService emailConfirmationTokenService;
