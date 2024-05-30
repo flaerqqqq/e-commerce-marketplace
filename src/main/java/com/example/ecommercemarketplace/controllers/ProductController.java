@@ -23,7 +23,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public Page<ProductDto> getAllProducts(Pageable pageable){
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable){
         return productService.findAll(pageable);
     }
 
