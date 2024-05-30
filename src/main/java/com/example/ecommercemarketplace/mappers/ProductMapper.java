@@ -28,6 +28,10 @@ public abstract class ProductMapper {
     @Mapping(source = "category.id", target = "categoryId")
     public abstract ProductResponseDto toResponseDto(ProductDto productDto);
 
+    @Mapping(source = "merchant.id", target = "merchantId")
+    @Mapping(source = "category.id", target = "categoryId")
+    public abstract ProductResponseDto mapProductToResponseDto(Product product);
+
     @Mapping(target = "category",
             expression = "java(productRequestDto.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(productRequestDto.getCategoryId())) : null)")
     public abstract ProductDto requestToProductDto(ProductRequestDto productRequestDto);
