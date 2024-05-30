@@ -24,6 +24,7 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +72,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto createProductWithMerchantId(String merchantPublicId, ProductDto productDto) {
+    public ProductDto createProductWithMerchantId(String merchantPublicId,
+                                                  ProductDto productDto,
+                                                  MultipartFile mainImage,
+                                                  List<MultipartFile> images) {
         Merchant merchant = merchantMapper.mapFrom(merchantService.findMerchantByPublicId(merchantPublicId));
 
         productDto.setMerchant(merchant);

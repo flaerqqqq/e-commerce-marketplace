@@ -4,6 +4,7 @@ import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,7 +18,8 @@ public interface ProductService {
 
     ProductDto createProduct(ProductDto productDto);
 
-    ProductDto createProductWithMerchantId(String merchantPublicId, ProductDto productDto);
+    ProductDto createProductWithMerchantId(String merchantPublicId, ProductDto productDto, MultipartFile mainImage,
+                                           List<MultipartFile> images);
 
     void deleteProduct(Long id);
 
