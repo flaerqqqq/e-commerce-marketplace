@@ -45,4 +45,9 @@ jwt:
         expiration:
           time: 1800000
 
+aws:
+  access:
+    key: AKIA47CRXS44VK5LTU45
+  secret:
+    key: 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
 
