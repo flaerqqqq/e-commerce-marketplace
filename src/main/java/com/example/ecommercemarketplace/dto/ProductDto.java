@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,4 +31,8 @@ public class ProductDto {
     private String description;
 
     private Merchant merchant;
+
+    private MainProductImageDto mainProductImage;
+
+    private List<ProductImageDto> productImages;
 }

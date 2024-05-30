@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -38,4 +39,11 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
+
+    @OneToOne(mappedBy = "product")
+    private MainProductImage mainProductImage;
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductImage> productImages;
+
 }
