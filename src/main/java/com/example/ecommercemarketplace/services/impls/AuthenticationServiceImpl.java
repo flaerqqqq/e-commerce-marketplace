@@ -6,7 +6,8 @@ import com.example.ecommercemarketplace.events.UserLoginEvent;
 import com.example.ecommercemarketplace.exceptions.MissingAuthorizationHeaderException;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenAlreadyExpired;
 import com.example.ecommercemarketplace.exceptions.RefreshTokenNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.UserMapper;
+import com.example.ecommercemarketplace.mappers.UserMerchantMapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.RefreshToken;
 import com.example.ecommercemarketplace.models.Role;
@@ -45,9 +46,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final MerchantService merchantService;
     private final ApplicationEventPublisher eventPublisher;
     private final RefreshTokenService refreshTokenService;
-    private final Mapper<UserEntity, UserDto> userMapper;
+    private final UserMapper userMapper;
     private final EmailConfirmationTokenService emailConfirmationTokenService;
-    private final Mapper<UserDto, MerchantDto> userMerchantMapper;
+    private final UserMerchantMapper userMerchantMapper;
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
 

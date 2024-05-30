@@ -4,7 +4,7 @@ package com.example.ecommercemarketplace.services;
 import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.exceptions.UserAlreadyExistsException;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.UserMapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.UserEntity;
 import com.example.ecommercemarketplace.repositories.UserRepository;
@@ -40,7 +40,7 @@ public class UserServiceTests {
     private UserRepository userRepository;
 
     @Mock
-    private Mapper<UserEntity, UserDto> userMapper;
+    private UserMapper userMapper;
 
     @Mock
     private PublicIdGenerator publicIdGenerator;

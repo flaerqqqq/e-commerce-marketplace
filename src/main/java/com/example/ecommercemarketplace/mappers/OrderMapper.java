@@ -7,8 +7,8 @@ import com.example.ecommercemarketplace.models.OrderItem;
 import com.example.ecommercemarketplace.models.enums.MerchantOrderStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.Map;
@@ -17,9 +17,11 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-    @Mapping(source = "deliveryData.method", target = "deliveryMethod")
-    @Mapping(source = "merchantOrders", target = "totalQuantity", qualifiedByName = "calculateTotalQuantity")
-    @Mapping(source = "merchantOrders", target = "statusesOfOrders", qualifiedByName = "getStatuses")
+    @Mappings({
+            @Mapping(source = "deliveryData.method", target = "deliveryMethod"),
+            @Mapping(source = "merchantOrders", target = "totalQuantity", qualifiedByName = "calculateTotalQuantity"),
+            @Mapping(source = "merchantOrders", target = "statusesOfOrders", qualifiedByName = "getStatuses")
+    })
     OrderResponseDto toResponseDto(Order order);
 
     @Named("calculateTotalQuantity")

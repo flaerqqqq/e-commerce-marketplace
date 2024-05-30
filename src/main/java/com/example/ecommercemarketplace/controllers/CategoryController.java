@@ -5,7 +5,7 @@ import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.dto.CategoryPatchUpdateRequestDto;
 import com.example.ecommercemarketplace.dto.CategoryRequestDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
-import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
+import com.example.ecommercemarketplace.mappers.ProductMapper;
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.ProductService;
 import jakarta.validation.Valid;

@@ -1,13 +1,12 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.documents.ProductDocument;
-import com.example.ecommercemarketplace.dto.CategoryDto;
-import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
-import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
+import com.example.ecommercemarketplace.mappers.CategoryMapper;
+import com.example.ecommercemarketplace.mappers.MerchantMapper;
+import com.example.ecommercemarketplace.mappers.ProductMapper;
 import com.example.ecommercemarketplace.models.Category;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.Product;
@@ -39,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final MerchantService merchantService;
     private final CategoryService categoryService;
-    private final Mapper<Merchant, MerchantDto> merchantMapper;
+    private final MerchantMapper merchantMapper;
     private final ProductMapper productMapper;
-    private final Mapper<Category, CategoryDto> categoryMapper;
+    private final CategoryMapper categoryMapper;
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Override
