@@ -8,7 +8,13 @@ import org.mapstruct.*;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", uses = {CategoryMapper.class, MerchantMapper.class})
+@Mapper(componentModel = "spring",
+        uses = {
+                CategoryMapper.class,
+                MerchantMapper.class,
+                MainProductImageMapper.class,
+                ProductImageMapper.class
+        })
 public abstract class ProductMapper {
 
     @Autowired
@@ -45,6 +51,6 @@ public abstract class ProductMapper {
     @Mapping(target = "category",
             expression = "java(updateRequest.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
     public abstract ProductDto patchUpdateRequestToProductDto(String merchantId, Long productId,
-                                              ProductPatchUpdateRequestDto updateRequest);
+                                                              ProductPatchUpdateRequestDto updateRequest);
 
 }
