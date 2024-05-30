@@ -6,8 +6,9 @@ import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import com.example.ecommercemarketplace.exceptions.MerchantNotFoundException;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
-import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
+import com.example.ecommercemarketplace.mappers.CategoryMapper;
+import com.example.ecommercemarketplace.mappers.MerchantMapper;
+import com.example.ecommercemarketplace.mappers.ProductMapper;
 import com.example.ecommercemarketplace.models.Category;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.Product;
@@ -50,13 +51,13 @@ public class ProductServiceTests {
     private CategoryService categoryService;
 
     @Mock
-    private Mapper<Merchant, MerchantDto> merchantMapper;
+    private MerchantMapper merchantMapper;
 
     @Mock
     private ProductMapper productMapper;
 
     @Mock
-    private Mapper<Category, CategoryDto> categoryMapper;
+    private CategoryMapper categoryMapper;
 
     @Mock
     private ElasticsearchOperations elasticsearchOperations;
