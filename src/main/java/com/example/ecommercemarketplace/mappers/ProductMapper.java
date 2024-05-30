@@ -1,12 +1,9 @@
 package com.example.ecommercemarketplace.mappers;
 
 import com.example.ecommercemarketplace.dto.*;
-import com.example.ecommercemarketplace.models.Category;
-import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.Product;
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.MerchantService;
-import lombok.AllArgsConstructor;
 import org.mapstruct.*;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;

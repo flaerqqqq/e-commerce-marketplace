@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(uses = {CartItemMapper.class, UserMapper.class})
 public interface ShoppingCartMapper {
 
-
     ShoppingCart mapFrom(ShoppingCartDto shoppingCartDto);
 
     ShoppingCartDto mapTo(ShoppingCart shoppingCart);
