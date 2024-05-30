@@ -1,52 +1,49 @@
 package com.example.ecommercemarketplace.mappers;
 
 import com.example.ecommercemarketplace.dto.*;
-import com.example.ecommercemarketplace.mappers.impls.CategoryMapper;
-import com.example.ecommercemarketplace.mappers.impls.MerchantMapper;
 import com.example.ecommercemarketplace.models.Category;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.Product;
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.MerchantService;
+import lombok.AllArgsConstructor;
 import org.mapstruct.*;
 import org.mapstruct.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = {CategoryMapper.class, MerchantMapper.class})
-public interface ProductMapper {
+public abstract class ProductMapper {
 
-    ProductDto toDto(Product product);
+    @Autowired
+    protected CategoryMapper categoryMapper;
+    @Autowired
+    protected MerchantMapper merchantMapper;
+    @Autowired
+    protected CategoryService categoryService;
+    @Autowired
+    protected MerchantService merchantService;
 
-    Product toEntity(ProductDto productDto);
+    public abstract ProductDto mapTo(Product product);
+
+    public abstract Product mapFrom(ProductDto productDto);
 
     @Mapping(source = "merchant.id", target = "merchantId")
     @Mapping(source = "category.id", target = "categoryId")
-    ProductResponseDto toResponseDto(ProductDto productDto);
+    public abstract ProductResponseDto toResponseDto(ProductDto productDto);
 
-    @Mapping(source = "categoryId", target = "category", qualifiedByName = "fetchCategory")
-    ProductDto requestToProductDto(ProductRequestDto productRequestDto);
-
-    @Mapping(source = "productId", target = "id")
-    @Mapping(source = "categoryId", target = "category", qualifiedByName = "fetchCategory")
-    @Mapping(source = "merchantId", target = "merchant", qualifiedByName = "fetchMerchant")
-    ProductDto updateRequestToProductDto(String merchantId, Long productId, ProductUpdateRequestDto productUpdateRequestDto);
-
+    @Mapping(target = "category",
+            expression = "java(productRequestDto.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(productRequestDto.getCategoryId())) : null)")
+    public abstract ProductDto requestToProductDto(ProductRequestDto productRequestDto);
 
     @Mapping(source = "productId", target = "id")
-    @Mapping(source = "categoryId", target = "category", qualifiedByName = "fetchCategory")
-    @Mapping(source = "merchantId", target = "merchant", qualifiedByName = "fetchMerchant")
-    ProductDto patchUpdateRequestToProductDto(String merchantId, Long productId, ProductPatchUpdateRequestDto productPatchUpdateRequestDto);
+    @Mapping(target = "category",
+            expression = "java(updateRequest.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
+    public abstract ProductDto updateRequestToProductDto(String merchantId, Long productId, ProductUpdateRequestDto updateRequest);
 
-    @Named("fetchCategory")
-    default Category fetchCategory(Long categoryId,
-                                   @Context CategoryService categoryService,
-                                   @Context CategoryMapper categoryMapper) {
-        return categoryId != null ? categoryMapper.mapFrom(categoryService.findById(categoryId)) : null;
-    }
+    @Mapping(source = "productId", target = "id")
+    @Mapping(target = "category",
+            expression = "java(updateRequest.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
+    public abstract ProductDto patchUpdateRequestToProductDto(String merchantId, Long productId,
+                                              ProductPatchUpdateRequestDto updateRequest);
 
-    @Named("fetchMerchant")
-    default Merchant fetchMerchant(String merchantId,
-                                   @Context MerchantService merchantService,
-                                   @Context MerchantMapper merchantMapper) {
-        return merchantMapper.mapFrom(merchantService.findMerchantByPublicId(merchantId));
-    }
 }
