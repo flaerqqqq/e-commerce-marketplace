@@ -16,6 +16,7 @@
     <properties>
         <java.version>17</java.version>
         <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
+        <aws.version>1.12.731</aws.version>
     </properties>
     <dependencies>
         <dependency>
@@ -175,7 +176,13 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
-            <version>1.12.731</version>
+            <version>${aws.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-rekognition</artifactId>
+            <version>${aws.version}</version>
         </dependency>
 
     </dependencies>
