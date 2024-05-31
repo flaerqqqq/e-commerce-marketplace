@@ -82,6 +82,12 @@ public class ProductImageBucketServiceImpl implements ProductImageBucketService 
         String fileName = generateFileName(file);
 
         PutObjectRequest putObjectRequest = new PutObjectRequest(imagesBucketName, fileName, imageFile);
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentLength(imageFile.length());
+
+        putObjectRequest.setMetadata(objectMetadata);
         amazonS3.putObject(putObjectRequest);
 
         imageFile.delete();
