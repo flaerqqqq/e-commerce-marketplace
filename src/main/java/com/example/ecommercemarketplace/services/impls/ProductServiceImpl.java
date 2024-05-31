@@ -1,18 +1,16 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.documents.ProductDocument;
+import com.example.ecommercemarketplace.dto.MainProductImageDto;
 import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
-import com.example.ecommercemarketplace.mappers.CategoryMapper;
-import com.example.ecommercemarketplace.mappers.MerchantMapper;
-import com.example.ecommercemarketplace.mappers.ProductMapper;
-import com.example.ecommercemarketplace.models.Category;
-import com.example.ecommercemarketplace.models.Merchant;
-import com.example.ecommercemarketplace.models.Product;
+import com.example.ecommercemarketplace.mappers.*;
+import com.example.ecommercemarketplace.models.*;
 import com.example.ecommercemarketplace.repositories.ProductRepository;
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.MerchantService;
+import com.example.ecommercemarketplace.services.ProductImageBucketService;
 import com.example.ecommercemarketplace.services.ProductService;
 import com.example.ecommercemarketplace.utils.ESUtil;
 import lombok.AllArgsConstructor;
@@ -39,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final MerchantService merchantService;
     private final CategoryService categoryService;
+    private final ProductImageBucketService productImageBucketService;
     private final MerchantMapper merchantMapper;
     private final ProductMapper productMapper;
     private final CategoryMapper categoryMapper;
@@ -63,9 +62,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto createProduct(ProductDto productDto) {
+    public ProductDto createProduct(ProductDto productDto,
+                                    MultipartFile mainImage,
+                                    List<MultipartFile> images) {
         Product product = productMapper.mapFrom(productDto);
         product.setId(null);
+
+        saveAndUploadProductImages(product, mainImage, images);
+
         Product savedProduct = productRepository.save(product);
 
         return productMapper.mapTo(savedProduct);
@@ -77,10 +81,9 @@ public class ProductServiceImpl implements ProductService {
                                                   MultipartFile mainImage,
                                                   List<MultipartFile> images) {
         Merchant merchant = merchantMapper.mapFrom(merchantService.findMerchantByPublicId(merchantPublicId));
-
         productDto.setMerchant(merchant);
 
-        return createProduct(productDto);
+        return createProduct(productDto, mainImage, images);
     }
 
     @Override
@@ -174,6 +177,16 @@ public class ProductServiceImpl implements ProductService {
             products.add(productRepository.findById(productDocument.getId()).orElseThrow(() -> new ProductNotFoundException("Product with id=%d is not found".formatted(productDocument.getId()))));
         }
         return products.stream().map(productMapper::mapTo).map(productMapper::toResponseDto).collect(Collectors.toList());
+    }
+
+    private void saveAndUploadProductImages(Product product, MultipartFile mainImage, List<MultipartFile> images) {
+        List<ProductImage> savedImages = productImageBucketService.saveImages(images);
+        MainProductImage savedMainImage = productImageBucketService.saveMainImage(mainImage);
+
+        savedMainImage.setProduct(product);
+        savedImages.forEach(image -> image.setProduct(product));
+        product.setMainProductImage(savedMainImage);
+        product.setProductImages(savedImages);
     }
 
 }

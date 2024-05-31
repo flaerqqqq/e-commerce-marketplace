@@ -16,7 +16,7 @@ public interface ProductService {
 
     Page<ProductResponseDto> findAll(Pageable pageable);
 
-    ProductDto createProduct(ProductDto productDto);
+    ProductDto createProduct(ProductDto productDto, MultipartFile mainImage, List<MultipartFile> images);
 
     ProductDto createProductWithMerchantId(String merchantPublicId, ProductDto productDto, MultipartFile mainImage,
                                            List<MultipartFile> images);
