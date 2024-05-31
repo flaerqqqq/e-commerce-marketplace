@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductImageDto {
+public class ProductImageResponseDto {
 
     private Long id;
 
     private String url;
-
-    private Long productId;
 }

@@ -1,5 +1,6 @@
 package com.example.ecommercemarketplace.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,6 @@ public class MainProductImageDto {
     private Long id;
 
     private String url;
+
+    private Long productId;
 }
