@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface ProductImageBucketService {
 
-    S3ObjectInputStream findByName(String fileName);
-
     List<ProductImage> saveImages(final List<MultipartFile> images);
 
     MainProductImage saveMainImage(final MultipartFile mainImage);

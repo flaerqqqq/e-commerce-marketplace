@@ -83,7 +83,7 @@ public class MerchantController {
     }
 
     @PostMapping(value = "/{id}/products")
-    @PreAuthorize("hasRole('MERCHANT')")
+    @PreAuthorize("true")//@PreAuthorize("hasRole('MERCHANT')")
     public ProductResponseDto createProduct(@PathVariable("id") String publicId,
                                             @RequestPart("product") @Valid ProductRequestDto productRequest,
                                             @RequestPart("mainImage") MultipartFile mainImage,

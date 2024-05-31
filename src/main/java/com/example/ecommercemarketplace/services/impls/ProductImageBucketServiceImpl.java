@@ -1,9 +1,7 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.*;
 import com.example.ecommercemarketplace.models.MainProductImage;
 import com.example.ecommercemarketplace.models.ProductImage;
 import com.example.ecommercemarketplace.services.ProductImageBucketService;
@@ -17,6 +15,8 @@ import javax.swing.plaf.multi.MultiTabbedPaneUI;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,11 +29,6 @@ public class ProductImageBucketServiceImpl implements ProductImageBucketService 
 
     @Value("${aws.product.images.bucket.name}")
     private String imagesBucketName;
-
-    @Override
-    public S3ObjectInputStream findByName(String url) {
-        return null;
-    }
 
     @Override
     public List<ProductImage> saveImages(List<MultipartFile> images) {
@@ -90,7 +85,7 @@ public class ProductImageBucketServiceImpl implements ProductImageBucketService 
         amazonS3.putObject(putObjectRequest);
 
         imageFile.delete();
-        return amazonS3.getUrl(imagesBucketName, fileName).toString();
+        return amazonS3.getUrl(imagesBucketName, fileName).toExternalForm();
     }
 }
 
