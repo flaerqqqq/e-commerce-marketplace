@@ -13,6 +13,7 @@ import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.ProductImageBucketService;
 import com.example.ecommercemarketplace.services.ProductService;
 import com.example.ecommercemarketplace.utils.ESUtil;
+import com.example.ecommercemarketplace.validation.ImageValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -65,6 +66,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto createProduct(ProductDto productDto,
                                     MultipartFile mainImage,
                                     List<MultipartFile> images) {
+        validateAllImages(mainImage, images);
+
         Product product = productMapper.mapFrom(productDto);
         product.setId(null);
 
@@ -187,6 +190,11 @@ public class ProductServiceImpl implements ProductService {
         savedImages.forEach(image -> image.setProduct(product));
         product.setMainProductImage(savedMainImage);
         product.setProductImages(savedImages);
+    }
+
+    private void validateAllImages(MultipartFile mainImage, List<MultipartFile> images){
+        ImageValidator.validateFile(mainImage);
+        images.forEach(ImageValidator::validateFile);
     }
 
 }
