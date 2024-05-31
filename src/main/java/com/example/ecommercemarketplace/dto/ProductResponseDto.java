@@ -29,7 +29,7 @@ public class ProductResponseDto {
 
     private String description;
 
-    private MainProductImageResponseDto mainProductImageDto;
+    private MainProductImageResponseDto mainProductImage;
 
     private List<ProductImageResponseDto> productImages;
 }
