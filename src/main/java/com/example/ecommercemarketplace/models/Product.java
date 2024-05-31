@@ -40,10 +40,10 @@ public class Product {
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private MainProductImage mainProductImage;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductImage> productImages;
 
 }
