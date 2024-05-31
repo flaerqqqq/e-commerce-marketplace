@@ -27,6 +27,11 @@ spring:
   elasticsearch:
     uris: "http://localhost:9200"
 
+  servlet:
+    multipart:
+      max-file-size: "5MB"
+      max-request-size: "5MB"
+
 sentry:
   dsn: https://78319190a391ed170840ac8023e4ab6c@o4507282571067392.ingest.de.sentry.io/4507282575720528
 
@@ -45,4 +50,14 @@ jwt:
         expiration:
           time: 1800000
 
+aws:
+  access:
+    key: AKIA47CRXS44VK5LTU45
+  secret:
+    key: 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
+  region: us-east-1
+  product:
+    images:
+      bucket:
+        name: "product-images-marketplace"
 

@@ -7,12 +7,17 @@ import com.example.ecommercemarketplace.services.MerchantService;
 import com.example.ecommercemarketplace.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.elasticsearch.client.ml.inference.preprocessing.Multi;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/merchants")
@@ -77,12 +82,14 @@ public class MerchantController {
         return productMapper.toResponseDto(productService.findByIdWithMerchantId(publicId, productId));
     }
 
-    @PostMapping("/{id}/products")
-    @PreAuthorize("hasRole('MERCHANT')")
+    @PostMapping(value = "/{id}/products")
+    @PreAuthorize("true")//@PreAuthorize("hasRole('MERCHANT')")
     public ProductResponseDto createProduct(@PathVariable("id") String publicId,
-                                            @RequestBody ProductRequestDto productRequest){
+                                            @RequestPart("product") @Valid ProductRequestDto productRequest,
+                                            @RequestPart("mainImage") MultipartFile mainImage,
+                                            @RequestPart("images") List<MultipartFile> images){
         ProductDto productDto = productMapper.requestToProductDto(productRequest);
-        ProductDto createdUser = productService.createProductWithMerchantId(publicId, productDto);
+        ProductDto createdUser = productService.createProductWithMerchantId(publicId, productDto, mainImage, images);
 
         return productMapper.toResponseDto(createdUser);
     }

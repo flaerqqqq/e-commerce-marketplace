@@ -1,13 +1,13 @@
 package com.example.ecommercemarketplace.dto;
 
 
-import com.example.ecommercemarketplace.models.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,4 +28,8 @@ public class ProductResponseDto {
     private Long inventory;
 
     private String description;
+
+    private MainProductImageResponseDto mainProductImage;
+
+    private List<ProductImageResponseDto> productImages;
 }
