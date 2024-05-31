@@ -32,6 +32,7 @@ public abstract class ProductMapper {
 
     @Mapping(source = "merchant.id", target = "merchantId")
     @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "mainProductImage", target = "mainProductImage")
     public abstract ProductResponseDto toResponseDto(ProductDto productDto);
 
     @Mapping(source = "merchant.id", target = "merchantId")
