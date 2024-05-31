@@ -26,7 +26,7 @@ public abstract class ProductMapper {
     @Autowired
     protected MerchantService merchantService;
 
-    public abstract ProductDto mapTo(Product product);
+    public abstract ProductDto  mapTo(Product product);
 
     public abstract Product mapFrom(ProductDto productDto);
 
@@ -52,5 +52,4 @@ public abstract class ProductMapper {
             expression = "java(updateRequest.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
     public abstract ProductDto patchUpdateRequestToProductDto(String merchantId, Long productId,
                                                               ProductPatchUpdateRequestDto updateRequest);
-
 }
