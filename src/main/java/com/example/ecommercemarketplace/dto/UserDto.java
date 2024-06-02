@@ -42,4 +42,6 @@ public class UserDto {
     private List<AddressDto> addresses;
 
     private List<OrderDto> orders;
+
+    private List<ProductReviewDto> productReviews;
 }
