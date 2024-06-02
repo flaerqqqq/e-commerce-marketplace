@@ -1,7 +1,6 @@
 package com.example.ecommercemarketplace.controllers;
 
 
-import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import com.example.ecommercemarketplace.dto.ProductReviewRequestDto;
 import com.example.ecommercemarketplace.dto.ProductReviewResponseDto;
@@ -42,7 +41,7 @@ public class ProductController {
     @PreAuthorize("hasRole('USER')")
     public ProductReviewResponseDto createProductReview(@PathVariable("id") Long productId,
                                                         @RequestPart("text") @Valid ProductReviewRequestDto createRequest,
-                                                        @RequestPart("media") List<MultipartFile> mediaContent,
+                                                        @RequestPart(value = "media", required = false) List<MultipartFile> mediaContent,
                                                         Authentication authentication){
         return productReviewService.createProductReview(productId, createRequest, mediaContent, authentication);
     }

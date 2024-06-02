@@ -60,4 +60,7 @@ aws:
     images:
       bucket:
         name: "product-images-marketplace"
+    review:
+      media-content:
+        bucket-name: "product-reviews-marketplace"
 
