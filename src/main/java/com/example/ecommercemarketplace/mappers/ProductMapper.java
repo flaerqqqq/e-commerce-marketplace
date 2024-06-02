@@ -13,7 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
                 CategoryMapper.class,
                 MerchantMapper.class,
                 MainProductImageMapper.class,
-                ProductImageMapper.class
+                ProductImageMapper.class,
+                ProductReviewMapper.class
         })
 public abstract class ProductMapper {
 

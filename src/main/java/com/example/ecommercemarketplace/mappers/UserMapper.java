@@ -4,7 +4,7 @@ import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.models.UserEntity;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(uses = {ProductReviewMapper.class})
 public interface UserMapper {
 
     UserEntity mapFrom(UserDto userDto);
