@@ -35,4 +35,6 @@ public class ProductDto {
     private MainProductImageDto mainProductImage;
 
     private List<ProductImageDto> productImages;
+
+    private List<ProductReviewDto> productReviews;
 }

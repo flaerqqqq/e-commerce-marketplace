@@ -4,7 +4,7 @@ import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.models.Merchant;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(uses = {ProductReviewMapper.class})
 public interface MerchantMapper {
 
     Merchant mapFrom(MerchantDto merchantDto);
