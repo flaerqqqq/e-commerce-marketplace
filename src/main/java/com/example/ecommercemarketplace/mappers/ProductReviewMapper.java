@@ -4,7 +4,6 @@ import com.example.ecommercemarketplace.dto.ProductReviewDto;
 import com.example.ecommercemarketplace.dto.ProductReviewResponseDto;
 import com.example.ecommercemarketplace.models.ProductReview;
 import com.example.ecommercemarketplace.repositories.ProductRepository;
-import com.example.ecommercemarketplace.repositories.ProductReviewRepository;
 import com.example.ecommercemarketplace.repositories.UserRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,9 +22,9 @@ public abstract class ProductReviewMapper {
     public abstract ProductReviewDto mapTo(ProductReview productReview);
 
     @Mapping(target = "product", expression = "java(productReviewDto.getProductId() != null ?" +
-            "productRepository.findById(productReviewDto.getProductId()).get() : null)")
+            "productRepository.findById(productReviewDto.getProductId()).orElse(null) : null)")
     @Mapping(target = "user", expression = "java(productReviewDto.getUserId() != null ?" +
-            "userRepository.findById(productReviewDto.getProductId()).get() : null)")
+            "userRepository.findById(productReviewDto.getProductId()).orElse(null) : null)")
     public abstract ProductReview mapFrom(ProductReviewDto productReviewDto);
 
     @Mapping(source = "product.id", target = "productId")
