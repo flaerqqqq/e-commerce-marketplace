@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class OrderLoggingAspect {
 
-    private UserService userService;
+    private final UserService userService;
 
     @After("execution(* com.example.ecommercemarketplace.controllers.OrderController.createOrder(..))" +
             "&& args(requestDto, authentication)")
