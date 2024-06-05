@@ -45,4 +45,10 @@ public class ProductController {
                                                         Authentication authentication){
         return productReviewService.createProductReview(productId, createRequest, mediaContent, authentication);
     }
+
+    @GetMapping("/{id}/product-reviews")
+    public Page<ProductReviewResponseDto> getAllProductReviewsByProduct(@PathVariable("id") Long productId,
+                                                                        Pageable pageable){
+        return productReviewService.findAllProductReviewsByProduct(productId, pageable);
+    }
 }

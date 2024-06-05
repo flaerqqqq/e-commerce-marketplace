@@ -4,6 +4,7 @@ import com.example.ecommercemarketplace.dto.ProductReviewRequestDto;
 import com.example.ecommercemarketplace.dto.ProductReviewResponseDto;
 import com.example.ecommercemarketplace.exceptions.UnsupportedContentFileTypeException;
 import com.example.ecommercemarketplace.mappers.ProductReviewMapper;
+import com.example.ecommercemarketplace.models.Product;
 import com.example.ecommercemarketplace.models.ProductReview;
 import com.example.ecommercemarketplace.models.ProductReviewMediaContent;
 import com.example.ecommercemarketplace.repositories.ProductRepository;
@@ -15,6 +16,8 @@ import com.example.ecommercemarketplace.services.ReviewMediaFileBucketService;
 import com.example.ecommercemarketplace.validation.ImageValidator;
 import com.example.ecommercemarketplace.validation.VideoValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +56,15 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
         ProductReview savedProductReview = productReviewRepository.save(productReview);
         return productReviewMapper.mapToResponseDto(savedProductReview);
+    }
+
+    @Override
+    public Page<ProductReviewResponseDto> findAllProductReviewsByProduct(Long productId, Pageable pageable) {
+        productService.throwIfProductNotFound(productId);
+
+        Product product = productRepository.findById(productId).get();
+        Page<ProductReview> pageOfProductReviews = productReviewRepository.findAllByProduct(product, pageable);
+        return pageOfProductReviews.map(productReviewMapper::mapToResponseDto);
     }
 
     private void validateMediaContents(List<MultipartFile> mediaContents){
