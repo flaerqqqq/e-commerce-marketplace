@@ -13,11 +13,9 @@ import org.springframework.security.authentication.event.AuthenticationFailureBa
 import org.springframework.stereotype.Component;
 
 
-
+@Slf4j
 @Component
 @AllArgsConstructor
-@Slf4j
-@Transactional(Transactional.TxType.REQUIRES_NEW)
 public class AuthenticationFailureListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
 
     private final LoginAttemptEmailService loginAttemptEmailService;
@@ -26,6 +24,7 @@ public class AuthenticationFailureListener implements ApplicationListener<Authen
     private final EntityUtils entityUtils;
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent event) {
         String email = event.getAuthentication().getName();
         String entityName = entityUtils.determineEntityName(email);

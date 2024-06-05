@@ -12,16 +12,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @AllArgsConstructor
-@Transactional(Transactional.TxType.REQUIRES_NEW)
 public class LoginAttemptEmailChangeListener implements ApplicationListener<EmailChangeEvent> {
 
     private final LoginAttemptEmailService loginAttemptEmailService;
     private final EntityUtils entityUtils;
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void onApplicationEvent(EmailChangeEvent event) {
         String email = event.getUser().getEmail();
         loginAttemptEmailService.unblockUserLogin(email);
+
         String entityName = entityUtils.determineEntityName(email);
         log.info("{} with email={} has been unblocked to login, because of password change", entityName, email);
     }

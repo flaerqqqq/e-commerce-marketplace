@@ -7,9 +7,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
 @Async
+@Component
 public class MerchantLoginListener implements ApplicationListener<MerchantLoginEvent> {
 
     @Override
@@ -17,5 +17,4 @@ public class MerchantLoginListener implements ApplicationListener<MerchantLoginE
         MerchantDto merchantDto = event.getMerchantDto();
         log.info("Merchant with publicId={} has logged in.", merchantDto.getPublicId());
     }
-
 }
