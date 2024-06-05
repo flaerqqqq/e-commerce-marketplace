@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class UserLoginEvent extends ApplicationEvent {
 
-    private UserDto userDto;
+    private final UserDto userDto;
 
     public UserLoginEvent(Object source, UserDto userDto) {
         super(source);
