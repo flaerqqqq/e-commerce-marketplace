@@ -41,17 +41,23 @@ public abstract class ProductMapper {
     public abstract ProductResponseDto mapProductToResponseDto(Product product);
 
     @Mapping(target = "category",
-            expression = "java(productRequestDto.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(productRequestDto.getCategoryId())) : null)")
+            expression = "java(productRequestDto.getCategoryId() != null ? " +
+                    "categoryMapper.mapFrom(categoryService.findById(productRequestDto.getCategoryId())) : null)")
     public abstract ProductDto requestToProductDto(ProductRequestDto productRequestDto);
 
     @Mapping(source = "productId", target = "id")
     @Mapping(target = "category",
-            expression = "java(updateRequest.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
-    public abstract ProductDto updateRequestToProductDto(String merchantId, Long productId, ProductUpdateRequestDto updateRequest);
+            expression = "java(updateRequest.getCategoryId() != null ? " +
+                    "categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
+    public abstract ProductDto updateRequestToProductDto(String merchantId,
+                                                         Long productId,
+                                                         ProductUpdateRequestDto updateRequest);
 
     @Mapping(source = "productId", target = "id")
     @Mapping(target = "category",
-            expression = "java(updateRequest.getCategoryId() != null ? categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
-    public abstract ProductDto patchUpdateRequestToProductDto(String merchantId, Long productId,
+            expression = "java(updateRequest.getCategoryId() != null ? " +
+                    "categoryMapper.mapFrom(categoryService.findById(updateRequest.getCategoryId())) : null)")
+    public abstract ProductDto patchUpdateRequestToProductDto(String merchantId,
+                                                              Long productId,
                                                               ProductPatchUpdateRequestDto updateRequest);
 }

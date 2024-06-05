@@ -15,7 +15,8 @@ public abstract class MainProductImageMapper {
     protected ProductRepository productRepository;
 
     @Mapping(target = "product",
-            expression = "java(mainProductImageDto.getProductId() != null ? productRepository.findById(mainProductImageDto.getProductId()).get() : null)")
+            expression = "java(mainProductImageDto.getProductId() != null ? " +
+                    "productRepository.findById(mainProductImageDto.getProductId()).get() : null)")
     public abstract MainProductImage mapFrom(MainProductImageDto mainProductImageDto);
 
     @Mapping(source = "product.id", target = "productId")
