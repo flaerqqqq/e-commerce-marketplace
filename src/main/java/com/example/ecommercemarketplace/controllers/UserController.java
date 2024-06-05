@@ -5,7 +5,6 @@ import com.example.ecommercemarketplace.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,8 +28,8 @@ public class UserController {
 
     @GetMapping
     public Page<UserResponseDto> findAll(Pageable pageable) {
-        return  userService.findAllUsers(pageable).map(userDto ->
-            modelMapper.map(userDto, UserResponseDto.class));
+        return userService.findAllUsers(pageable).map(userDto ->
+                modelMapper.map(userDto, UserResponseDto.class));
     }
 
     @PutMapping("/{id}")
