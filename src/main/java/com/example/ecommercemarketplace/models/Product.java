@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = {"merchant", "category"})
 @Table(name = "products")
 public class Product {
 
@@ -23,10 +22,6 @@ public class Product {
     @Column(name = "product_name", nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
-
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -35,6 +30,10 @@ public class Product {
 
     @Column(nullable = false)
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "merchant_id")

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = {"order"})
 @Table(name = "payments")
 public class Payment {
 
@@ -22,15 +21,16 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "payment")
-    private Order order;
-
+    @Column(name = "payment_time")
     private LocalDateTime paymentTime;
 
     private BigDecimal amount;
 
     @Enumerated(value = EnumType.STRING)
     private PaymentMethod method;
+
+    @OneToOne(mappedBy = "payment")
+    private Order order;
 }
 
 

@@ -13,16 +13,12 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = {"parentOrder", "merchant"})
 @Table(name = "merchant_orders")
 public class MerchantOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToMany(mappedBy = "merchantOrder", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OrderItem> orderItems;
 
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
@@ -37,4 +33,7 @@ public class MerchantOrder {
     @ManyToOne
     @JoinColumn(name = "merchant_id")
     private Merchant merchant;
+
+    @OneToMany(mappedBy = "merchantOrder", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OrderItem> orderItems;
 }

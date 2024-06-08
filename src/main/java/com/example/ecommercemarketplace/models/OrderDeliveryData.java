@@ -19,10 +19,10 @@ public class OrderDeliveryData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(value = EnumType.STRING)
+    private DeliveryMethod method;
+
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
-
-    @Enumerated(value = EnumType.STRING)
-    private DeliveryMethod method;
 }

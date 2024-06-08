@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"products"})
 @SuperBuilder
 @Entity
 public class Merchant extends UserEntity {
@@ -24,7 +23,6 @@ public class Merchant extends UserEntity {
     private String websiteUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
     private MerchantType type;
 
     @Enumerated(EnumType.STRING)

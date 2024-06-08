@@ -51,9 +51,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> findPageOfProductByCategory(Long categoryId, Pageable pageable) {
+    public Page<ProductResponseDto> findPageOfProductByCategory(Long categoryId, Pageable pageable) {
         Category category = categoryMapper.mapFrom(categoryService.findById(categoryId));
-        return productRepository.findByCategory(category, pageable).map(productMapper::mapTo);
+        return productRepository.findByCategory(category, pageable).map(productMapper::mapProductToResponseDto);
 
     }
 
