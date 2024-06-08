@@ -5,8 +5,8 @@ import com.example.ecommercemarketplace.dto.CartItemRequestDto;
 import com.example.ecommercemarketplace.dto.CartItemResponseDto;
 import com.example.ecommercemarketplace.dto.ShoppingCartResponseDto;
 import com.example.ecommercemarketplace.exceptions.*;
-import com.example.ecommercemarketplace.mappers.impls.CartItemMapper;
-import com.example.ecommercemarketplace.mappers.impls.ShoppingCartMapper;
+import com.example.ecommercemarketplace.mappers.CartItemMapper;
+import com.example.ecommercemarketplace.mappers.ShoppingCartMapper;
 import com.example.ecommercemarketplace.models.CartItem;
 import com.example.ecommercemarketplace.models.Product;
 import com.example.ecommercemarketplace.models.ShoppingCart;
@@ -41,8 +41,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private ShoppingCart createShoppingCart(String email) {
         UserEntity user = getUserByEmail(email);
-        ShoppingCart cart = new ShoppingCart();
-        cart.setUser(user);
+        ShoppingCart cart = ShoppingCart.builder()
+                .user(user)
+                .build();
 
         return shoppingCartRepository.save(cart);
     }
@@ -101,7 +102,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItem.setQuantity(updateRequest.getQuantity());
         CartItem updatedCart = cartItemRepository.save(cartItem);
 
-        return  modelMapper.map(updatedCart, CartItemResponseDto.class);
+        return modelMapper.map(updatedCart, CartItemResponseDto.class);
     }
 
     @Override
@@ -112,7 +113,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItemRepository.deleteAll(cartItems);
     }
 
-    private CartItem validateAndGetCartItem(Authentication authentication, Long id){
+    private CartItem validateAndGetCartItem(Authentication authentication, Long id) {
         if (!cartItemRepository.existsById(id)) {
             throw new CartItemNotFoundException("Cart item with id=%d is not found".formatted(id));
         }
@@ -128,10 +129,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         new CartItemNotFoundInCartException("Cart item with id=%d is not found in shopping cart with id=%d".formatted(id, cart.getId())));
     }
 
-
     private ShoppingCart getShoppingCartByUser(String email) {
         return shoppingCartRepository.findByUser(getUserByEmail(email)).orElseGet(() ->
                 createShoppingCart(email));
     }
-
 }

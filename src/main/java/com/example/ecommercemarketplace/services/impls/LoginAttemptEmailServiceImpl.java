@@ -53,7 +53,7 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
         if (loginData.getLoginAttempts() >= EMAIL_LOGIN_ATTEMPT) {
             loginData.setLoginDisabled(true);
         }
-        applicationEventPublisher.publishEvent(new EmailLoginBlockEvent(this,loginData.getUser().getEmail()));
+        applicationEventPublisher.publishEvent(new EmailLoginBlockEvent(this, loginData.getUser().getEmail()));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class LoginAttemptEmailServiceImpl implements LoginAttemptEmailService {
         return duration.toMinutesPart() + " minutes";
     }
 
-    private UserEntity findUserByEmail(String email){
+    private UserEntity findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("User with email=%s is not found".formatted(email)));
     }

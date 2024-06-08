@@ -2,7 +2,7 @@ package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.exceptions.CategoryNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.CategoryMapper;
 import com.example.ecommercemarketplace.models.Category;
 import com.example.ecommercemarketplace.repositories.CategoryRepository;
 import com.example.ecommercemarketplace.services.CategoryService;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private final Mapper<Category, CategoryDto> categoryMapper;
+    private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
 
     @Override
@@ -72,8 +72,8 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.mapTo(category);
     }
 
-    private void throwIfCategoryNotFoundById(Long id){
-        if (!categoryRepository.existsById(id)){
+    private void throwIfCategoryNotFoundById(Long id) {
+        if (!categoryRepository.existsById(id)) {
             throw new CategoryNotFoundException("Category with id=%d is not found".formatted(id));
         }
     }

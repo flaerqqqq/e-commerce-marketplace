@@ -6,8 +6,9 @@ import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import com.example.ecommercemarketplace.exceptions.MerchantNotFoundException;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
-import com.example.ecommercemarketplace.mappers.impls.ProductMapper;
+import com.example.ecommercemarketplace.mappers.CategoryMapper;
+import com.example.ecommercemarketplace.mappers.MerchantMapper;
+import com.example.ecommercemarketplace.mappers.ProductMapper;
 import com.example.ecommercemarketplace.models.Category;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.Product;
@@ -50,13 +51,13 @@ public class ProductServiceTests {
     private CategoryService categoryService;
 
     @Mock
-    private Mapper<Merchant, MerchantDto> merchantMapper;
+    private MerchantMapper merchantMapper;
 
     @Mock
     private ProductMapper productMapper;
 
     @Mock
-    private Mapper<Category, CategoryDto> categoryMapper;
+    private CategoryMapper categoryMapper;
 
     @Mock
     private ElasticsearchOperations elasticsearchOperations;
@@ -149,12 +150,12 @@ public class ProductServiceTests {
     public void findAll_shouldReturnPageOfProducts(){
         Pageable pageable = PageRequest.of(0, 1);
         Page<Product> pageOfProducts = new PageImpl<>(List.of(product));
-        Page<ProductDto> expectedPageOfProductsDto = new PageImpl<>(List.of(productDto));
+        Page<ProductResponseDto> expectedPageOfProductsDto = new PageImpl<>(List.of(productResponseDto));
 
         when(productRepository.findAll(any(Pageable.class))).thenReturn(pageOfProducts);
-        when(productMapper.mapTo(any(Product.class))).thenReturn(productDto);
+        when(productMapper.mapProductToResponseDto(any(Product.class))).thenReturn(productResponseDto);
 
-        Page<ProductDto> actualPageOfProducts = productService.findAll(pageable);
+        Page<ProductResponseDto> actualPageOfProducts = productService.findAll(pageable);
 
         assertThat(actualPageOfProducts.getContent()).isEqualTo(expectedPageOfProductsDto.getContent());
     }
@@ -178,7 +179,7 @@ public class ProductServiceTests {
         when(productRepository.save(any(Product.class))).thenReturn(product);
         when(productMapper.mapTo(any(Product.class))).thenReturn(productDto);
 
-        ProductDto actualProductDto = productService.createProductWithMerchantId(merchantPublicId, productDto);
+        ProductDto actualProductDto = productService.createProductWithMerchantId(merchantPublicId, productDto, null, null);
 
         assertThat(actualProductDto).isEqualTo(productDto);
     }
@@ -188,7 +189,7 @@ public class ProductServiceTests {
         when(merchantService.findMerchantByPublicId(anyString())).thenThrow(MerchantNotFoundException.class);
 
         assertThrows(MerchantNotFoundException.class, () ->
-                productService.createProductWithMerchantId(merchantPublicId, productDto));
+                productService.createProductWithMerchantId(merchantPublicId, productDto, null, null));
     }
 
     @Test

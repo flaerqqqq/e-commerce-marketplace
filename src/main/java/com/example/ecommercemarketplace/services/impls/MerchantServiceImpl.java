@@ -3,7 +3,7 @@ package com.example.ecommercemarketplace.services.impls;
 import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.exceptions.MerchantAlreadyExistsException;
 import com.example.ecommercemarketplace.exceptions.MerchantNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.MerchantMapper;
 import com.example.ecommercemarketplace.models.EmailConfirmationToken;
 import com.example.ecommercemarketplace.models.LoginData;
 import com.example.ecommercemarketplace.models.Merchant;
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class MerchantServiceImpl implements MerchantService {
 
     private final MerchantRepository merchantRepository;
-    private final Mapper<Merchant, MerchantDto> merchantMapper;
+    private final MerchantMapper merchantMapper;
     private final PublicIdGenerator publicIdGenerator;
     private final PasswordEncoder passwordEncoder;
     private final EmailConfirmationTokenService emailConfirmationTokenService;
@@ -36,16 +36,6 @@ public class MerchantServiceImpl implements MerchantService {
         Merchant merchant = merchantRepository.findByEmail(email).orElseThrow(() ->
                 new MerchantNotFoundException("Merchant with email=%s is not found".formatted(email)));
         return merchantMapper.mapTo(merchant);
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return merchantRepository.existsByEmail(email);
-    }
-
-    @Override
-    public boolean existsByPublicId(String publicId) {
-        return merchantRepository.existsByPublicId(publicId);
     }
 
     @Override
@@ -148,7 +138,7 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
-    private Merchant findByPublicId(String publicId){
+    private Merchant findByPublicId(String publicId) {
         return merchantRepository.findByPublicId(publicId).orElseThrow(() ->
                 new MerchantNotFoundException("Merchant with publicId=%s is not found".formatted(publicId)));
     }

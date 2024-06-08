@@ -10,13 +10,18 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Entity
-@ToString(exclude = {"merchantOrder", "product"})
 @Table(name = "merchant_order_items")
 public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private int quantity;
+
+    @Column(name = "total_price", nullable = false)
+    private BigDecimal totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "merchant_order_id")
@@ -25,10 +30,4 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
-    @Column(nullable = false)
-    private int quantity;
-
-    @Column(name = "total_price", nullable = false)
-    private BigDecimal totalPrice;
 }

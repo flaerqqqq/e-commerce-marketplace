@@ -1,14 +1,13 @@
 package com.example.ecommercemarketplace.services.impls;
 
 
-import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequestDto;
 import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
-import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.events.EmailChangeEvent;
 import com.example.ecommercemarketplace.exceptions.PasswordResetTokenNotFoundException;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;
-import com.example.ecommercemarketplace.mappers.Mapper;
+import com.example.ecommercemarketplace.mappers.MerchantMapper;
+import com.example.ecommercemarketplace.mappers.UserMapper;
 import com.example.ecommercemarketplace.models.Merchant;
 import com.example.ecommercemarketplace.models.PasswordResetToken;
 import com.example.ecommercemarketplace.models.UserEntity;
@@ -24,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -32,8 +30,8 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
     private final UserService userService;
     private final MerchantService merchantService;
-    private final Mapper<UserEntity, UserDto> userMapper;
-    private final Mapper<Merchant, MerchantDto> merchantMapper;
+    private final UserMapper userMapper;
+    private final MerchantMapper merchantMapper;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
     private final JwtService jwtService;

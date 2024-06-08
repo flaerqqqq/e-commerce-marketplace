@@ -4,7 +4,6 @@ package com.example.ecommercemarketplace.controllers;
 import com.example.ecommercemarketplace.dto.OrderCreateRequestDto;
 import com.example.ecommercemarketplace.dto.OrderItemResponseDto;
 import com.example.ecommercemarketplace.dto.OrderResponseDto;
-import com.example.ecommercemarketplace.models.OrderItem;
 import com.example.ecommercemarketplace.services.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -25,22 +24,19 @@ public class OrderController {
     @PostMapping
     @Transactional(Transactional.TxType.SUPPORTS)
     @PreAuthorize("hasRole('USER')")
-    public OrderResponseDto createOrder(@RequestBody OrderCreateRequestDto requestDto,
-                                        Authentication authentication) {
+    public OrderResponseDto createOrder(@RequestBody OrderCreateRequestDto requestDto, Authentication authentication) {
         return orderService.createOrder(requestDto, authentication);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public Page<OrderResponseDto> getAllOrdersByUser(Pageable pageable,
-                                                     Authentication authentication){
+    public Page<OrderResponseDto> getAllOrdersByUser(Pageable pageable, Authentication authentication) {
         return orderService.findAllOrdersByUser(pageable, authentication);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public OrderResponseDto getOrderById(@PathVariable("id") Long orderId,
-                                         Authentication authentication){
+    public OrderResponseDto getOrderById(@PathVariable("id") Long orderId, Authentication authentication) {
         return orderService.findOrderById(orderId, authentication);
     }
 
@@ -48,16 +44,15 @@ public class OrderController {
     @PreAuthorize("hasRole('USER')")
     public Page<OrderItemResponseDto> getAllOrderItemsByOrderId(@PathVariable("id") Long orderId,
                                                                 Pageable pageable,
-                                                                Authentication authentication){
+                                                                Authentication authentication) {
         return orderService.findAllOrderItemsByOrderId(orderId, pageable, authentication);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional(Transactional.TxType.SUPPORTS)
-    @PreAuthorize("hasRole('USER')")
-    public void deleteOrderById(@PathVariable("id") Long orderId,
-                                Authentication authentication){
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public void deleteOrderById(@PathVariable("id") Long orderId, Authentication authentication) {
         orderService.deleteOrderById(orderId, authentication);
     }
 }

@@ -19,7 +19,6 @@ import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.OrderService;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -39,7 +38,6 @@ public class OrderServiceImpl implements OrderService {
     private final AddressRepository addressRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final ModelMapper modelMapper;
     private final ShoppingCartService shoppingCartService;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;

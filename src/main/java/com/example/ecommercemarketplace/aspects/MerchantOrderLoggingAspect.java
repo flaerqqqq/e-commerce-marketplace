@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class MerchantOrderLoggingAspect {
 
-    private MerchantService merchantService;
+    private final MerchantService merchantService;
 
     @After("execution(* com.example.ecommercemarketplace.controllers.MerchantOrderController.changeMerchantOrderStatus(..))" +
             "&& args(requestDto, id, authentication)")

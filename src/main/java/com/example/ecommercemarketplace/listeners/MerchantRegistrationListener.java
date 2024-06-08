@@ -9,10 +9,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+@Slf4j
+@Async
 @Component
 @AllArgsConstructor
-@Async
-@Slf4j
 public class MerchantRegistrationListener implements ApplicationListener<MerchantRegistrationEvent> {
 
     private final EmailService emailService;

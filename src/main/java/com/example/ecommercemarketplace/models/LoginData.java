@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"user"})
 @Entity
 @Table(name = "login_data")
 public class LoginData {
@@ -33,5 +32,4 @@ public class LoginData {
 
     @OneToOne(mappedBy = "loginData")
     private UserEntity user;
-
 }

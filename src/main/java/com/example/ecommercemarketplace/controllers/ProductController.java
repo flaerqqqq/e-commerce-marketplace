@@ -1,16 +1,19 @@
 package com.example.ecommercemarketplace.controllers;
 
 
-import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
+import com.example.ecommercemarketplace.dto.ProductReviewRequestDto;
+import com.example.ecommercemarketplace.dto.ProductReviewResponseDto;
+import com.example.ecommercemarketplace.services.ProductReviewService;
 import com.example.ecommercemarketplace.services.ProductService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,15 +24,30 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductReviewService productReviewService;
 
     @GetMapping
-    public Page<ProductDto> getAllProducts(Pageable pageable){
+    public Page<ProductResponseDto> getAllProducts(Pageable pageable){
         return productService.findAll(pageable);
     }
 
     @GetMapping("/search")
-    public Page<ProductResponseDto> searchProductsByName(@RequestParam String query,
-                                                         Pageable pageable){
+    public Page<ProductResponseDto> searchProductsByName(@RequestParam String query, Pageable pageable){
         return productService.searchProducts(query, pageable);
+    }
+
+    @PostMapping("/{id}/product-reviews")
+    @PreAuthorize("hasRole('USER')")
+    public ProductReviewResponseDto createProductReview(@PathVariable("id") Long productId,
+                                                        @RequestPart("text") @Valid ProductReviewRequestDto createRequest,
+                                                        @RequestPart(value = "media", required = false) List<MultipartFile> mediaContent,
+                                                        Authentication authentication){
+        return productReviewService.createProductReview(productId, createRequest, mediaContent, authentication);
+    }
+
+    @GetMapping("/{id}/product-reviews")
+    public Page<ProductReviewResponseDto> getAllProductReviewsByProduct(@PathVariable("id") Long productId,
+                                                                        Pageable pageable){
+        return productReviewService.findAllProductReviewsByProduct(productId, pageable);
     }
 }

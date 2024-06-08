@@ -10,5 +10,4 @@ public interface EmailConfirmationTokenRepository extends JpaRepository<EmailCon
     boolean existsByToken(String token);
 
     Optional<EmailConfirmationToken> findByToken(String token);
-
 }

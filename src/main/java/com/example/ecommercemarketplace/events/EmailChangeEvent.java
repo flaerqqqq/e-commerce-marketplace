@@ -9,7 +9,7 @@ public class EmailChangeEvent extends ApplicationEvent {
 
     public final UserEntity user;
 
-    public EmailChangeEvent(Object source, UserEntity user){
+    public EmailChangeEvent(Object source, UserEntity user) {
         super(source);
         this.user = user;
     }

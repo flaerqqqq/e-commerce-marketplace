@@ -18,23 +18,22 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService autheService;
+    private final AuthenticationService authService;
 
     @PostMapping("/login")
     public UserJwtTokenResponseDto login(@RequestBody @Valid UserLoginRequestDto loginRequest) {
-        return autheService.login(loginRequest);
+        return authService.login(loginRequest);
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserRegistrationResponseDto register(@RequestBody @Valid UserRegistrationRequestDto regRequest) {
-        return autheService.register(regRequest);
+        return authService.register(regRequest);
     }
 
     @PostMapping("/refresh")
     @PreAuthorize("permitAll()")
     public UserJwtTokenResponseDto getRefreshJwtToken(HttpServletRequest request) {
-        return autheService.refresh(request);
+        return authService.refresh(request);
     }
-
 }

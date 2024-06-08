@@ -18,7 +18,7 @@ public class ExceptionLoggingAspect {
         log.error("Caught exception: {}", ex.toString());
     }
 
-    @After("execution(* com.example.ecommercemarketplace.exceptions.handlers.CustomGlobalExceptionHandler.*(..)) "  +
+    @After("execution(* com.example.ecommercemarketplace.exceptions.handlers.CustomGlobalExceptionHandler.*(..)) " +
             "&& !execution(* com.example.ecommercemarketplace.exceptions.handlers.CustomGlobalExceptionHandler.handleSideExceptions(..))" +
             "&& args(ex)")
     public void handleOtherExceptionsAdvice(Exception ex) {

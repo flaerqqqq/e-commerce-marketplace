@@ -26,10 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
         try {
             String header = request.getHeader(AUTHORIZATION_HEADER);
 

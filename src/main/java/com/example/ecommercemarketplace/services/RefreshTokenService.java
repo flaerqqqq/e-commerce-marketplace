@@ -1,6 +1,5 @@
 package com.example.ecommercemarketplace.services;
 
-import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.models.RefreshToken;
 
 public interface RefreshTokenService {
@@ -9,15 +8,9 @@ public interface RefreshTokenService {
 
     RefreshToken findByToken(String token);
 
-    RefreshToken validateToken(RefreshToken token);
-
     boolean existsByToken(String token);
 
     void removeByToken(String token);
-
-    RefreshToken findByUser(UserDto userDto);
-
-    boolean existsByUser(UserDto userDto);
 
     void deleteExpiredTokens();
 

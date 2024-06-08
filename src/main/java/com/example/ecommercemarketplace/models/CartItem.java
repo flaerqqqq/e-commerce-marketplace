@@ -16,16 +16,15 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Column(nullable = false)
+    private int quantity;
+
     @ManyToOne
-    @ToString.Exclude
     @JoinColumn(name = "cart_id", nullable = false)
     private ShoppingCart shoppingCart;
 
     @ManyToOne
-    @ToString.Exclude
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
-    @Column(nullable = false)
-    private int quantity;
 }
