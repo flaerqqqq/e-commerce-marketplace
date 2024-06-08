@@ -1,15 +1,15 @@
 spring:
   datasource:
-    url: "jdbc:postgresql://localhost:5432/marketplace"
-    username: postgres
-    password: 452389
+    url: #put your postgresql url to database
+    username: #put your postgresql username
+    password: #put your postgresql password
     driver-class-name: org.postgresql.Driver
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: vitaloverzyn34@gmail.com
-    password: teoj awfa pzsg ybuf
+    username: #put your email
+    password:  #put your email application password
     properties:
       mail:
         smtp:
@@ -33,7 +33,7 @@ spring:
       max-request-size: "200MB"
 
 sentry:
-  dsn: https://78319190a391ed170840ac8023e4ab6c@o4507282571067392.ingest.de.sentry.io/4507282575720528
+  dsn: #put your sentry dsn link
 
 jwt:
   token:
@@ -52,15 +52,15 @@ jwt:
 
 aws:
   access:
-    key: AKIA47CRXS44VK5LTU45
+    key: #put your aws access key
   secret:
-    key: 695ertuEZSedY1tkog+fulOKhgh0NfsRXMKrg7qi
-  region: us-east-1
+    key: #put your aws secret key
+  region: #put your aws region
   product:
     images:
       bucket:
-        name: "product-images-marketplace"
+        name: #put your product-images bucket name
     review:
       media-content:
-        bucket-name: "product-reviews-marketplace"
+        bucket-name: #put your media-review-content bucket name
 
