@@ -17,6 +17,9 @@
         <java.version>17</java.version>
         <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
         <aws.version>1.12.731</aws.version>
+        <google.guava.version>10.0.1</google.guava.version>
+        <modelmapper.version>2.4.4</modelmapper.version>
+        <jwt.version>0.11.5</jwt.version>
     </properties>
     <dependencies>
         <dependency>
@@ -32,7 +35,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>10.0.1</version>
+            <version>${google.guava.version}</version>
         </dependency>
 
         <dependency>
@@ -78,25 +81,25 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>2.4.4</version>
+            <version>${modelmapper.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
+            <version>${jwt.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
+            <version>${jwt.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
+            <version>${jwt.version}</version>
         </dependency>
 
         <dependency>
@@ -244,6 +247,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
