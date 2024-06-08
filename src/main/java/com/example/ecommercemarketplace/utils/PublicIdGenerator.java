@@ -9,11 +9,11 @@ public class PublicIdGenerator {
 
     private final static String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public String generate(){
+    public String generate() {
         return generateString(40);
     }
 
-    private String generateString(int length){
+    private String generateString(int length) {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
