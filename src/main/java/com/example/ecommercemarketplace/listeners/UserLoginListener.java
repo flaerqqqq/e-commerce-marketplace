@@ -8,11 +8,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
 @Async
+@Component
 public class UserLoginListener implements ApplicationListener<UserLoginEvent> {
-
 
     @Override
     public void onApplicationEvent(UserLoginEvent event) {

@@ -1,11 +1,12 @@
 package com.example.ecommercemarketplace.services.impls;
 
 import com.example.ecommercemarketplace.documents.ProductDocument;
-import com.example.ecommercemarketplace.dto.MainProductImageDto;
 import com.example.ecommercemarketplace.dto.ProductDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
 import com.example.ecommercemarketplace.exceptions.ProductNotFoundException;
-import com.example.ecommercemarketplace.mappers.*;
+import com.example.ecommercemarketplace.mappers.CategoryMapper;
+import com.example.ecommercemarketplace.mappers.MerchantMapper;
+import com.example.ecommercemarketplace.mappers.ProductMapper;
 import com.example.ecommercemarketplace.models.*;
 import com.example.ecommercemarketplace.repositories.ProductRepository;
 import com.example.ecommercemarketplace.services.CategoryService;
@@ -51,9 +52,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> findPageOfProductByCategory(Long categoryId, Pageable pageable) {
+    public Page<ProductResponseDto> findPageOfProductByCategory(Long categoryId, Pageable pageable) {
         Category category = categoryMapper.mapFrom(categoryService.findById(categoryId));
-        return productRepository.findByCategory(category, pageable).map(productMapper::mapTo);
+        return productRepository.findByCategory(category, pageable).map(productMapper::mapProductToResponseDto);
 
     }
 
@@ -63,9 +64,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto createProduct(ProductDto productDto,
-                                    MultipartFile mainImage,
-                                    List<MultipartFile> images) {
+    public ProductDto createProduct(ProductDto productDto, MultipartFile mainImage, List<MultipartFile> images) {
         validateAllImages(mainImage, images);
 
         Product product = productMapper.mapFrom(productDto);
@@ -192,9 +191,8 @@ public class ProductServiceImpl implements ProductService {
         product.setProductImages(savedImages);
     }
 
-    private void validateAllImages(MultipartFile mainImage, List<MultipartFile> images){
+    private void validateAllImages(MultipartFile mainImage, List<MultipartFile> images) {
         ImageValidator.validateFile(mainImage);
         images.forEach(ImageValidator::validateFile);
     }
-
 }

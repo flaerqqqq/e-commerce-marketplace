@@ -12,7 +12,7 @@ public interface ProductService {
 
     Page<ProductDto> findPageOfProductsByMerchant(String publicId, Pageable pageable);
 
-    Page<ProductDto> findPageOfProductByCategory(Long categoryId, Pageable pageable);
+    Page<ProductResponseDto> findPageOfProductByCategory(Long categoryId, Pageable pageable);
 
     Page<ProductResponseDto> findAll(Pageable pageable);
 

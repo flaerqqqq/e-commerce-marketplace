@@ -19,7 +19,6 @@ import com.example.ecommercemarketplace.repositories.UserRepository;
 import com.example.ecommercemarketplace.services.OrderService;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;

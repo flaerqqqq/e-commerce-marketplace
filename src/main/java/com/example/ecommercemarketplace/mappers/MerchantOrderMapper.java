@@ -11,5 +11,4 @@ public interface MerchantOrderMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "parentOrder.id", target = "parentOrderId")
     MerchantOrderResponseDto toResponseDto(MerchantOrder merchantOrder);
-
 }

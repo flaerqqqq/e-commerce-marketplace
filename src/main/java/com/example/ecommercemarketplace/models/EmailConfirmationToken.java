@@ -21,5 +21,4 @@ public class EmailConfirmationToken {
 
     @Column(nullable = false, unique = true)
     private String token;
-
 }

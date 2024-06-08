@@ -21,6 +21,9 @@ public class ProductReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "text_content", nullable = false)
+    private String textContent;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -28,9 +31,6 @@ public class ProductReview {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
-    @Column(name = "text_content", nullable = false)
-    private String textContent;
 
     @OneToMany(mappedBy = "productReview", cascade = CascadeType.ALL)
     private List<ProductReviewMediaContent> mediaContents;

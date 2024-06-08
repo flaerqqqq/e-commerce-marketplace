@@ -6,9 +6,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +16,8 @@ public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
 
     public static final int IP_MAX_ATTEMPT = 10;
     private final LoadingCache<String, Integer> cachedAttempts;
-    private ApplicationEventPublisher applicationEventPublisher;
-    private HttpServletRequest httpServletRequest;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final HttpServletRequest httpServletRequest;
 
     public LoginAttemptIPServiceImpl(ApplicationEventPublisher applicationEventPublisher,
                                      HttpServletRequest httpServletRequest) {
@@ -45,7 +42,7 @@ public class LoginAttemptIPServiceImpl implements LoginAttemptIPService {
         }
 
         attempts++;
-        if(attempts == 10){
+        if (attempts == 10) {
             applicationEventPublisher.publishEvent(new IpLoginBlockEvent(this, ipAddressKey));
         }
         cachedAttempts.put(ipAddressKey, attempts);

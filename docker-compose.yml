@@ -1,6 +1,18 @@
 version: "3.8"
 
 services:
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - elasticsearch
+      - logstash
+      - kibana
+      - db
+
   elasticsearch:
     user: root
     image: docker.elastic.co/elasticsearch/elasticsearch:7.16.1
@@ -89,19 +101,7 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
 
-
-  busybox:
-    image: busybox
-    container_name: busybox
-    restart: always
-    command: [ "tail", "-f", "/dev/null" ]
-    environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-
-
 volumes:
-  certs:
-    driver: local
   elasticsearch-data:
     driver: local
   kibanadata:

@@ -57,5 +57,4 @@ public class ReviewMediaFileBucketServiceImpl implements ReviewMediaFileBucketSe
         }
         return amazonS3.getUrl(bucketName, fileName).toExternalForm();
     }
-
 }

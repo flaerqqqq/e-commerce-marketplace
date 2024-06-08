@@ -40,7 +40,7 @@ public class CustomGlobalExceptionHandler {
             OrderNotFoundInUserException.class,
             EmptyShoppingCartException.class
     })
-    public ResponseEntity<ErrorObject> handleBadRequestException(RuntimeException ex){
+    public ResponseEntity<ErrorObject> handleBadRequestException(RuntimeException ex) {
         ErrorObject errorObject = generateErrorObject(HttpStatus.BAD_REQUEST, ex);
         return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
     }

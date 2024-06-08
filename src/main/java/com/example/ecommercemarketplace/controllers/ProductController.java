@@ -32,8 +32,7 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public Page<ProductResponseDto> searchProductsByName(@RequestParam String query,
-                                                         Pageable pageable){
+    public Page<ProductResponseDto> searchProductsByName(@RequestParam String query, Pageable pageable){
         return productService.searchProducts(query, pageable);
     }
 

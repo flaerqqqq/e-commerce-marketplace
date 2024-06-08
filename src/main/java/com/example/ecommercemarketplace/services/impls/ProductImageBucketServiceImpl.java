@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.*;
 import com.example.ecommercemarketplace.models.MainProductImage;
 import com.example.ecommercemarketplace.models.ProductImage;
 import com.example.ecommercemarketplace.services.ProductImageBucketService;
+import com.example.ecommercemarketplace.utils.FileUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,16 +50,6 @@ public class ProductImageBucketServiceImpl implements ProductImageBucketService 
         return createMainProductImageObject(url);
     }
 
-    private File convertMultipartFileToFile(MultipartFile multipartFile){
-        File file = new File(multipartFile.getOriginalFilename());
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            outputStream.write(multipartFile.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return file;
-    }
-
     private String generateFileName(MultipartFile multipartFile) {
         return new Date().getTime() + "-" + multipartFile.getOriginalFilename()
                 .replace(" ", "-")
@@ -78,20 +69,23 @@ public class ProductImageBucketServiceImpl implements ProductImageBucketService 
     }
 
     private String save(MultipartFile file){
-        File imageFile = convertMultipartFileToFile(file);
+        File imageFile = FileUtils.convertMultipartFileToFile(file);
         String fileName = generateFileName(file);
 
-        PutObjectRequest putObjectRequest = new PutObjectRequest(imagesBucketName, fileName, imageFile);
+        try {
+            PutObjectRequest putObjectRequest = new PutObjectRequest(imagesBucketName, fileName, imageFile);
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(file.getContentType());
-        objectMetadata.setContentLength(imageFile.length());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(file.getContentType());
+            objectMetadata.setContentLength(imageFile.length());
 
-        putObjectRequest.setMetadata(objectMetadata);
-        amazonS3.putObject(putObjectRequest);
+            putObjectRequest.setMetadata(objectMetadata);
+            amazonS3.putObject(putObjectRequest);
 
-        imageFile.delete();
-        return amazonS3.getUrl(imagesBucketName, fileName).toExternalForm();
+            return amazonS3.getUrl(imagesBucketName, fileName).toExternalForm();
+        } finally {
+            imageFile.delete();
+        }
     }
 }
 

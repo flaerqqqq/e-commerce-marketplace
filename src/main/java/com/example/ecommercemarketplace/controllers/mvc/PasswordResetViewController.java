@@ -12,5 +12,4 @@ public class PasswordResetViewController {
     public String passwordResetPage() {
         return "password-reset";
     }
-
 }

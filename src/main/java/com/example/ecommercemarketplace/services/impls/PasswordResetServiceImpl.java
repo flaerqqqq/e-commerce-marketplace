@@ -1,10 +1,8 @@
 package com.example.ecommercemarketplace.services.impls;
 
 
-import com.example.ecommercemarketplace.dto.MerchantDto;
 import com.example.ecommercemarketplace.dto.PasswordResetConfirmationRequestDto;
 import com.example.ecommercemarketplace.dto.PasswordResetRequestDto;
-import com.example.ecommercemarketplace.dto.UserDto;
 import com.example.ecommercemarketplace.events.EmailChangeEvent;
 import com.example.ecommercemarketplace.exceptions.PasswordResetTokenNotFoundException;
 import com.example.ecommercemarketplace.exceptions.UserNotFoundException;

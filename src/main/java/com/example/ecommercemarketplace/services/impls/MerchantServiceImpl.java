@@ -39,16 +39,6 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public boolean existsByEmail(String email) {
-        return merchantRepository.existsByEmail(email);
-    }
-
-    @Override
-    public boolean existsByPublicId(String publicId) {
-        return merchantRepository.existsByPublicId(publicId);
-    }
-
-    @Override
     public boolean existsByEmailConfirmationToken(String token) {
         return merchantRepository.existsByToken(token);
     }
@@ -148,7 +138,7 @@ public class MerchantServiceImpl implements MerchantService {
         }
     }
 
-    private Merchant findByPublicId(String publicId){
+    private Merchant findByPublicId(String publicId) {
         return merchantRepository.findByPublicId(publicId).orElseThrow(() ->
                 new MerchantNotFoundException("Merchant with publicId=%s is not found".formatted(publicId)));
     }

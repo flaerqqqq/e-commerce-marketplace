@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class IpLoginBlockEvent extends ApplicationEvent {
 
-    private String ipAddress;
+    private final String ipAddress;
 
     public IpLoginBlockEvent(Object source, String ipAddress) {
         super(source);

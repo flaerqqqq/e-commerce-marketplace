@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ReviewMediaFileBucketService {
 
-     List<ProductReviewMediaContent> uploadProductMediaContent(List<MultipartFile> mediaContent);
+    List<ProductReviewMediaContent> uploadProductMediaContent(List<MultipartFile> mediaContent);
 }

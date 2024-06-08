@@ -22,6 +22,4 @@ public class TokenCleanupTask {
     public void cleanupExpiredRefreshTokens() {
         refreshTokenService.deleteExpiredTokens();
     }
-
-
 }

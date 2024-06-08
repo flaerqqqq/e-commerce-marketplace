@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ShoppingCartLoggingAspect {
 
-    private UserService userService;
+    private final UserService userService;
 
     @After("execution(* com.example.ecommercemarketplace.controllers.ShoppingCartController.addItemToShoppingCart(..)) && args(cartItemRequestDto, authentication)")
     public void afterAddItemToShoppingCart(CartItemRequestDto cartItemRequestDto, Authentication authentication) {

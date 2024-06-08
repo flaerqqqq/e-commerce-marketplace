@@ -5,8 +5,6 @@ import com.example.ecommercemarketplace.dto.CartItemRequestDto;
 import com.example.ecommercemarketplace.dto.CartItemResponseDto;
 import com.example.ecommercemarketplace.dto.ShoppingCartResponseDto;
 import com.example.ecommercemarketplace.services.ShoppingCartService;
-import jakarta.persistence.PreUpdate;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,22 +24,20 @@ public class ShoppingCartController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('USER')")
     public ShoppingCartResponseDto addItemToShoppingCart(@RequestBody CartItemRequestDto cartItemRequestDto,
-                                                         Authentication authentication){
+                                                         Authentication authentication) {
         return shoppingCartService.addItemToShoppingCart(authentication, cartItemRequestDto);
     }
 
     @GetMapping("/cart-items")
     @PreAuthorize("hasRole('USER')")
-    public Page<CartItemResponseDto> getAllItemsByCart(Pageable pageable,
-                                                       Authentication authentication){
+    public Page<CartItemResponseDto> getAllItemsByCart(Pageable pageable, Authentication authentication) {
         return shoppingCartService.getAllItemsByShoppingCart(authentication, pageable);
     }
 
     @DeleteMapping("/cart-items/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('USER')")
-    public void deleteCartItem(@PathVariable("id") Long id,
-                               Authentication authentication){
+    public void deleteCartItem(@PathVariable("id") Long id, Authentication authentication) {
         shoppingCartService.deleteCartItem(authentication, id);
     }
 
@@ -49,7 +45,7 @@ public class ShoppingCartController {
     @PreAuthorize("hasRole('USER')")
     public CartItemResponseDto updateCartItemQuantity(@PathVariable("id") Long id,
                                                       @RequestBody CartItemQuantityUpdateRequest updateRequest,
-                                                      Authentication authentication){
+                                                      Authentication authentication) {
         return shoppingCartService.updateCartItemQuantity(authentication, id, updateRequest);
     }
 

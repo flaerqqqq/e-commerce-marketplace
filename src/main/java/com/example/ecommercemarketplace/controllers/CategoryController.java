@@ -5,7 +5,6 @@ import com.example.ecommercemarketplace.dto.CategoryDto;
 import com.example.ecommercemarketplace.dto.CategoryPatchUpdateRequestDto;
 import com.example.ecommercemarketplace.dto.CategoryRequestDto;
 import com.example.ecommercemarketplace.dto.ProductResponseDto;
-import com.example.ecommercemarketplace.mappers.ProductMapper;
 import com.example.ecommercemarketplace.services.CategoryService;
 import com.example.ecommercemarketplace.services.ProductService;
 import jakarta.validation.Valid;
@@ -24,7 +23,6 @@ public class CategoryController {
 
     private final CategoryService categoryService;
     private final ProductService productService;
-    private final ProductMapper productMapper;
     private final ModelMapper modelMapper;
 
     @GetMapping("/{id}")
@@ -71,7 +69,6 @@ public class CategoryController {
     @GetMapping("{id}/products")
     public Page<ProductResponseDto> findAllProductsByCategoryId(@PathVariable("id") Long id,
                                                              Pageable pageable) {
-        return productService.findPageOfProductByCategory(id, pageable)
-                .map(productMapper::toResponseDto);
+        return productService.findPageOfProductByCategory(id, pageable);
     }
 }

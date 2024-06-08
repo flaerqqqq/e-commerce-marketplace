@@ -9,16 +9,16 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
+@Component
 @AllArgsConstructor
-@Transactional(Transactional.TxType.REQUIRES_NEW)
 public class AuthenticationSuccessListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
     private final LoginAttemptIPService loginAttemptIPService;
     private final LoginAttemptEmailService loginAttemptEmailService;
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void onApplicationEvent(AuthenticationSuccessEvent event) {
         String ipAddress = loginAttemptIPService.getClientIP();
         String email = event.getAuthentication().getName();

@@ -18,15 +18,15 @@ public class ProductReviewMediaContent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_review_id")
-    private ProductReview productReview;
-
     @Enumerated(EnumType.STRING)
     private MediaContentType mediaContentType;
 
     @Column(nullable = false)
     private String url;
+
+    @ManyToOne
+    @JoinColumn(name = "product_review_id")
+    private ProductReview productReview;
 
     public enum MediaContentType {
         IMAGE,

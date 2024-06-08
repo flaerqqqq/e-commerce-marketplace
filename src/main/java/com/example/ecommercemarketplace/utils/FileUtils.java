@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class FileUtils {
 
-    public static File convertMultipartFileToFile(MultipartFile multipartFile){
+    public static File convertMultipartFileToFile(MultipartFile multipartFile) {
         File file = new File(multipartFile.getOriginalFilename());
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(multipartFile.getBytes());

@@ -46,12 +46,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken validateToken(RefreshToken token) {
-        jwtService.isValid(token.getToken());
-        return token;
-    }
-
-    @Override
     public boolean existsByToken(String token) {
         return refreshTokenRepository.existsByToken(token);
     }
@@ -62,17 +56,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             throw new RefreshTokenNotFoundException("Refresh token=%s is not found".formatted(token));
         }
         refreshTokenRepository.removeByToken(token);
-    }
-
-    @Override
-    public RefreshToken findByUser(UserDto userDto) {
-        return refreshTokenRepository.findByUser(userMapper.mapFrom(userDto)).orElseThrow(() ->
-                new RefreshTokenNotFoundException("Refresh for user with id=%s is not found".formatted(userDto.getPublicId())));
-    }
-
-    @Override
-    public boolean existsByUser(UserDto userDto) {
-        return refreshTokenRepository.existsByUser(userMapper.mapFrom(userDto));
     }
 
     @Override
@@ -87,5 +70,4 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             }
         }
     }
-
 }

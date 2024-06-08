@@ -9,10 +9,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+@Slf4j
+@Async
 @Component
 @AllArgsConstructor
-@Async
-@Slf4j
 public class UserRegistrationListener implements ApplicationListener<UserRegistrationEvent> {
 
     private final EmailService emailService;
@@ -24,3 +24,4 @@ public class UserRegistrationListener implements ApplicationListener<UserRegistr
         log.info("New user successfully registered with publicId={}.", user.getPublicId());
     }
 }
+

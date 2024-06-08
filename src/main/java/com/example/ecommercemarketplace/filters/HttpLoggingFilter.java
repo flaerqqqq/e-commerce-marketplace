@@ -1,8 +1,6 @@
 package com.example.ecommercemarketplace.filters;
 
 import com.example.ecommercemarketplace.logging.HttpLogMessage;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jakarta.servlet.FilterChain;
@@ -26,13 +24,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
-    private ObjectMapper objectMapper;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 

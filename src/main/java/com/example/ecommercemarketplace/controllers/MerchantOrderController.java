@@ -27,8 +27,7 @@ public class MerchantOrderController {
     }
 
     @GetMapping
-    public Page<MerchantOrderResponseDto> getMerchantOrdersByMerchant(Pageable pageable,
-                                                                     Authentication authentication){
+    public Page<MerchantOrderResponseDto> getMerchantOrdersByMerchant(Pageable pageable, Authentication authentication) {
         return merchantOrderService.findMerchantOrders(authentication, pageable);
     }
 

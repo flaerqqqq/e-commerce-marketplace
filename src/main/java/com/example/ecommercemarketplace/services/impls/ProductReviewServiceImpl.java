@@ -67,16 +67,16 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         return pageOfProductReviews.map(productReviewMapper::mapToResponseDto);
     }
 
-    private void validateMediaContents(List<MultipartFile> mediaContents){
-        for (MultipartFile mediaContent : mediaContents){
+    private void validateMediaContents(List<MultipartFile> mediaContents) {
+        for (MultipartFile mediaContent : mediaContents) {
             validateMediaContentFile(mediaContent);
         }
     }
 
-    private void validateMediaContentFile(MultipartFile mediaContentFile){
+    private void validateMediaContentFile(MultipartFile mediaContentFile) {
         if (mediaContentFile.getContentType().startsWith("image/")) {
             ImageValidator.validateFile(mediaContentFile);
-        } else if (mediaContentFile.getContentType().startsWith("video/")){
+        } else if (mediaContentFile.getContentType().startsWith("video/")) {
             VideoValidator.validateFile(mediaContentFile);
         } else {
             throw new UnsupportedContentFileTypeException("File with type=%s is not supported".formatted(mediaContentFile.getContentType()));
