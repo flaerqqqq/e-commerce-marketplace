@@ -72,8 +72,8 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.mapTo(category);
     }
 
-    private void throwIfCategoryNotFoundById(Long id){
-        if (!categoryRepository.existsById(id)){
+    private void throwIfCategoryNotFoundById(Long id) {
+        if (!categoryRepository.existsById(id)) {
             throw new CategoryNotFoundException("Category with id=%d is not found".formatted(id));
         }
     }

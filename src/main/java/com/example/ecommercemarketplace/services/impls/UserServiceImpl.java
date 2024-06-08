@@ -112,7 +112,6 @@ public class UserServiceImpl implements UserService {
         UserEntity savedUser = userRepository.save(user);
 
         return userMapper.mapTo(savedUser);
-
     }
 
     @Override
@@ -137,11 +136,9 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteByPublicId(publicId);
     }
 
-    private void throwIfUserNotFoundByPublicId(String publicId){
+    private void throwIfUserNotFoundByPublicId(String publicId) {
         if (!userRepository.existsByPublicId(publicId)) {
             throw new UserNotFoundException("User with publicId=%s is not found".formatted(publicId));
         }
     }
-
-
 }

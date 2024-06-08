@@ -8,10 +8,6 @@ public interface MerchantService {
 
     MerchantDto findByEmail(String email);
 
-    boolean existsByEmail(String email);
-
-    boolean existsByPublicId(String publicId);
-
     boolean existsByEmailConfirmationToken(String token);
 
     boolean isMerchant(String email);
